@@ -1,21 +1,19 @@
 export const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 
 export const getFirstNameFromName = (name: string): string | null => {
-  if (name) {
-    const firstName = name.split(' ')[0]
-    return firstName
-  }
+  if (name)
+    return name.split(' ')[0]
+
   return null
 }
 
 export const getLastNameFromName = (name: string): string | null => {
   if (name) {
     const parts = name.split(' ')
-    if (parts.length > 1) {
-      const lastName = parts[parts.length - 1]
-      return lastName
-    }
+    if (parts.length > 1)
+      return parts[parts.length - 1]
   }
+
   return null
 }
 
@@ -30,5 +28,6 @@ export function getQueryStringFromUrl(url: string) {
 
 export const getLastSegment = (str: string) => {
   const segments = str.split('/')
+
   return segments[segments.length - 1]
 }

@@ -43,7 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
       redirectToDashboard()
     }
     catch (error: any) {
-      if (error?.response?.data?.message == 'The route dashboard could not be found.') {
+      if (error?.response?.data?.message === 'The route dashboard could not be found.') {
         redirectToDashboard()
 
         return

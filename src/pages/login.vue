@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useVuelidate } from '@vuelidate/core'
-import { email, minLength, required } from '@vuelidate/validators'
 import { useGenerateImageVariant } from '@/@core/composable/useGenerateImageVariant'
 import env from '@/constants/env'
 import { useAuthStore } from '@/stores/auth/useAuthStore'
@@ -12,13 +10,17 @@ import { themeConfig } from '@themeConfig'
 const authV1ThemeLoginMask = useGenerateImageVariant(authV1LoginMaskLight, authV1LoginMaskDark)
 const isPasswordVisible = ref(false)
 
+const errors = ref({})
+
+const form = reactive({
+  email: '',
+  password: '',
+})
+
 const auth = useAuthStore()
 
 async function handleSubmit() {
-  const result = await v$.value.$validate()
-
-  if (result)
-    await auth.login(form)
+  await auth.login(form)
 }
 </script>
 
@@ -61,7 +63,6 @@ async function handleSubmit() {
                 label="Email"
                 type="email"
                 placeholder="johndoe@email.com"
-                :error-messages="v$?.email?.$errors[0]?.$message"
               />
             </VCol>
 
@@ -73,7 +74,6 @@ async function handleSubmit() {
                 placeholder="············"
                 :type="isPasswordVisible ? 'text' : 'password'"
                 :append-inner-icon="isPasswordVisible ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
-                :error-messages="v$?.password?.$errors[0]?.$message"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
               />
 

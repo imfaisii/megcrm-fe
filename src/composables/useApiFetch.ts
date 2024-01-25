@@ -35,7 +35,7 @@ export default async function useApiFetch(uri: string, options: AxiosRequestConf
 
         auth.logout()
       }
-      else if (error?.response?.data?.message == 'The route dashboard could not be found.') {
+      else if (error?.response?.data?.message === 'The route dashboard could not be found.') {
         auth.redirectToDashboard()
       }
       else {
