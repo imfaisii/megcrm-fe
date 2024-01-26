@@ -9,18 +9,14 @@ export const useGenerateImageVariant = (imgLight: string, imgDark: string, imgLi
 
   return computed(() => {
     if (global.name.value === 'light') {
-      if (skin.value === 'bordered' && bordered)
-        return imgLightBordered
+      if (skin.value === 'bordered' && bordered) { return imgLightBordered }
 
-      else
-        return imgLight
+      else { return imgLight }
     }
     if (global.name.value === 'dark') {
-      if (skin.value === 'bordered' && bordered)
-        return imgDarkBordered
+      if (skin.value === 'bordered' && bordered) { return imgDarkBordered }
 
-      else
-        return imgDark
+      else { return imgDark }
     }
   })
 }

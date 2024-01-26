@@ -54,8 +54,7 @@ const isAnyChildOpen = (children: NavGroup['children']): boolean => {
   return children.some(child => {
     let result = openGroups.value.includes(child.title)
 
-    if ('children' in child)
-      result = isAnyChildOpen(child.children) || result
+    if ('children' in child) { result = isAnyChildOpen(child.children) || result }
 
     return result
   })
@@ -63,8 +62,7 @@ const isAnyChildOpen = (children: NavGroup['children']): boolean => {
 
 const collapseChildren = (children: NavGroup['children']) => {
   children.forEach(child => {
-    if ('children' in child)
-      collapseChildren(child.children)
+    if ('children' in child) { collapseChildren(child.children) }
 
     openGroups.value = openGroups.value.filter(group => group !== child.title)
   })
@@ -124,18 +122,15 @@ watch(isGroupOpen, (val: boolean) => {
 watch(openGroups, val => {
   // Prevent closing recently opened inactive group.
   const lastOpenedGroup = val.at(-1)
-  if (lastOpenedGroup === props.item.title)
-    return
+  if (lastOpenedGroup === props.item.title) { return }
 
   const isActive = isNavGroupActive(props.item.children, router)
 
   // Goal of this watcher is to close inactive groups. So don't do anything for active groups.
-  if (isActive)
-    return
+  if (isActive) { return }
 
   // We won't close group if any of child group is open in current group
-  if (isAnyChildOpen(props.item.children))
-    return
+  if (isAnyChildOpen(props.item.children)) { return }
 
   isGroupOpen.value = isActive
   isGroupActive.value = isActive

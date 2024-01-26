@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia'
 import useApiFetch from '@/composables/useApiFetch'
 import { ACCESS_TOKEN_KEY } from '@/constants/general'
 import { isValidToken } from '@/middlewares/auth'
-import { getExceptionMessage } from '@/utils/useHelper'
+import { useToast } from '@/plugins/toastr'
+import { handleError } from '@/utils/useHelper'
 
 interface User {
   id: number
@@ -15,22 +15,41 @@ interface Credentials {
   password: string
 }
 
+interface ForgotPassword {
+  email: string
+}
+
+interface ResetPassword {
+  token: string
+  email: string
+  password: string
+  password_confirmation: string
+}
+
 export const useAuthStore = defineStore('auth', () => {
   const accessToken = ref<string | null>(null)
   const user = ref<User | null>(null)
   const isLoading = ref<boolean>(false)
+  const errors = ref<any>({})
+  const success = ref<boolean>(false)
+  const message = ref<string>('')
   const isLoggedIn = computed(() => !!user.value)
-  const $notify: any = inject('$notify')
   const router = useRouter()
+  const $toast = useToast()
+  const route = useRoute()
 
   const fetchUser = async () => {
+    isLoading.value = true
+
     const { data } = await useApiFetch('/user')
 
+    isLoading.value = false
     await setUser(data.user)
   }
 
   const login = async (credentials: Credentials) => {
     isLoading.value = true
+    errors.value = {}
 
     try {
       const { data: loginData } = await useApiFetch('/login', {
@@ -43,13 +62,55 @@ export const useAuthStore = defineStore('auth', () => {
       redirectToDashboard()
     }
     catch (error: any) {
-      if (error?.response?.data?.message === 'The route dashboard could not be found.') {
-        redirectToDashboard()
+      handleError(error, errors)
+    }
+    finally {
+      isLoading.value = false
+    }
+  }
 
-        return
+  const forgotPassword = async (payload: ForgotPassword) => {
+    isLoading.value = true
+    errors.value = {}
+
+    try {
+      const { success: rSuccess, message: rMessage } = await useApiFetch('/forgot-password', {
+        data: payload,
+        method: 'POST',
+      })
+
+      if (rSuccess) {
+        $toast.success(rMessage)
+        success.value = true
+        message.value = rMessage
       }
+    }
+    catch (error: any) {
+      handleError(error, errors)
+    }
+    finally {
+      isLoading.value = false
+    }
+  }
 
-      $notify.error(getExceptionMessage(error))
+  const resetPassword = async (payload: ResetPassword) => {
+    isLoading.value = true
+    errors.value = {}
+
+    try {
+      const { success: rSuccess, message: rMessage } = await useApiFetch('/reset-password', {
+        data: payload,
+        method: 'POST',
+      })
+
+      if (rSuccess) {
+        $toast.success(rMessage)
+        success.value = true
+        message.value = rMessage
+      }
+    }
+    catch (error: any) {
+      handleError(error, errors)
     }
     finally {
       isLoading.value = false
@@ -59,8 +120,9 @@ export const useAuthStore = defineStore('auth', () => {
   const setUser = async (userData: User | any) => {
     user.value = userData
 
-    if (!accessToken.value && isValidToken(getStorageToken().value))
+    if (!accessToken.value && isValidToken(getStorageToken().value)) {
       accessToken.value = getStorageToken().value
+    }
   }
 
   const setToken = async (token: any) => {
@@ -84,23 +146,38 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const redirectToLogin = () => {
-    $notify.success('Redirecting to login')
+    $toast.success('Redirecting to login')
     router.push('/login')
   }
 
   const redirectToDashboard = () => {
-    $notify.success('Redirecting to dashboard')
+    $toast.success('Redirecting to dashboard')
     router.push('/dashboard')
   }
 
+  const reset = () => {
+    errors.value = {}
+    success.value = false
+    message.value = ''
+  }
+
+  // resetting errors if route changes
+  watch(() => route.name, () => reset())
+
   return {
     user,
+    isLoggedIn,
+    isLoading,
+    success,
+    message,
+    errors,
+    accessToken,
+
     login,
     logout,
     fetchUser,
-    isLoggedIn,
-    isLoading,
-    accessToken,
+    forgotPassword,
+    resetPassword,
     redirectToDashboard,
     redirectToLogin,
     setToken,

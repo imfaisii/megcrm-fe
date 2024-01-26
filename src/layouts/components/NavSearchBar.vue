@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import Shepherd from 'shepherd.js'
 import type { SearchHeader, SearchItem } from '@/@fake-db/types'
-import axios from '@axios'
+import useApiFetch from '@/composables/useApiFetch'
 import { useThemeConfig } from '@core/composable/useThemeConfig'
 
 interface Suggestion {
@@ -88,7 +87,7 @@ const router = useRouter()
 
 // 👉 fetch search result API
 watchEffect(() => {
-  axios.get('/app-bar/search', {
+  useApiFetch('/app-bar/search', {
     params: {
       q: searchQuery.value,
     },
@@ -109,31 +108,6 @@ const LazyAppBarSearch = defineAsyncComponent(() => import('@core/components/App
 </script>
 
 <template>
-  <div
-    class="d-flex align-center cursor-pointer"
-    v-bind="$attrs"
-    style="user-select: none;"
-    @click="isAppSearchBarVisible = !isAppSearchBarVisible"
-  >
-    <!-- 👉 Search Trigger button -->
-    <!-- close active tour while opening search bar using icon -->
-    <IconBtn
-      class="me-1"
-      @click="Shepherd.activeTour?.cancel()"
-    >
-      <VIcon icon="mdi-magnify" />
-    </IconBtn>
-
-    <span
-      v-if="appContentLayoutNav === 'vertical'"
-      class="d-none d-md-flex align-center text-disabled"
-      @click="Shepherd.activeTour?.cancel()"
-    >
-      <span class="me-3">Search</span>
-      <span class="meta-key">&#8984;K</span>
-    </span>
-  </div>
-
   <!-- 👉 App Bar Search -->
   <LazyAppBarSearch
     v-model:isDialogVisible="isAppSearchBarVisible"

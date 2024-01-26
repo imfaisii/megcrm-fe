@@ -17,10 +17,8 @@ const { width: windowWidth } = useWindowSize()
 const verticalNavHeaderActionAnimationName = ref<null | 'rotate-180' | 'rotate-back-180'>(null)
 
 watch([isVerticalNavCollapsed, isAppRtl], val => {
-  if (isAppRtl.value)
-    verticalNavHeaderActionAnimationName.value = val[0] ? 'rotate-back-180' : 'rotate-180'
-  else
-    verticalNavHeaderActionAnimationName.value = val[0] ? 'rotate-180' : 'rotate-back-180'
+  if (isAppRtl.value) { verticalNavHeaderActionAnimationName.value = val[0] ? 'rotate-back-180' : 'rotate-180' }
+  else { verticalNavHeaderActionAnimationName.value = val[0] ? 'rotate-180' : 'rotate-back-180' }
 }, { immediate: true })
 </script>
 

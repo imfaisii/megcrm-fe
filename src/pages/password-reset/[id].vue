@@ -1,21 +1,36 @@
 <script setup lang="ts">
 import { useGenerateImageVariant } from '@/@core/composable/useGenerateImageVariant'
 import { useAuthStore } from '@/stores/auth/useAuthStore'
-import authV1ForgotPasswordMaskDark from '@images/pages/auth-v1-forgot-password-mask-dark.png'
-import authV1ForgotPasswordMaskLight from '@images/pages/auth-v1-forgot-password-mask-light.png'
+import authV1ResetPasswordMaskDark from '@images/pages/auth-v1-reset-password-mask-dark.png'
+import authV1ResetPasswordMaskLight from '@images/pages/auth-v1-reset-password-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
+
+const authV1ResetPasswordMask = useGenerateImageVariant(authV1ResetPasswordMaskLight, authV1ResetPasswordMaskDark)
+
+const route = useRoute()
+const router = useRouter()
+
+console.log(route)
 
 const auth = useAuthStore()
 
 const form = ref({
-  email: '',
+  token: route.params.id,
+  email: route.query.email,
+  password: '',
+  password_confirmation: '',
 })
 
-const authV1ThemeForgotPasswordMask = useGenerateImageVariant(authV1ForgotPasswordMaskLight, authV1ForgotPasswordMaskDark)
+const isPasswordVisible = ref(false)
+const isConfirmPasswordVisible = ref(false)
 
 const handleSubmit = async () => {
-  await auth.forgotPassword(form.value)
+  await auth.resetPassword(form.value)
+
+  if (auth.success) {
+    router.push('/dashboard')
+  }
 }
 </script>
 
@@ -39,7 +54,7 @@ const handleSubmit = async () => {
 
       <VCardText class="pt-2">
         <h5 class="text-h5 mb-1">
-          Forgot Password? 🔒
+          Reset Password 🔒
         </h5>
         <p class="mb-0">
           Enter your email and we'll send you instructions to reset your password
@@ -58,15 +73,29 @@ const handleSubmit = async () => {
 
         <VForm @submit.prevent="handleSubmit">
           <VRow>
-            <!-- email -->
+            <!-- password -->
             <VCol cols="12">
               <VTextField
-                v-model="form.email"
+                v-model="form.password"
                 autofocus
-                label="Email"
-                type="email"
-                placeholder="johndoe@email.com"
-                :error-messages="auth?.errors?.email?.[0]"
+                label="New Password"
+                placeholder="············"
+                :type="isPasswordVisible ? 'text' : 'password'"
+                :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
+                :error-messages="auth?.errors?.password?.[0]"
+                @click:append-inner="isPasswordVisible = !isPasswordVisible"
+              />
+            </VCol>
+
+            <!-- Confirm Password -->
+            <VCol cols="12">
+              <VTextField
+                v-model="form.password_confirmation"
+                label="Confirm Password"
+                placeholder="············"
+                :type="isConfirmPasswordVisible ? 'text' : 'password'"
+                :append-inner-icon="isConfirmPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
+                @click:append-inner="isConfirmPasswordVisible = !isConfirmPasswordVisible"
               />
             </VCol>
 
@@ -75,10 +104,10 @@ const handleSubmit = async () => {
               <VBtn
                 block
                 type="submit"
-                :disabled="auth.isLoading"
                 :loading="auth.isLoading"
+                :disabled="auth.isLoading"
               >
-                Send Reset Link
+                Set New Password
               </VBtn>
             </VCol>
 
@@ -90,8 +119,8 @@ const handleSubmit = async () => {
               >
                 <VIcon
                   start
-                  icon="mdi-chevron-left"
                   size="30"
+                  icon="mdi-chevron-left"
                   class="flip-in-rtl"
                 />
                 <span class="text-base">Back to login</span>
@@ -102,7 +131,7 @@ const handleSubmit = async () => {
       </VCardText>
     </VCard>
     <VImg
-      :src="authV1ThemeForgotPasswordMask"
+      :src="authV1ResetPasswordMask"
       class="d-none d-md-block auth-footer-mask"
     />
   </div>

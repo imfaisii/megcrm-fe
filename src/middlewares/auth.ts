@@ -1,4 +1,5 @@
 import { ACCESS_TOKEN_KEY, PROTECTED_URLS } from '@/constants/general'
+import { useToast } from '@/plugins/toastr'
 import { useAuthStore } from '@/stores/auth/useAuthStore'
 
 export const isRequestingProtectedRoute = (to: any) => PROTECTED_URLS.some((prefix: any) => to.path.startsWith(prefix))
@@ -9,19 +10,20 @@ export function isValidToken(token: any) {
 }
 
 export function notifyError(message: string) {
-  const $notify = inject('$notify')
-  if ($notify)
-    $notify.error(message)
-  else
-    console.error('Notification service not available.')
+  const $toast = useToast()
+  if ($toast) {
+    $toast.error(message)
+  }
+  else { console.error('Notification service not available.') }
 }
 
 export async function authMiddleware(to: any, from: any, next: any) {
   const auth = useAuthStore()
   const token = useStorage(ACCESS_TOKEN_KEY, null)
 
-  if (isValidToken(token.value) && !auth.isLoggedIn)
+  if (isValidToken(token.value) && !auth.isLoggedIn) {
     await auth.fetchUser()
+  }
 
   if (isRequestingProtectedRoute(to) && !(auth.isLoggedIn || isValidToken(token.value))) {
     notifyError('User not logged in.')

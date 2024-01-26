@@ -40,8 +40,7 @@ export default defineComponent({
 
     // ℹ️ Hide overlay if user open overlay nav in <md and increase the window width without closing overlay nav
     watch(windowWidth, value => {
-      if (!isLessThanOverlayNavBreakpoint.value(value) && isLayoutOverlayVisible.value)
-        isLayoutOverlayVisible.value = false
+      if (!isLessThanOverlayNavBreakpoint.value(value) && isLayoutOverlayVisible.value) { isLayoutOverlayVisible.value = false }
     })
 
     const router = useRouter()

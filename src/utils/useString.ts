@@ -1,8 +1,7 @@
 export const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 
 export const getFirstNameFromName = (name: string): string | null => {
-  if (name)
-    return name.split(' ')[0]
+  if (name) { return name.split(' ')[0] }
 
   return null
 }
@@ -10,8 +9,7 @@ export const getFirstNameFromName = (name: string): string | null => {
 export const getLastNameFromName = (name: string): string | null => {
   if (name) {
     const parts = name.split(' ')
-    if (parts.length > 1)
-      return parts[parts.length - 1]
+    if (parts.length > 1) { return parts[parts.length - 1] }
   }
 
   return null

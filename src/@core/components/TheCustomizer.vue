@@ -58,8 +58,7 @@ const { width: windowWidth } = useWindowSize()
 const headerValues = computed(() => {
   const entries = Object.entries(NavbarType)
 
-  if (appContentLayoutNav.value === AppContentLayoutNav.Horizontal)
-    return entries.filter(([_, val]) => val !== NavbarType.Hidden)
+  if (appContentLayoutNav.value === AppContentLayoutNav.Horizontal) { return entries.filter(([_, val]) => val !== NavbarType.Hidden) }
 
   return entries
 })

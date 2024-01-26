@@ -1,4 +1,5 @@
 module.exports = {
+  root: false,
   env: {
     browser: true,
     es2021: true,
@@ -27,11 +28,20 @@ module.exports = {
   ],
   ignorePatterns: ['src/@iconify/*.js', 'node_modules', 'dist', '*.d.ts'],
   rules: {
+    'curly': [
+      'error',
+      'all',
+    ],
+    'import/order': [
+      'error',
+    ],
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typscript-eslint/space-before-blocks': 'off',
+    'import/no-named-default': 'off',
 
     // indentation (Already present in TypeScript)
     'comma-spacing': ['error', { before: false, after: true }],

@@ -1,14 +1,8 @@
 import type { VerticalNavItems } from '@/@layouts/types'
+import Home from './home'
+import UserManagement from './user-management'
 
 export default [
-  {
-    title: 'Home',
-    to: { name: 'index' },
-    icon: { icon: 'mdi-home-outline' },
-  },
-  {
-    title: 'Second page',
-    to: { name: 'second-page' },
-    icon: { icon: 'mdi-file-document-outline' },
-  },
+  ...Home,
+  ...UserManagement,
 ] as VerticalNavItems

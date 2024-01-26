@@ -10,8 +10,6 @@ import { themeConfig } from '@themeConfig'
 const authV1ThemeLoginMask = useGenerateImageVariant(authV1LoginMaskLight, authV1LoginMaskDark)
 const isPasswordVisible = ref(false)
 
-const errors = ref({})
-
 const form = reactive({
   email: '',
   password: '',
@@ -63,6 +61,7 @@ async function handleSubmit() {
                 label="Email"
                 type="email"
                 placeholder="johndoe@email.com"
+                :error-messages="auth?.errors?.email?.[0]"
               />
             </VCol>
 
@@ -74,6 +73,7 @@ async function handleSubmit() {
                 placeholder="············"
                 :type="isPasswordVisible ? 'text' : 'password'"
                 :append-inner-icon="isPasswordVisible ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
+                :error-messages="auth?.errors?.password?.[0]"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
               />
 
@@ -91,6 +91,8 @@ async function handleSubmit() {
               <VBtn
                 block
                 type="submit"
+                :disabled="auth.isLoading"
+                :loading="auth.isLoading"
               >
                 Login
               </VBtn>

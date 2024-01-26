@@ -6,28 +6,23 @@ import vuetify from '@/plugins/vuetify'
 import { loadFonts } from '@/plugins/webfontloader'
 import router from '@/router'
 import '@core/scss/template/index.scss'
-import { createToaster } from '@meforma/vue-toaster'
 import '@styles/styles.scss'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
+import ToastPlugin from 'vue-toast-notification'
 
 loadFonts()
 
 // Create vue app
 const app = createApp(App)
 
-const toaster = createToaster({
-  position: 'top-right',
-})
-
-app.config.globalProperties.$notify = toaster
-
 // Use plugins
+
 app.use(vuetify)
 app.use(createPinia())
 app.use(router)
 app.use(layoutsPlugin)
-app.provide('$notify', toaster)
+app.use(ToastPlugin)
 
 // Mount vue app
 app.mount('#app')

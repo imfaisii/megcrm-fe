@@ -26,8 +26,7 @@ const defaultStyle = {
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const handleKeyDown = (event: KeyboardEvent, index: number) => {
-  if (event.code !== 'Tab' && event.code !== 'ArrowRight' && event.code !== 'ArrowLeft')
-    event.preventDefault()
+  if (event.code !== 'Tab' && event.code !== 'ArrowRight' && event.code !== 'ArrowLeft') { event.preventDefault() }
 
   if (event.code === 'Backspace') {
     digits.value[index - 1] = ''
@@ -35,8 +34,7 @@ const handleKeyDown = (event: KeyboardEvent, index: number) => {
     if (refOtpComp.value !== null && index > 1) {
       const inputEl = refOtpComp.value.children[index - 2].querySelector('input')
 
-      if (inputEl)
-        inputEl.focus()
+      if (inputEl) { inputEl.focus() }
     }
   }
   const numberRegExp = /^([0-9])$/
@@ -47,8 +45,7 @@ const handleKeyDown = (event: KeyboardEvent, index: number) => {
     if (refOtpComp.value !== null && index !== 0 && index < refOtpComp.value.children.length) {
       const inputEl = refOtpComp.value.children[index].querySelector('input')
 
-      if (inputEl)
-        inputEl.focus()
+      if (inputEl) { inputEl.focus() }
     }
   }
 
