@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { usePermissionsStore } from '@/stores/permissions/usePermission';
 import { capitalizeFirstLetter } from '@/utils/useString';
-import { required } from '@vuelidate/validators';
 import { VForm } from 'vuetify/components/VForm';
 
 interface Emit {
@@ -20,11 +19,9 @@ const emit = defineEmits<Emit>()
 const panel = ref(0)
 const refPermissionForm = ref<VForm>()
 const permissionsStore = usePermissionsStore()
-const form = reactive<any>({})
-
-const rules = {
-  name: { required },
-}
+const form = reactive<any>({
+  permissions: []
+})
 
 const handleSubmit = async () => {
   permissionsStore.isRoleSelected
@@ -35,17 +32,6 @@ const handleSubmit = async () => {
 }
 
 const closeDialog = () => emit('update:isDialogVisible', false)
-
-watch(
-  props,
-  () => {
-    form.name = permissionsStore.isRoleSelected ? permissionsStore.selectedRole.name : ''
-    form.permissions = permissionsStore.isRoleSelected
-      ? permissionsStore.selectedRole.permissions.map((p: any) => p.id)
-      : []
-  },
-  { deep: true },
-)
 
 onMounted(async () => await permissionsStore.getPermissions())
 </script>

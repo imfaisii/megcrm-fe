@@ -3,7 +3,8 @@ const vm = getCurrentInstance()
 const buyNowUrl = ref(vm?.appContext.config.globalProperties.buyNowUrl || 'https://1.envato.market/materialize_admin')
 
 watch(buyNowUrl, val => {
-  if (vm) { vm.appContext.config.globalProperties.buyNowUrl = val }
+  if (vm)
+    vm.appContext.config.globalProperties.buyNowUrl = val
 })
 </script>
 

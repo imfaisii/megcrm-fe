@@ -15,8 +15,9 @@ export const getComputedNavLinkToProp = computed(() => (link: NavLink) => {
 
   // If route is string => it assumes string is route name => Create route object from route name
   // If route is not string => It assumes it's route object => returns passed route object
-  if (link.to) { props.to = typeof link.to === 'string' ? { name: link.to } : link.to }
-  else { props.href = link.href }
+  if (link.to)
+    props.to = typeof link.to === 'string' ? { name: link.to } : link.to
+  else props.href = link.href
 
   return props
 })
@@ -28,9 +29,11 @@ export const getComputedNavLinkToProp = computed(() => (link: NavLink) => {
  * @param {Object, String} link navigation link object/string
  */
 export const resolveNavLinkRouteName = (link: NavLink, router: Router) => {
-  if (!link.to) { return null }
+  if (!link.to)
+    return null
 
-  if (typeof link.to === 'string') { return link.to }
+  if (typeof link.to === 'string')
+    return link.to
 
   return router.resolve(link.to).name
 }
@@ -46,7 +49,8 @@ export const isNavLinkActive = (link: NavLink, router: Router) => {
   // Check if provided route matches route's matched route
   const resolveRoutedName = resolveNavLinkRouteName(link, router)
 
-  if (!resolveRoutedName) { return false }
+  if (!resolveRoutedName)
+    return false
 
   return matchedRoutes.some(route => {
     return route.name === resolveRoutedName || route.meta.navActiveLink === resolveRoutedName
@@ -60,7 +64,8 @@ export const isNavLinkActive = (link: NavLink, router: Router) => {
 export const isNavGroupActive = (children: (NavLink | NavGroup)[], router: Router): boolean =>
   children.some(child => {
     // If child have children => It's group => Go deeper(recursive)
-    if ('children' in child) { return isNavGroupActive(child.children, router) }
+    if ('children' in child)
+      return isNavGroupActive(child.children, router)
 
     // else it's link => Check for matched Route
     return isNavLinkActive(child, router)

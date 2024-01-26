@@ -5,7 +5,7 @@ import { VList, VListItem, VListSubheader } from 'vuetify/components/VList'
 interface Emit {
   (e: 'update:isDialogVisible', value: boolean): void
   (e: 'update:searchQuery', value: string): void
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (e: 'itemSelected', value: any): void
 }
 
@@ -23,7 +23,7 @@ interface Suggestions {
 interface Props {
   isDialogVisible: boolean
   searchQuery: string
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   searchResults: any[]
   suggestions?: Suggestions[]
   noDataSuggestion?: Suggestion[]
@@ -36,7 +36,8 @@ const emit = defineEmits<Emit>()
 const { ctrl_k, meta_k } = useMagicKeys({
   passive: false,
   onEventFired(e) {
-    if (e.ctrlKey && e.key === 'k' && e.type === 'keydown') { e.preventDefault() }
+    if (e.ctrlKey && e.key === 'k' && e.type === 'keydown')
+      e.preventDefault()
   },
 })
 
@@ -66,7 +67,8 @@ const clearSearchAndCloseDialog = () => {
 }
 
 watchEffect(() => {
-  if (!searchQuery.value.length) { searchResults.value = [] }
+  if (!searchQuery.value.length)
+    searchResults.value = []
 })
 
 // 👉 get fucus on search list
@@ -88,15 +90,20 @@ const dialogModelValueUpdate = (val: boolean) => {
 
 // 👉 resolve categories name
 const resolveCategories = (val: string) => {
-  if (val === 'dashboards') { return 'Dashboards' }
+  if (val === 'dashboards')
+    return 'Dashboards'
 
-  if (val === 'appsPages') { return 'Apps & Pages' }
+  if (val === 'appsPages')
+    return 'Apps & Pages'
 
-  if (val === 'userInterface') { return 'User Interface' }
+  if (val === 'userInterface')
+    return 'User Interface'
 
-  if (val === 'formsTables') { return 'Forms Tables' }
+  if (val === 'formsTables')
+    return 'Forms Tables'
 
-  if (val === 'chartsMisc') { return 'Charts Misc' }
+  if (val === 'chartsMisc')
+    return 'Charts Misc'
 
   return 'Misc'
 }

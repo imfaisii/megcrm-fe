@@ -17,8 +17,10 @@ const { width: windowWidth } = useWindowSize()
 const verticalNavHeaderActionAnimationName = ref<null | 'rotate-180' | 'rotate-back-180'>(null)
 
 watch([isVerticalNavCollapsed, isAppRtl], val => {
-  if (isAppRtl.value) { verticalNavHeaderActionAnimationName.value = val[0] ? 'rotate-back-180' : 'rotate-180' }
-  else { verticalNavHeaderActionAnimationName.value = val[0] ? 'rotate-180' : 'rotate-back-180' }
+  if (isAppRtl.value)
+    verticalNavHeaderActionAnimationName.value = val[0] ? 'rotate-back-180' : 'rotate-180'
+  else
+    verticalNavHeaderActionAnimationName.value = val[0] ? 'rotate-180' : 'rotate-back-180'
 }, { immediate: true })
 </script>
 
@@ -27,12 +29,8 @@ watch([isVerticalNavCollapsed, isAppRtl], val => {
     <!-- 👉 navbar -->
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center">
-        <IconBtn
-          v-if="isLessThanOverlayNavBreakpoint(windowWidth)"
-          id="vertical-nav-toggle-btn"
-          class="ms-n3"
-          @click="toggleVerticalOverlayNavActive(true)"
-        >
+        <IconBtn v-if="isLessThanOverlayNavBreakpoint(windowWidth)" id="vertical-nav-toggle-btn" class="ms-n3"
+          @click="toggleVerticalOverlayNavActive(true)">
           <VIcon icon="mdi-menu" />
         </IconBtn>
 
@@ -46,11 +44,10 @@ watch([isVerticalNavCollapsed, isAppRtl], val => {
 
     <!-- 👉 Pages -->
     <RouterView v-slot="{ Component }">
-      <Transition
-        :name="appRouteTransition"
-        mode="out-in"
-      >
-        <Component :is="Component" />
+      <Transition :name="appRouteTransition" mode="out-in">
+        <div>
+          <Component :is="Component" />
+        </div>
       </Transition>
     </RouterView>
 
@@ -66,13 +63,23 @@ watch([isVerticalNavCollapsed, isAppRtl], val => {
 
 <style lang="scss">
 @keyframes rotate-180 {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(180deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(180deg);
+  }
 }
 
 @keyframes rotate-back-180 {
-  from { transform: rotate(180deg); }
-  to { transform: rotate(0deg); }
+  from {
+    transform: rotate(180deg);
+  }
+
+  to {
+    transform: rotate(0deg);
+  }
 }
 
 .layout-vertical-nav {

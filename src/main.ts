@@ -17,7 +17,6 @@ loadFonts()
 const app = createApp(App)
 
 // Use plugins
-
 app.use(vuetify)
 app.use(createPinia())
 app.use(router)
