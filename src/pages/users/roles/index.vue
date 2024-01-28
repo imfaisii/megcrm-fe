@@ -47,7 +47,7 @@ onMounted(async () => await rolesStore.getRoles({ include: 'permissions' }))
     </VCol>
   </VRow>
 
-  <VCol cols="12" class="no-padding">
+  <VCol cols="12" class="no-x-padding">
     <VRow>
       <!-- Roles -->
       <VCol v-for="role in rolesStore.roles" :key="role?.name" cols="12" sm="6" lg="4">
