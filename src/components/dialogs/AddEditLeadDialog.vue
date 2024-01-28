@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import LeadForm from "@/components/leads/create-form.vue";
-import { usePermissionsStore } from "@/stores/permissions/usePermission";
+import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
+import { EventBus } from "@/utils/useEventBus";
 
 interface Emit {
   (e: "update:isLeadDialogVisible", value: boolean): void;
@@ -29,6 +30,14 @@ const handleSubmit = async () => {
 };
 
 const closeDialog = () => emit("update:isLeadDialogVisible", false);
+
+onMounted(() => {
+  EventBus.$on("hide-lead-dialog", () =>
+    emit("update:isLeadDialogVisible", false)
+  );
+});
+
+onUnmounted(() => EventBus.$off("hide-lead-dialog"));
 </script>
 
 <template>
@@ -44,9 +53,7 @@ const closeDialog = () => emit("update:isLeadDialogVisible", false);
     <VCard class="pa-sm-8 pa-5">
       <!-- Title -->
       <VCardItem class="text-center">
-        <VCardTitle class="text-h4 mb-3">
-          {{ store.isRoleSelected ? "Edit" : "Add New" }} Lead
-        </VCardTitle>
+        <VCardTitle class="text-h4 mb-3"> Create Lead </VCardTitle>
       </VCardItem>
 
       <VCardText class="mt-6">

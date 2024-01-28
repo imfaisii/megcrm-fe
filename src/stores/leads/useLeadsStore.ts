@@ -1,6 +1,7 @@
 import useApiFetch from '@/composables/useApiFetch'
 import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
+import { EventBus } from '@/utils/useEventBus'
 import { getExceptionMessage, reshapeParams } from '@/utils/useHelper'
 import { defineStore } from 'pinia'
 
@@ -57,9 +58,6 @@ export const useLeadsStore = defineStore('leads', () => {
   const measures: Ref<Measure[]> = ref([])
   const surveyors: Ref<Surveyor[]> = ref([])
 
-  // Add a flag variable to indicate intentional modification of `meta` inside the watcher
-  let isFetching = false
-
   const isLeadSelected = computed(() => !!selectedLead.value)
 
   const fetchLeads = async (options = {}) => {
@@ -83,15 +81,16 @@ export const useLeadsStore = defineStore('leads', () => {
     isLoading.value = false
   }
 
-  const storeUser = async (userData: UserData, options: any = { method: 'POST' }) => {
+  const storeLead = async (payload: any, options: any = { method: 'POST' }) => {
     try {
       isLoading.value = true
       await useApiFetch('/leads', {
-        data: userData,
+        data: payload,
         ...options,
       })
       await fetchLeads()
-      $toast.success('User was saved successfully.')
+      $toast.success('Lead was saved successfully.')
+      EventBus.$emit('hide-lead-dialog')
     } catch (error) {
       $toast.error(getExceptionMessage(error))
     } finally {
@@ -112,18 +111,6 @@ export const useLeadsStore = defineStore('leads', () => {
     }
   }
 
-  watch(
-    meta,
-    async () => {
-      if (isFetching) return
-
-      isFetching = true
-      await fetchLeads()
-      isFetching = false
-    },
-    { deep: true },
-  )
-
   return {
     jobTypes,
     fuelTypes,
@@ -137,8 +124,9 @@ export const useLeadsStore = defineStore('leads', () => {
     isLeadSelected,
     selectedLead,
     meta,
+
     fetchLeads,
-    storeUser,
+    storeLead,
     deleteLead,
     getExtras
   }

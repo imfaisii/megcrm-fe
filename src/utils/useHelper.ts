@@ -50,13 +50,18 @@ export const reshapeParams = (url: string, meta: any = null, options: any) => {
   return queryString ? `${url}?${queryString}` : url
 }
 
-export const focusFirstErrorDiv = () => {
-  let errorDiv = document.getElementsByClassName("v-input--error")[0];
+export const focusFirstErrorDiv = (fullPage = false) => {
+  const errorDiv = document.getElementsByClassName("v-field--error")[0]
 
-  if (errorDiv) {
+  if (fullPage) {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  } else {
     errorDiv.scrollIntoView({
       behavior: "smooth",
-      block: "center",
+      block: "start",
       inline: "nearest",
     });
   }

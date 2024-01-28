@@ -13,7 +13,9 @@ export const usePermissionsStore = defineStore('permissions', () => {
   const permissionsEndpoint = '/permissions'
   const roles = ref([])
   const permissions = ref([])
-  const selectedRole = ref<any>(null)
+  const selectedRole = ref<any>({
+    permissions: []
+  })
   const isLoading = ref(false)
   const $toast: any = useToast()
 
@@ -45,7 +47,7 @@ export const usePermissionsStore = defineStore('permissions', () => {
         data: roleData,
         ...options,
       })
-      await getRoles()
+      await getRoles({ include: "permissions" })
       $toast.success('Role was saved successfully.')
     } catch (error) {
       $toast.error(getExceptionMessage(error))
@@ -61,7 +63,7 @@ export const usePermissionsStore = defineStore('permissions', () => {
         data: roleData,
         ...options,
       })
-      await getRoles()
+      await getRoles({ include: "permissions" })
       $toast.success('Role was updated successfully.')
     } catch (error) {
       $toast.error(getExceptionMessage(error))
@@ -75,7 +77,7 @@ export const usePermissionsStore = defineStore('permissions', () => {
       isLoading.value = true
       await useApiFetch(`/roles/${roleId}`, options)
       $toast.success('Role was deleted successfully.')
-      await getRoles()
+      await getRoles({ include: "permissions" })
     } catch (error) {
       $toast.error(getExceptionMessage(error))
     } finally {

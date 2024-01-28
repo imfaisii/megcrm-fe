@@ -1,7 +1,8 @@
 import useApiFetch from '@/composables/useApiFetch'
 import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
-import { getExceptionMessage, reshapeParams } from '@/utils/useHelper'
+import { EventBus } from '@/utils/useEventBus'
+import { handleError, reshapeParams } from '@/utils/useHelper'
 import { defineStore } from 'pinia'
 
 type UserData = {
@@ -15,14 +16,14 @@ type UserData = {
 
 export const useUsersStore = defineStore('users', () => {
   const endPoint = '/users'
-  const users = ref([])
+  const users = ref<any>([])
   const selectedUser = ref<any>(null)
-  const isLoading = ref(false)
-  const meta = ref(defaultPagination)
+  const selectedId = ref<any>(null)
+  const errors = ref<any>({})
+  const isLoading = ref<any>(false)
+  const meta = ref<any>(defaultPagination)
   const $toast: any = useToast()
 
-  // Add a flag variable to indicate intentional modification of `meta` inside the watcher
-  let isFetching = false
 
   const isUserSelected = computed(() => !!selectedUser.value)
 
@@ -34,6 +35,15 @@ export const useUsersStore = defineStore('users', () => {
     isLoading.value = false
   }
 
+  const fetchUser = async (userId: Number) => {
+    isLoading.value = true
+    selectedId.value = userId
+    const { data } = await useApiFetch(`${endPoint}/${userId}`)
+    selectedUser.value = data.user
+    isLoading.value = false
+    EventBus.$emit('toggle-users-dialog', true)
+  }
+
   const storeUser = async (userData: UserData, options: any = { method: 'POST' }) => {
     try {
       isLoading.value = true
@@ -41,10 +51,12 @@ export const useUsersStore = defineStore('users', () => {
         data: userData,
         ...options,
       })
-      await fetchUsers()
       $toast.success('User was saved successfully.')
+      errors.value = {}
+      EventBus.$emit('toggle-users-dialog', false)
+      await fetchUsers()
     } catch (error) {
-      $toast.error(getExceptionMessage(error))
+      handleError(error, errors)
     } finally {
       isLoading.value = false
     }
@@ -53,36 +65,48 @@ export const useUsersStore = defineStore('users', () => {
   const deleteUser = async (userId: number, options = { method: 'DELETE' }) => {
     try {
       isLoading.value = true
+      selectedId.value = userId
       await useApiFetch(`${endPoint}/${userId}`, options)
       $toast.success('User was deleted successfully.')
       await fetchUsers()
     } catch (error) {
-      $toast.error(getExceptionMessage(error))
+      handleError(error, errors)
     } finally {
       isLoading.value = false
     }
   }
 
-  watch(
-    meta,
-    async () => {
-      if (isFetching) return
-
-      isFetching = true
+  const updateUser = async (userData: UserData, options: any = { method: 'PUT' }) => {
+    try {
+      isLoading.value = true
+      await useApiFetch(`/users/${selectedId.value}`, {
+        data: userData,
+        ...options,
+      })
+      $toast.success('User was updated successfully.')
+      errors.value = {}
+      EventBus.$emit('toggle-users-dialog', false)
       await fetchUsers()
-      isFetching = false
-    },
-    { deep: true },
-  )
+    } catch (error) {
+      handleError(error, errors)
+    } finally {
+      isLoading.value = false
+    }
+  }
 
   return {
     users,
+    selectedId,
     isLoading,
     isUserSelected,
     selectedUser,
     meta,
+    errors,
+
     fetchUsers,
+    fetchUser,
     storeUser,
     deleteUser,
+    updateUser
   }
 })

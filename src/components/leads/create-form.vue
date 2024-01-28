@@ -18,7 +18,7 @@ type Lead = {
   phone_no: String | null;
   dob: String | null;
   address: String | null;
-  postcode: String | null;
+  post_code: String | null | undefined;
   comments: String | null;
   measures: Number[] | null;
   job_type_id: Number | null;
@@ -39,11 +39,17 @@ type SecondReceipent = {
   dob: String | null;
 };
 
+const props = defineProps({
+  isFullPage: {
+    default: false,
+    type: Boolean,
+  },
+});
+
 const formRef = ref();
 const addressCombobox = ref();
 const loading = ref(false);
 const suggestions: Ref<String[]> = ref([]);
-const selectedPostCode = ref(null);
 
 const form = ref<Lead>({
   title: null,
@@ -54,7 +60,7 @@ const form = ref<Lead>({
   phone_no: null,
   dob: null,
   address: null,
-  postcode: null,
+  post_code: null,
   comments: null,
   measures: null,
   job_type_id: null,
@@ -72,27 +78,34 @@ const form = ref<Lead>({
     dob: null,
   },
 });
-
+const titles = ["Mr", "Mrs"];
 const $toast = useToast();
+const store = useLeadsStore();
 
 const getSuggestions = async () => {
-  const token =
-    "dtoken_hEDzcyiWMr3vw9D-ayVYGo18-AyveC0C_wdimZNl_JJ6MTe6C9_XKo1eyhADhPZykrWyUqrMM9cE0H0LewTj8cVahpYHIi8S0c5O4NBUPk9s9Sc-5BDfHJPHxrq0AfRqeAzBRy8C06NoLZw4Srsc65lVXelpIerj0VM-VAeFWhIMNzVYlQ0G6xEN1zBr19d955A4k_6-r-Y";
+  if (!form.value.address) {
+    $toast.error("Please enter postcode to proceed.");
+
+    return;
+  }
+
+  const token = "kiU5H3-znEqPYUqKzOA4JQ41583";
   loading.value = true;
   suggestions.value = [];
 
   try {
     const { data } = await axios.post(
-      `https://api.getAddress.io/autocomplete/${selectedPostCode.value.toUpperCase()}?api-key=${token}`,
+      `https://api.getAddress.io/autocomplete/${form.value.address.toUpperCase()}?api-key=${token}`,
       {
         all: true,
         template: "{formatted_address}{postcode, } -- {postcode}",
       }
     );
+
     data?.suggestions?.map((i: any) => suggestions.value.push(i.address));
     addressCombobox.value.$el.querySelector("input").focus();
-    form.value.postcode = selectedPostCode.value?.toUpperCase();
-    selectedPostCode.value = null;
+    form.value.post_code = form.value.address?.toUpperCase();
+    form.value.address = null;
   } catch (e) {
     $toast.error(getExceptionMessage(e));
   } finally {
@@ -100,16 +113,13 @@ const getSuggestions = async () => {
   }
 };
 
-const store = useLeadsStore();
-const titles = ["Mr", "Mrs"];
-
 const handleSubmit = async () => {
   const validation = await formRef.value.validate();
 
   if (validation?.valid) {
-    alert("submit");
+    await store.storeLead(form.value);
   } else {
-    focusFirstErrorDiv();
+    focusFirstErrorDiv(props.isFullPage);
   }
 };
 
@@ -248,7 +258,7 @@ onMounted(async () => await store.getExtras());
 
       <VCol cols="4">
         <VTextField
-          v-model="form.postcode"
+          v-model="form.post_code"
           label="Postcode"
           placeholder="No address selected"
           readonly
@@ -262,10 +272,11 @@ onMounted(async () => await store.getExtras());
           label="Measures"
           placeholder="Select Measures"
           item-title="name"
-          item-key="id"
+          item-value="id"
           chips
           multiple
           clearable
+          :return-object="false"
         />
       </VCol>
 
@@ -275,8 +286,9 @@ onMounted(async () => await store.getExtras());
           :items="store.jobTypes"
           label="Job Type"
           item-title="name"
-          item-key="id"
+          item-value="id"
           clearable
+          :return-object="false"
         />
       </VCol>
 
@@ -286,8 +298,9 @@ onMounted(async () => await store.getExtras());
           :items="store.fuelTypes"
           label="Fuel Type"
           item-title="name"
-          item-key="id"
+          item-value="id"
           clearable
+          :return-object="false"
         />
       </VCol>
 
@@ -297,8 +310,9 @@ onMounted(async () => await store.getExtras());
           :items="store.surveyors"
           label="Surveyor"
           item-title="name"
-          item-key="id"
+          item-value="id"
           clearable
+          :return-object="false"
         />
       </VCol>
 
@@ -308,8 +322,9 @@ onMounted(async () => await store.getExtras());
           :items="store.leadGenerators"
           label="Lead Generator"
           item-title="name"
-          item-key="id"
+          item-value="id"
           clearable
+          :return-object="false"
         />
       </VCol>
 
@@ -319,8 +334,9 @@ onMounted(async () => await store.getExtras());
           :items="store.leadSources"
           label="Lead Source"
           item-title="name"
-          item-key="id"
+          item-value="id"
           clearable
+          :return-object="false"
         />
       </VCol>
 
@@ -330,8 +346,9 @@ onMounted(async () => await store.getExtras());
           :items="store.benefitTypes"
           label="Benefit Type"
           item-title="name"
-          item-key="id"
+          item-value="id"
           clearable
+          :return-object="false"
         />
       </VCol>
 
@@ -410,7 +427,7 @@ onMounted(async () => await store.getExtras());
     </VRow>
 
     <!-- Actions button -->
-    <div class="d-flex align-center justify-center gap-3 mt-6">
+    <div class="d-flex align-center gap-3 mt-6">
       <VBtn
         type="submit"
         :disabled="store.isLoading"
