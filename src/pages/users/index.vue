@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import UsersTable from "@/components/users/table.vue";
+import { roles } from "@/constants/rolesAndPermissions";
 
-const isAddUserDialogVisible: any = ref(false)
+const isAddUserDialogVisible: any = ref(false);
 </script>
 <template>
   <section>
@@ -14,15 +15,18 @@ const isAddUserDialogVisible: any = ref(false)
                 <h6 class="text-h5">Users Table</h6>
               </VCol>
               <VCol cols="6" class="text-right">
-                <VBtn @click="isAddUserDialogVisible = true" color="primary">
+                <VBtn
+                  v-if="is(roles.SUPER_ADMIN) || can('users.store')"
+                  @click="isAddUserDialogVisible = true"
+                  color="primary"
+                >
                   Create User
                 </VBtn>
               </VCol>
             </VRow>
           </VCardTitle>
-          <VCardText class="d-flex align-center flex-wrap gap-4 py-4 no-x-padding">
-            <UsersTable />
-          </VCardText>
+
+          <UsersTable v-if="is(roles.SUPER_ADMIN) || can('users.index')" />
         </VCard>
       </VCol>
     </VRow>

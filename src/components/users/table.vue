@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { setStoreMeta } from "@/constants/pagination";
 import { useUsersStore } from "@/stores/users/useUsersStore";
-import { VDataTableServer } from "vuetify/labs/VDataTable";
 
 const usersStore: any = useUsersStore();
 
@@ -30,31 +28,34 @@ const resolveUserStatusVariant = (stat: string) => {
 
   return "error";
 };
+
+const onPaginationChange = async ($event: any) => {
+  usersStore.meta.per_page = $event.pagination.per_page;
+  usersStore.meta.current_page = $event.pagination.current_page;
+  usersStore.meta.sort = $event.sort;
+
+  await usersStore.fetchUsers();
+};
+
+const onSortChange = async ($event: any) => {
+  usersStore.meta.sort = $event.sort;
+
+  await usersStore.fetchUsers();
+};
+
+onMounted(async () => await usersStore.fetchUsers());
 </script>
 
 <template>
-  <VDataTableServer
-    v-model:items-per-page="usersStore.meta.per_page"
-    v-model:page="usersStore.meta.current_page"
+  <DataTable
+    :store="usersStore"
     :items="usersStore.users"
-    :items-length="10"
     :headers="headers"
-    @update:options="
-      setStoreMeta($event, usersStore.meta) && usersStore.fetchUsers()
-    "
     class="text-no-wrap"
     show-select
+    @update:on-pagination-change="onPaginationChange"
+    @update:on-sort-change="onSortChange"
   >
-    <template #top>
-      <VProgressLinear
-        v-if="usersStore.isLoading"
-        indeterminate
-        color="primary"
-        :height="2"
-      >
-      </VProgressLinear>
-    </template>
-
     <!-- Name -->
     <template #item.name="{ item }">
       <div class="d-flex align-center">
@@ -137,12 +138,5 @@ const resolveUserStatusVariant = (stat: string) => {
         <VIcon v-else color="error" icon="tabler-trash" />
       </IconBtn>
     </template>
-
-    <!-- pagination -->
-    <template #bottom>
-      <VDivider />
-
-      <Pagination :store="usersStore" />
-    </template>
-  </VDataTableServer>
+  </DataTable>
 </template>

@@ -1,44 +1,46 @@
 <script lang="ts" setup>
-import { setStoreMeta } from "@/constants/pagination";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
-import { VDataTableServer } from "vuetify/labs/VDataTable";
+import { mergeProps } from "vue";
 
 const store: any = useLeadsStore();
 
 // Headers
 const headers = [
-  { title: "Email", key: "email", searchable: true },
+  { title: "Name", key: "full_name", sortable: true },
+  { title: "Email", key: "email", sortable: true },
+  { title: "Phone No.", key: "phone_no", sortable: true },
+  { title: "Post Code", key: "post_code", sortable: true },
+  { title: "Address", key: "address", sortable: true },
+  { title: "Status" },
   { title: "Actions", key: "actions", sortable: false },
 ];
 
-const resolveLeadRoleVariant = (role: string) => {
-  const roleLowerCase = role.toLowerCase();
+const onPaginationChange = async ($event: any) => {
+  store.meta.per_page = $event.pagination.per_page;
+  store.meta.current_page = $event.pagination.current_page;
+  store.meta.sort = $event.sort;
 
-  if (roleLowerCase === "super admin")
-    return { color: "warning", icon: "tabler-device-laptop" };
-
-  return { color: "primary", icon: "tabler-user" };
+  await store.fetchLeads();
 };
 
-const resolveLeadStatusVariant = (stat: string) => {
-  if (stat) {
-    return "success";
-  }
+const onSortChange = async ($event: any) => {
+  store.meta.sort = $event.sort;
 
-  return "error";
+  await store.fetchLeads();
 };
+
+onMounted(async () => await store.fetchLeads());
 </script>
 
 <template>
-  <VDataTableServer
-    v-model:items-per-page="store.meta.per_page"
-    v-model:page="store.meta.current_page"
+  <DataTable
+    :store="store"
     :items="store.leads"
-    :items-length="10"
     :headers="headers"
-    @update:options="setStoreMeta($event, store.meta) && store.fetchLeads()"
     class="text-no-wrap"
     show-select
+    @update:on-pagination-change="onPaginationChange"
+    @update:on-sort-change="onSortChange"
   >
     <template #top>
       <VProgressLinear
@@ -59,6 +61,27 @@ const resolveLeadStatusVariant = (stat: string) => {
       </div>
     </template>
 
+    <!-- Status -->
+    <template #item.status="{ item }">
+      <VMenu>
+        <template v-slot:activator="{ props: menu }">
+          <VTooltip location="top">
+            <template v-slot:activator="{ props: tooltip }">
+              <v-btn color="warning" v-bind="mergeProps(menu, tooltip)">
+                Active
+              </v-btn>
+            </template>
+            <span>Select the current status from the dropdown</span>
+          </VTooltip>
+        </template>
+        <VList>
+          <VListItem v-for="(item, index) in [{ title: 'Test' }]" :key="index">
+            <VListItemTitle>{{ item.title }}</VListItemTitle>
+          </VListItem>
+        </VList>
+      </VMenu>
+    </template>
+
     <!-- Actions -->
     <template #item.actions="{ item }">
       <!-- <IconBtn>
@@ -68,12 +91,5 @@ const resolveLeadStatusVariant = (stat: string) => {
         <VIcon color="error" icon="tabler-trash" />
       </IconBtn>
     </template>
-
-    <!-- pagination -->
-    <template #bottom>
-      <VDivider />
-
-      <Pagination :store="store" />
-    </template>
-  </VDataTableServer>
+  </DataTable>
 </template>

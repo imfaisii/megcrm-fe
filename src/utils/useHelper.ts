@@ -15,34 +15,35 @@ export const handleError = (error: any, errors: any) => {
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-export const sortToString = (sortArray: any) => {
-  return Array.isArray(sortArray)
-    ? sortArray
-      .map((sortItem: { key: string; order: string }) => {
-        const { key, order } = sortItem
-        const sortKey = order === 'desc' ? `-${key}` : key
+export const sortToString = (sortItem: { sort_by: string, type: string }) => {
+  const { sort_by, type } = sortItem
+  const sortKey = type === 'desc' ? `-${sort_by}` : sort_by
 
-        return `${sortKey}`
-      })
-      .join(',')
-    : undefined
+  return `${sortKey}`
 }
 
-export const reshapeParams = (url: string, meta: any = null, options: any) => {
-  let params = {}
+export const reshapeParams = (url: string, meta: any = {}, options: any) => {
+  let mergedParams = {
+    ...options,
+    ...meta,
+    page: meta?.current_page
+  }
 
-  if (meta !== null) {
-    params = {
-      page: meta.value.current_page,
-      sort: sortToString(meta.value.sort),
+  console.log("merge", mergedParams);
+
+  if (meta?.sort) {
+    mergedParams = {
+      ...mergedParams,
+      sort: sortToString(meta.sort)
     }
   }
 
-  const mergedParams = { ...params, ...options }
   const query = new URLSearchParams()
 
   for (const [key, value] of Object.entries(mergedParams) as any) {
-    if (value !== null && value !== undefined && value !== '') { query.append(key, value) }
+    if (value !== null && value !== undefined && value !== '' && value !== 'undefined' && ['page', 'per_page', 'sort', 'include', 'all'].includes(key)) {
+      query.append(key, value)
+    }
   }
 
   const queryString = query.toString()

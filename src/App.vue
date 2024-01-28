@@ -56,6 +56,6 @@ handleSkinChanges();
 
 .v-pagination__item--is-active {
   /* stylelint-disable-next-line liberty/use-logical-spec */
-  margin-top: 6px !important;
+  margin-top: 2px !important;
 }
 </style>

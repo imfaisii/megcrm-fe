@@ -24,12 +24,11 @@ export const useUsersStore = defineStore('users', () => {
   const meta = ref<any>(defaultPagination)
   const $toast: any = useToast()
 
-
   const isUserSelected = computed(() => !!selectedUser.value)
 
   const fetchUsers = async (options = {}) => {
     isLoading.value = true
-    const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPoint, meta, options))
+    const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPoint, meta.value, options))
     users.value = data.users
     meta.value = serverMeta
     isLoading.value = false

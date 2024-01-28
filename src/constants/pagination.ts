@@ -5,7 +5,7 @@ export const defaultPagination = {
   total: 0,
   search: '',
   language: 'en',
-  sort: [],
+  sort: {},
   filters: []
 }
 

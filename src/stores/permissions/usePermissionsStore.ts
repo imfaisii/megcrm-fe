@@ -21,14 +21,14 @@ export const usePermissionsStore = defineStore('permissions', () => {
 
   const isRoleSelected = computed(() => !!selectedRole.value)
 
-  const getPermissions = async (options: any = { all: 'true' }) => {
+  const getPermissions = async (options: any = { all: true }) => {
     isLoading.value = true
     const { data } = await useApiFetch(reshapeParams(permissionsEndpoint, null, options))
     permissions.value = data.permissions
     isLoading.value = false
   }
 
-  const getRoles = async (options: any = { all: 'true' }) => {
+  const getRoles = async (options: any = { all: true }) => {
     isLoading.value = true
     const { data } = await useApiFetch(reshapeParams(rolesEndpoint, null, options))
     roles.value = data.roles
