@@ -28,4 +28,16 @@ handleSkinChanges()
 .no-x-padding {
   padding-inline: 0 !important;
 }
+
+.v-field:has(input[required]) .v-label {
+  padding-inline-end: 8px;
+}
+
+.v-field:has(input[required]) .v-label::after {
+  position: absolute;
+  color: red;
+  content: "*";
+  inset-block-start: 0;
+  inset-inline-end: 0;
+}
 </style>

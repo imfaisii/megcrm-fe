@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import LeadsTable from "@/components/leads/table.vue";
 
-const isAddLeadDialogVisible: any = ref(false)
+const isAddLeadDialogVisible: any = ref(false);
 </script>
 <template>
   <section>
@@ -20,7 +20,9 @@ const isAddLeadDialogVisible: any = ref(false)
               </VCol>
             </VRow>
           </VCardTitle>
-          <VCardText class="d-flex align-center flex-wrap gap-4 py-4 no-x-padding">
+          <VCardText
+            class="d-flex align-center flex-wrap gap-4 py-4 no-x-padding"
+          >
             <LeadsTable />
           </VCardText>
         </VCard>
@@ -28,5 +30,5 @@ const isAddLeadDialogVisible: any = ref(false)
     </VRow>
   </section>
 
-  <AddEditLeadDialog v-model:is-dialog-visible="isAddLeadDialogVisible" />
+  <AddEditLeadDialog v-model:is-lead-dialog-visible="isAddLeadDialogVisible" />
 </template>

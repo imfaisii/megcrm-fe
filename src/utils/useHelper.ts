@@ -49,3 +49,15 @@ export const reshapeParams = (url: string, meta: any = null, options: any) => {
 
   return queryString ? `${url}?${queryString}` : url
 }
+
+export const focusFirstErrorDiv = () => {
+  let errorDiv = document.getElementsByClassName("v-input--error")[0];
+
+  if (errorDiv) {
+    errorDiv.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "nearest",
+    });
+  }
+}
