@@ -62,7 +62,7 @@ export const useLeadsStore = defineStore('leads', () => {
 
   const fetchLeads = async (options = {}) => {
     isLoading.value = true
-    const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPoint, meta, options))
+    const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPoint, meta.value, options))
     leads.value = data.leads
     meta.value = serverMeta
     isLoading.value = false
@@ -111,6 +111,22 @@ export const useLeadsStore = defineStore('leads', () => {
     }
   }
 
+  const updateStatus = async (payload: any, options = { method: 'POST' }) => {
+    try {
+      isLoading.value = true
+      await useApiFetch(`/lead-status/${payload.leadId}`, {
+        data: payload,
+        ...options
+      })
+      $toast.success('Lead status was updated successfully.')
+      await fetchLeads()
+    } catch (error) {
+      $toast.error(getExceptionMessage(error))
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     jobTypes,
     fuelTypes,
@@ -125,6 +141,7 @@ export const useLeadsStore = defineStore('leads', () => {
     selectedLead,
     meta,
 
+    updateStatus,
     fetchLeads,
     storeLead,
     deleteLead,

@@ -20,7 +20,7 @@ type Lead = {
   address: String | null;
   post_code: String | null | undefined;
   comments: String | null;
-  measures: Number[] | null;
+  measures: Number[];
   job_type_id: Number | null;
   fuel_type_id: Number | null;
   benefit_type_id: Number | null;
@@ -62,7 +62,7 @@ const form = ref<Lead>({
   address: null,
   post_code: null,
   comments: null,
-  measures: null,
+  measures: [],
   job_type_id: null,
   fuel_type_id: null,
   benefit_type_id: null,
@@ -365,7 +365,7 @@ onMounted(async () => await store.getExtras());
 
       <VCol v-if="form.has_second_receipent" cols="12">
         <VRow>
-          <VCol cols="3">
+          <VCol cols="12" lg="3">
             <VTextField
               v-model="form.second_receipent.first_name"
               :rules="[form.has_second_receipent && requiredValidator]"
@@ -376,7 +376,7 @@ onMounted(async () => await store.getExtras());
             />
           </VCol>
 
-          <VCol cols="3">
+          <VCol cols="12" lg="3">
             <VTextField
               v-model="form.second_receipent.middle_name"
               label="Middle Name"
@@ -385,7 +385,7 @@ onMounted(async () => await store.getExtras());
             />
           </VCol>
 
-          <VCol cols="3">
+          <VCol cols="12" lg="3">
             <VTextField
               v-model="form.second_receipent.last_name"
               :rules="[form.has_second_receipent && requiredValidator]"
@@ -396,7 +396,7 @@ onMounted(async () => await store.getExtras());
             />
           </VCol>
 
-          <VCol cols="3">
+          <VCol cols="12" lg="3">
             <AppDateTimePicker
               v-model="form.second_receipent.dob"
               :rules="[form.has_second_receipent && requiredValidator]"

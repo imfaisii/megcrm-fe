@@ -29,8 +29,6 @@ export const reshapeParams = (url: string, meta: any = {}, options: any) => {
     page: meta?.current_page
   }
 
-  console.log("merge", mergedParams);
-
   if (meta?.sort) {
     mergedParams = {
       ...mergedParams,
@@ -43,6 +41,19 @@ export const reshapeParams = (url: string, meta: any = {}, options: any) => {
   for (const [key, value] of Object.entries(mergedParams) as any) {
     if (value !== null && value !== undefined && value !== '' && value !== 'undefined' && ['page', 'per_page', 'sort', 'include', 'all'].includes(key)) {
       query.append(key, value)
+    }
+  }
+
+  // Add filters from meta.filters
+  if (meta.filters) {
+    for (const [filterKey, filterValue] of Object.entries(mergedParams.filters)) {
+      if (Array.isArray(filterValue) && filterValue.length > 0) {
+        query.append(`filter[${filterKey}]`, filterValue);
+      }
+
+      if (!Array.isArray(filterValue)) {
+        query.append(`filter[${filterKey}]`, filterValue);
+      }
     }
   }
 
@@ -66,4 +77,21 @@ export const focusFirstErrorDiv = (fullPage = false) => {
       inline: "nearest",
     });
   }
+}
+
+export const removeEmptyAndNull = (obj: any): any => {
+  if (typeof obj !== 'object' || obj === null) {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.filter((item) => item !== null && item !== undefined && item !== '');
+  }
+
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [
+      key,
+      removeEmptyAndNull(value),
+    ]).filter(([key, value]) => value !== null && value !== undefined && value !== '')
+  );
 }
