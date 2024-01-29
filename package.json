@@ -14,6 +14,7 @@
     "@casl/ability": "6.5.0",
     "@casl/vue": "2.2.1",
     "@floating-ui/dom": "1.2.8",
+    "@iconify/types": "^2.0.0",
     "@iconify/utils": "^2.1.20",
     "@types/cheerio": "^0.22.35",
     "@vueuse/core": "10.1.2",
