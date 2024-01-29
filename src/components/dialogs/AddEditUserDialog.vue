@@ -181,7 +181,8 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
             <VLabel class="mb-2"><strong>Roles</strong></VLabel>
             <VRow>
               <VCol
-                cols="4"
+                cols="12"
+                lg="4"
                 v-for="role in permissionsStore.roles"
                 :key="`role-${role.id}`"
               >
