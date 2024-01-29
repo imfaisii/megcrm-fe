@@ -129,7 +129,7 @@ onMounted(async () => await store.getExtras());
 <template>
   <VForm @submit.prevent="handleSubmit" ref="formRef">
     <VRow>
-      <VCol cols="3">
+      <VCol cols="12" lg="3">
         <VCombobox
           v-model="form.title"
           :items="titles"
@@ -141,7 +141,7 @@ onMounted(async () => await store.getExtras());
         />
       </VCol>
 
-      <VCol cols="3">
+      <VCol cols="12" lg="3">
         <VTextField
           v-model="form.first_name"
           :rules="[requiredValidator]"
@@ -152,7 +152,7 @@ onMounted(async () => await store.getExtras());
         />
       </VCol>
 
-      <VCol cols="3">
+      <VCol cols="12" lg="3">
         <VTextField
           v-model="form.middle_name"
           label="Middle Name"
@@ -161,7 +161,7 @@ onMounted(async () => await store.getExtras());
         />
       </VCol>
 
-      <VCol cols="3">
+      <VCol cols="12" lg="3">
         <VTextField
           v-model="form.last_name"
           :rules="[requiredValidator]"
@@ -172,7 +172,7 @@ onMounted(async () => await store.getExtras());
         />
       </VCol>
 
-      <VCol cols="4">
+      <VCol cols="12" lg="4">
         <VTextField
           v-model="form.email"
           :rules="[requiredValidator, emailValidator]"
@@ -183,7 +183,7 @@ onMounted(async () => await store.getExtras());
         />
       </VCol>
 
-      <VCol cols="4">
+      <VCol cols="12" lg="4">
         <VTextField
           v-model="form.phone_no"
           :rules="[requiredValidator, integerValidator]"
@@ -195,7 +195,7 @@ onMounted(async () => await store.getExtras());
         />
       </VCol>
 
-      <VCol cols="4">
+      <VCol cols="12" lg="4">
         <AppDateTimePicker
           v-model="form.dob"
           :rules="[requiredValidator]"
@@ -206,7 +206,7 @@ onMounted(async () => await store.getExtras());
         />
       </VCol>
 
-      <VCol cols="8">
+      <VCol cols="12" lg="8">
         <VCombobox
           v-model="form.address"
           ref="addressCombobox"
@@ -256,7 +256,7 @@ onMounted(async () => await store.getExtras());
         </VCombobox>
       </VCol>
 
-      <VCol cols="4">
+      <VCol cols="12" lg="4">
         <VTextField
           v-model="form.post_code"
           label="Postcode"
@@ -280,7 +280,7 @@ onMounted(async () => await store.getExtras());
         />
       </VCol>
 
-      <VCol cols="6">
+      <VCol cols="12" lg="6">
         <VCombobox
           v-model="form.job_type_id"
           :items="store.jobTypes"
@@ -292,7 +292,7 @@ onMounted(async () => await store.getExtras());
         />
       </VCol>
 
-      <VCol cols="6">
+      <VCol cols="12" lg="6">
         <VCombobox
           v-model="form.fuel_type_id"
           :items="store.fuelTypes"
@@ -304,7 +304,7 @@ onMounted(async () => await store.getExtras());
         />
       </VCol>
 
-      <VCol cols="6">
+      <VCol cols="12" lg="6">
         <VCombobox
           v-model="form.surveyor_id"
           :items="store.surveyors"
@@ -316,7 +316,7 @@ onMounted(async () => await store.getExtras());
         />
       </VCol>
 
-      <VCol cols="6">
+      <VCol cols="12" lg="6">
         <VCombobox
           v-model="form.lead_generator_id"
           :items="store.leadGenerators"
@@ -328,7 +328,7 @@ onMounted(async () => await store.getExtras());
         />
       </VCol>
 
-      <VCol cols="6">
+      <VCol cols="12" lg="6">
         <VCombobox
           v-model="form.lead_source_id"
           :items="store.leadSources"
@@ -340,7 +340,7 @@ onMounted(async () => await store.getExtras());
         />
       </VCol>
 
-      <VCol cols="6">
+      <VCol cols="12" lg="6">
         <VCombobox
           v-model="form.benefit_type_id"
           :items="store.benefitTypes"

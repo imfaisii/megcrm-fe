@@ -106,7 +106,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
       <VForm class="mt-3" @submit.prevent="handleSubmit">
         <VRow>
           <!-- Name -->
-          <VCol cols="6">
+          <VCol cols="12" lg="6">
             <VTextField
               v-model="form.name"
               :rules="[requiredValidator]"
@@ -118,7 +118,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
           </VCol>
 
           <!-- Email -->
-          <VCol cols="6">
+          <VCol cols="12" lg="6">
             <VTextField
               v-model="form.email"
               :rules="[requiredValidator, emailValidator]"
@@ -130,7 +130,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
           </VCol>
 
           <!-- Password -->
-          <VCol cols="6">
+          <VCol cols="12" lg="6">
             <VTextField
               v-model="form.password"
               :rules="[!store.isUserSelected && requiredValidator]"
@@ -146,7 +146,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
           </VCol>
 
           <!-- Password Confirmation -->
-          <VCol cols="6">
+          <VCol cols="12" lg="6">
             <VTextField
               v-model="form.password_confirmation"
               :rules="[!store.isUserSelected && requiredValidator]"
@@ -178,7 +178,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
 
           <!-- Roles -->
           <VCol cols="12">
-            <VLabel>Roles</VLabel>
+            <VLabel class="mb-2"><strong>Roles</strong></VLabel>
             <VRow>
               <VCol
                 cols="4"
