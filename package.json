@@ -15,6 +15,7 @@
     "@casl/vue": "2.2.1",
     "@floating-ui/dom": "1.2.8",
     "@iconify/utils": "^2.1.20",
+    "@types/cheerio": "^0.22.35",
     "@vueuse/core": "10.1.2",
     "@vueuse/math": "10.1.2",
     "apexcharts-clevision": "3.28.5",
