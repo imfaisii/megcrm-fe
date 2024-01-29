@@ -45,7 +45,7 @@ export const reshapeParams = (url: string, meta: any = {}, options: any) => {
   }
 
   // Add filters from meta.filters
-  if (meta.filters) {
+  if (meta?.filters) {
     for (const [filterKey, filterValue] of Object.entries(mergedParams.filters)) {
       if (Array.isArray(filterValue) && filterValue.length > 0) {
         query.append(`filter[${filterKey}]`, filterValue);
