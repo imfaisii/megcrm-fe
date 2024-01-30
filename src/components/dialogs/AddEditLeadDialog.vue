@@ -28,7 +28,7 @@ onUnmounted(() => EventBus.$off("hide-lead-dialog"));
 
 <template>
   <VDialog
-    :width="$vuetify.display.smAndDown ? 'auto' : 1300"
+    :width="$vuetify.display.smAndDown ? 'auto' : 900"
     :model-value="isLeadDialogVisible"
     @update:model-value="closeDialog"
     persistent
@@ -37,11 +37,6 @@ onUnmounted(() => EventBus.$off("hide-lead-dialog"));
     <DialogCloseBtn @click="closeDialog" />
 
     <VCard class="pa-sm-8 pa-5">
-      <!-- Title -->
-      <VCardItem class="text-center">
-        <VCardTitle class="text-h4 mb-3"> Create Lead </VCardTitle>
-      </VCardItem>
-
       <VCardText class="mt-6">
         <!-- Form -->
         <LeadForm>
