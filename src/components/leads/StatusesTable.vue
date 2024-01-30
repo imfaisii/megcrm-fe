@@ -57,7 +57,7 @@ onMounted(async () => await store.fetchAll());
     <!-- Actions -->
     <template #item.actions="{ item }">
       <IconBtn @click="handleLeadStatusView(item.raw)">
-        <VIcon icon="tabler-eye" />
+        <VIcon icon="tabler-edit" />
       </IconBtn>
       <IconBtn @click="store.destroy(item.raw.id)">
         <VIcon color="error" icon="tabler-trash" />
