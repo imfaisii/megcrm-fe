@@ -41,6 +41,7 @@ declare module '@vue/runtime-core' {
     DialogCloseBtn: typeof import('./src/@core/components/DialogCloseBtn.vue')['default']
     ErrorHeader: typeof import('./src/components/ErrorHeader.vue')['default']
     I18n: typeof import('./src/@core/components/I18n.vue')['default']
+    LeadsTable: typeof import('./src/components/leads/LeadsTable.vue')['default']
     MoreBtn: typeof import('./src/@core/components/MoreBtn.vue')['default']
     Notifications: typeof import('./src/@core/components/Notifications.vue')['default']
     Pagination: typeof import('./src/components/datatable/Pagination.vue')['default']
@@ -53,5 +54,6 @@ declare module '@vue/runtime-core' {
     Table: typeof import('./src/components/leads/Table.vue')['default']
     TheCustomizer: typeof import('./src/@core/components/TheCustomizer.vue')['default']
     ThemeSwitcher: typeof import('./src/@core/components/ThemeSwitcher.vue')['default']
+    UsersTable: typeof import('./src/components/users/UsersTable.vue')['default']
   }
 }
