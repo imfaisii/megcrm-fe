@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import UsersTable from "@/components/users/table.vue";
+import UsersTable from "@/components/users/Table.vue";
 import { roles } from "@/constants/rolesAndPermissions";
 
 const isAddUserDialogVisible: any = ref(false);

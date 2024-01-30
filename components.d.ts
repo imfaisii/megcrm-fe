@@ -10,6 +10,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AddEditLeadDialog: typeof import('./src/components/dialogs/AddEditLeadDialog.vue')['default']
+    AddEditLeadStatusDialog: typeof import('./src/components/dialogs/AddEditLeadStatusDialog.vue')['default']
     AddEditPermissionDialog: typeof import('./src/components/dialogs/AddEditPermissionDialog.vue')['default']
     AddEditRoleDialog: typeof import('./src/components/dialogs/AddEditRoleDialog.vue')['default']
     AddEditUserDialog: typeof import('./src/components/dialogs/AddEditUserDialog.vue')['default']
@@ -24,7 +25,11 @@ declare module '@vue/runtime-core' {
     CardStatisticsHorizontal: typeof import('./src/@core/components/cards/CardStatisticsHorizontal.vue')['default']
     CardStatisticsVertical: typeof import('./src/@core/components/cards/CardStatisticsVertical.vue')['default']
     CardStatisticsWithImages: typeof import('./src/@core/components/cards/CardStatisticsWithImages.vue')['default']
-    CreateForm: typeof import('./src/components/leads/create-form.vue')['default']
+    CommentsDialog: typeof import('./src/components/CommentsDialog.vue')['default']
+    CommentsModal: typeof import('./src/components/CommentsModal.vue')['default']
+    copy: typeof import('./src/components/dialogs/AddEditLeadDialog copy.vue')['default']
+    CreateForm: typeof import('./src/components/leads/CreateForm.vue')['default']
+    CreateLeadStatusForm: typeof import('./src/components/leads/CreateLeadStatusForm.vue')['default']
     CustomCheckboxes: typeof import('./src/@core/components/app-form-elements/CustomCheckboxes.vue')['default']
     CustomCheckboxesWithIcon: typeof import('./src/@core/components/app-form-elements/CustomCheckboxesWithIcon.vue')['default']
     CustomCheckboxesWithImage: typeof import('./src/@core/components/app-form-elements/CustomCheckboxesWithImage.vue')['default']
@@ -44,7 +49,8 @@ declare module '@vue/runtime-core' {
     ScrollToTop: typeof import('./src/@core/components/ScrollToTop.vue')['default']
     Shortcuts: typeof import('./src/@core/components/Shortcuts.vue')['default']
     StatusComments: typeof import('./src/components/StatusComments.vue')['default']
-    Table: typeof import('./src/components/leads/table.vue')['default']
+    StatusesTable: typeof import('./src/components/leads/StatusesTable.vue')['default']
+    Table: typeof import('./src/components/leads/Table.vue')['default']
     TheCustomizer: typeof import('./src/@core/components/TheCustomizer.vue')['default']
     ThemeSwitcher: typeof import('./src/@core/components/ThemeSwitcher.vue')['default']
   }

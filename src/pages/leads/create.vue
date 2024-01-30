@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LeadForm from "@/components/leads/create-form.vue";
+import LeadForm from "@/components/leads/CreateForm.vue";
 </script>
 
 <template>

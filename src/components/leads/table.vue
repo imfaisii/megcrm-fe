@@ -1,133 +1,100 @@
 <script lang="ts" setup>
+import useDataTable from "@/composables/useDatatable";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { mergeProps } from "vue";
-import { removeEmptyAndNull } from "../../utils/useHelper";
 
-const store: any = useLeadsStore();
+type Comment = {
+  leadId: Number | String;
+  status: String;
+  comments: String;
+};
 
 // Headers
 const headers = [
-  { title: "Name", key: "full_name", sortable: true },
-  { title: "Email", key: "email", sortable: true },
-  { title: "Phone No.", key: "phone_no", sortable: true },
-  { title: "Post Code", key: "post_code", sortable: true },
-  { title: "Marked As Job", key: "is_marked_as_job", sortable: true },
-  { title: "Status", key: "status_details" },
+  { title: "Name", key: "first_name" },
+  { title: "Email", key: "email" },
+  { title: "Post Code", key: "post_code" },
+  { title: "Lead Generator", key: "lead_generator_id", sortable: false },
+  { title: "Status", key: "status_details", sortable: false },
   { title: "Actions", key: "actions", sortable: false },
 ];
 
-const leadStatuses = [
-  {
-    key: "active",
-    value: "Active",
-    color: "success",
-  },
-  {
-    key: "inactive",
-    value: "Inactive",
-    color: "error",
-  },
-];
-
-const onPaginationChange = async ($event: any) => {
-  store.meta.per_page = $event.pagination.per_page;
-  store.meta.current_page = $event.pagination.current_page;
-  store.meta.sort = $event.sort;
-
-  await store.fetchLeads();
-};
-
-const onSortChange = async ($event: any) => {
-  store.meta.sort = $event.sort;
-
-  await store.fetchLeads();
-};
-
-const getStatusColor = (item: any) => {
-  const entry = leadStatuses.find(
-    (i) => i.key === item.raw.status_details.name
-  );
-
-  return entry?.color;
-};
+// filters
+const filters = ref({
+  email: "",
+  post_code: "",
+  statuses: [],
+  lead_generator_id: [],
+});
 
 const isCommentsDialogVisible = ref(false);
 
-const formRef = ref();
-const filters = ref({
-  email: "",
-  postcode: "",
-  statuses: [],
-});
-const form = reactive({
+const form = reactive<Comment>({
   leadId: "",
   status: "",
   comments: "",
 });
 
-const showCommentsDialog = (status: string, leadId: any) => {
+// composables
+const store: any = useLeadsStore();
+const { onSortChange, onPaginationChange } = useDataTable(
+  store,
+  filters,
+  store.fetchLeads
+);
+
+const handleCommentsSubmit = async (comments: String) => {
+  form.comments = comments;
+  await store.updateStatus(form);
+};
+
+const onStatusSelect = (leadId: any, status: any) => {
   form.leadId = leadId;
   form.status = status;
 
   isCommentsDialogVisible.value = true;
 };
 
-const closeDialog = () => {
-  isCommentsDialogVisible.value = false;
-
-  form.leadId = "";
-  form.status = "";
-  form.comments = "";
-};
-
-const handleCommentsSubmit = async () => {
-  const validation = await formRef.value.validate();
-
-  if (validation?.valid) {
-    await store.updateStatus(form);
-
-    closeDialog();
-  }
-};
-
-const debouncedRequest = useDebounceFn(
-  async () => await store.fetchLeads(),
-  1000
-);
-
-watch(
-  filters.value,
-  async (n) => {
-    store.meta.filters = removeEmptyAndNull(n);
-
-    await debouncedRequest();
-  },
-  { deep: true }
-);
-
-onMounted(async () => await store.fetchLeads());
+onMounted(async () => {
+  await store.getExtras();
+  await store.fetchLeads({ include: "leadGenerator" });
+});
 </script>
 
 <template>
   <!-- Filters -->
-
   <VRow class="pa-4">
-    <VCol cols="12" lg="4">
+    <VCol cols="12" lg="3">
       <VTextField v-model="filters.email" label="Email address" clearable />
     </VCol>
 
-    <VCol cols="12" lg="4">
+    <VCol cols="12" lg="3">
       <VTextField v-model="filters.post_code" label="Post code" clearable />
     </VCol>
 
-    <VCol cols="12" lg="4">
+    <VCol cols="12" lg="3">
       <VCombobox
         v-model="filters.statuses"
-        :items="leadStatuses"
+        :items="store.tableStatuses"
         label="Statuses"
         placeholder="Select statuses"
-        item-title="value"
-        item-value="key"
+        item-title="name"
+        item-value="name"
+        chips
+        multiple
+        clearable
+        :return-object="false"
+      />
+    </VCol>
+
+    <VCol cols="12" lg="3">
+      <VCombobox
+        v-model="filters.lead_generator_id"
+        :items="store.leadGenerators"
+        label="Lead Generator"
+        placeholder="Select Lead Genrator"
+        item-title="name"
+        item-value="id"
         chips
         multiple
         clearable
@@ -146,22 +113,32 @@ onMounted(async () => await store.fetchLeads());
     @update:on-pagination-change="onPaginationChange"
     @update:on-sort-change="onSortChange"
   >
+    <!-- Name -->
+    <template #item.first_name="{ item }">
+      {{ item.raw.full_name }}
+    </template>
+
     <!-- Email -->
     <template #item.email="{ item }">
-      <div class="d-flex align-center">
-        <div class="d-flex flex-column">
-          <span class="text-sm text-medium-emphasis">{{ item.raw.email }}</span>
-        </div>
-      </div>
+      <a class="email-color" :href="`mailto:${item.raw.email}`">
+        {{ item.raw.email }}
+      </a>
     </template>
 
     <!-- Marked as Job -->
-    <template #item.is_marked_as_job="{ item }">
-      <VBadge
-        :color="item.raw.is_marked_as_job ? 'success' : 'warning'"
-        :content="item.raw.is_marked_as_job ? 'Yes' : 'No'"
-        inline
-      />
+    <template #item.lead_generator_id="{ item }">
+      <div class="pa-2">
+        <VBadge
+          :color="item.raw?.lead_generator?.name ? 'success' : 'info'"
+          inline
+        >
+          <template #badge>
+            <div class="pa-2">
+              {{ item.raw?.lead_generator?.name ?? "Not assigned" }}
+            </div>
+          </template>
+        </VBadge>
+      </div>
     </template>
 
     <!-- Status -->
@@ -171,7 +148,10 @@ onMounted(async () => await store.fetchLeads());
           <VTooltip location="top">
             <template v-slot:activator="{ props: tooltip }">
               <VBtn
-                :color="getStatusColor(item)"
+                size="x-small"
+                :color="
+                  item.raw?.status_details?.lead_status?.color ?? 'primary'
+                "
                 v-bind="mergeProps(menu, tooltip)"
               >
                 {{ item.raw?.status_details?.name.toUpperCase() }}
@@ -188,12 +168,12 @@ onMounted(async () => await store.fetchLeads());
         </template>
         <VList>
           <VListItem
-            @click="showCommentsDialog(status.key, item.raw.id)"
-            v-for="(status, index) in leadStatuses"
+            @click="onStatusSelect(item.raw.id, status.name)"
+            v-for="(status, index) in store.tableStatuses"
             :key="`${item.raw.id}-${index}`"
-            :disabled="item.raw.status_details.name === status.key"
+            :disabled="item.raw.status_details.name === status.name"
           >
-            {{ status.value }}
+            {{ status.name }}
           </VListItem>
         </VList>
       </VMenu>
@@ -201,71 +181,26 @@ onMounted(async () => await store.fetchLeads());
 
     <!-- Actions -->
     <template #item.actions="{ item }">
-      <VTooltip location="bottom">
-        <template v-slot:activator="{ props: tooltip }">
-          <IconBtn>
-            <VIcon icon="tabler-eye" />
-          </IconBtn>
-        </template>
-        <span> View Lead </span>
-      </VTooltip>
-      <VTooltip location="bottom">
-        <template v-slot:activator="{ props: tooltip }">
-          <IconBtn @click="store.deleteLead(item.raw.id)">
-            <VIcon color="error" icon="tabler-trash" />
-          </IconBtn>
-        </template>
-        <span> Are you sure you want to delete this lead? </span>
-      </VTooltip>
+      <IconBtn>
+        <VIcon icon="tabler-eye" />
+      </IconBtn>
+      <IconBtn @click="store.deleteLead(item.raw.id)">
+        <VIcon color="error" icon="tabler-trash" />
+      </IconBtn>
     </template>
   </DataTable>
 
   <!-- Dialogs -->
-  <VDialog
-    :width="$vuetify.display.smAndDown ? 'auto' : 600"
-    :model-value="isCommentsDialogVisible"
-    @update:model-value="closeDialog"
-    persistent
-  >
-    <!-- Dialog close btn -->
-    <DialogCloseBtn @click="closeDialog" />
-
-    <VCard class="pa-sm-8 pa-5">
-      <!-- Title -->
-      <VCardItem class="text-center">
-        <VCardTitle class="text-h4 mb-3"> Add Comments </VCardTitle>
-      </VCardItem>
-
-      <VForm ref="formRef" @submit.prevent="handleCommentsSubmit">
-        <VCol cols="12">
-          <VTextarea
-            v-model="form.comments"
-            :rules="[requiredValidator]"
-            label="Comments"
-            placeholder="Some comments..."
-            auto-grow
-            clearable
-            counter
-            required
-          />
-        </VCol>
-
-        <VCol cols="12">
-          <div class="d-flex align-center gap-3 mt-6">
-            <VBtn
-              type="submit"
-              :disabled="store.isLoading"
-              :loading="store.isLoading"
-            >
-              Update Status
-            </VBtn>
-
-            <VBtn color="secondary" variant="tonal" @click="closeDialog">
-              Cancel
-            </VBtn>
-          </div>
-        </VCol>
-      </VForm>
-    </VCard>
-  </VDialog>
+  <CommentsDialog
+    v-model:is-comments-dialog-visible="isCommentsDialogVisible"
+    v-model:is-loading="store.isLoading"
+    @on-dialog-close="isCommentsDialogVisible = false"
+    @on-comments-update="handleCommentsSubmit"
+  />
 </template>
+
+<style lang="scss" scoped>
+.email-color {
+  color: "#4FC3F7";
+}
+</style>

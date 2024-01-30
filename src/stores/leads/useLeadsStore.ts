@@ -1,18 +1,10 @@
 import useApiFetch from '@/composables/useApiFetch'
 import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
+import { LeadStatus } from '@/stores/leads/useLeadStatusesStore'
 import { EventBus } from '@/utils/useEventBus'
 import { getExceptionMessage, reshapeParams } from '@/utils/useHelper'
 import { defineStore } from 'pinia'
-
-type UserData = {
-  name: string
-  email: string
-  roles: number[]
-  password: string
-  password_confirmation: string
-  status: string
-}
 
 type BenefitType = {
   name: string
@@ -42,7 +34,6 @@ type Surveyor = {
   name: string
 }
 
-
 export const useLeadsStore = defineStore('leads', () => {
   const endPoint = '/leads'
   const leads = ref([])
@@ -57,6 +48,8 @@ export const useLeadsStore = defineStore('leads', () => {
   const leadSources: Ref<LeadSource[]> = ref([])
   const measures: Ref<Measure[]> = ref([])
   const surveyors: Ref<Surveyor[]> = ref([])
+  const leadStatuses: Ref<LeadStatus[]> = ref([])
+  const tableStatuses: Ref<LeadStatus[]> = ref([])
 
   const isLeadSelected = computed(() => !!selectedLead.value)
 
@@ -68,7 +61,7 @@ export const useLeadsStore = defineStore('leads', () => {
     isLoading.value = false
   }
 
-  const getExtras = async (options = {}) => {
+  const getExtras = async () => {
     isLoading.value = true
     const { data } = await useApiFetch('/lead-extras')
     measures.value = data?.measures ?? []
@@ -78,6 +71,8 @@ export const useLeadsStore = defineStore('leads', () => {
     surveyors.value = data?.surveyors ?? []
     leadGenerators.value = data?.lead_generators ?? []
     leadSources.value = data?.lead_sources ?? []
+    leadStatuses.value = data?.lead_statuses ?? []
+    tableStatuses.value = data?.lead_table_filters ?? []
     isLoading.value = false
   }
 
@@ -128,6 +123,8 @@ export const useLeadsStore = defineStore('leads', () => {
   }
 
   return {
+    tableStatuses,
+    leadStatuses,
     jobTypes,
     fuelTypes,
     leadGenerators,

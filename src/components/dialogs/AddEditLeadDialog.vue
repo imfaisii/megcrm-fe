@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import LeadForm from "@/components/leads/create-form.vue";
-import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
+import LeadForm from "@/components/leads/CreateForm.vue";
 import { EventBus } from "@/utils/useEventBus";
 
 interface Emit {
@@ -15,19 +14,6 @@ defineProps({
 });
 
 const emit = defineEmits<Emit>();
-
-const store = usePermissionsStore();
-const form = reactive<any>({
-  permissions: [],
-});
-
-const handleSubmit = async () => {
-  store.isRoleSelected
-    ? await store.updateRole(form)
-    : await store.storeRole(form);
-
-  emit("update:isLeadDialogVisible", false);
-};
 
 const closeDialog = () => emit("update:isLeadDialogVisible", false);
 

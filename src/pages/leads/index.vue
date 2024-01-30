@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LeadsTable from "@/components/leads/table.vue";
+import LeadsTable from "@/components/leads/Table.vue";
 import { roles } from "@/constants/rolesAndPermissions";
 
 const isAddLeadDialogVisible: any = ref(false);
