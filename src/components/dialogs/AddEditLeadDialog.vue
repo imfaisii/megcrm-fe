@@ -28,7 +28,7 @@ onUnmounted(() => EventBus.$off("hide-lead-dialog"));
 
 <template>
   <VDialog
-    :width="$vuetify.display.smAndDown ? 'auto' : 900"
+    :width="$vuetify.display.smAndDown ? 'auto' : 1100"
     :model-value="isLeadDialogVisible"
     @update:model-value="closeDialog"
     persistent
