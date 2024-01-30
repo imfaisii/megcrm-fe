@@ -76,8 +76,8 @@ onMounted(async () => {
       <VCombobox
         v-model="filters.statuses"
         :items="store.tableStatuses"
-        label="Statuses"
-        placeholder="Select statuses"
+        label="Status"
+        placeholder="Select status"
         item-title="name"
         item-value="name"
         chips
@@ -161,7 +161,7 @@ onMounted(async () => {
               {{ item.raw?.status_details?.reason }}
               {{
                 item?.raw?.status_details?.user &&
-                `by ${item.raw.status_details.user.name}`
+                `by ${item.raw.status_details.user.name} at ${item.raw.status_details.lead_status.created_at}`
               }}
             </span>
           </VTooltip>
@@ -171,7 +171,6 @@ onMounted(async () => {
             @click="onStatusSelect(item.raw.id, status.name)"
             v-for="(status, index) in store.tableStatuses"
             :key="`${item.raw.id}-${index}`"
-            :disabled="item.raw.status_details.name === status.name"
           >
             {{ status.name }}
           </VListItem>
