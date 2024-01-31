@@ -55,12 +55,12 @@ const store = useLeadsStore();
 
 const steps = [
   {
-    title: "Basic Information",
-    icon: "custom-wizard-personal",
-  },
-  {
     title: "Address",
     icon: "custom-wizard-address",
+  },
+  {
+    title: "Basic Information",
+    icon: "custom-wizard-personal",
   },
   {
     title: "Optional",
@@ -150,7 +150,7 @@ const validateAdditionalInformationForm = () => {
 };
 
 const getSuggestions = async () => {
-  if (!addressInformationForm.value.address) {
+  if (!addressInformationForm.value.post_code) {
     $toast.error("Please enter postcode to proceed.");
 
     return;
@@ -162,7 +162,7 @@ const getSuggestions = async () => {
 
   try {
     const { data } = await axios.post(
-      `https://api.getAddress.io/autocomplete/${addressInformationForm.value.address.toUpperCase()}?api-key=${token}`,
+      `https://api.getAddress.io/autocomplete/${addressInformationForm.value.post_code.toUpperCase()}?api-key=${token}`,
       {
         all: true,
         template: "{formatted_address}{postcode, } -- {postcode}",
@@ -172,7 +172,7 @@ const getSuggestions = async () => {
     data?.suggestions?.map((i: any) => suggestions.value.push(i.address));
     addressCombobox.value.$el.querySelector("input").focus();
     addressInformationForm.value.post_code =
-      addressInformationForm.value.address.toUpperCase();
+      addressInformationForm.value.post_code.toUpperCase();
     addressInformationForm.value.address = null;
   } catch (e) {
     $toast.error(getExceptionMessage(e));
@@ -206,6 +206,112 @@ onMounted(async () => await store.getExtras());
 
   <VCardText>
     <VWindow v-model="currentStep" class="disable-tab-transition">
+      <VWindowItem>
+        <VForm
+          @submit.prevent="validateAddressInformationForm"
+          ref="refAddressForm"
+        >
+          <VRow>
+            <VCol cols="12" lg="5">
+              <VTextField
+                v-model="addressInformationForm.post_code"
+                label="Postcode"
+                :rules="[requiredValidator]"
+                placeholder="Enter postcode to search addresses"
+                required
+                @keydown.enter.prevent="getSuggestions"
+              >
+                <!-- Prepend -->
+                <template #prepend>
+                  <VTooltip location="bottom">
+                    <template #activator="{ props }">
+                      <VIcon v-bind="props" icon="mdi-help-circle-outline" />
+                    </template>
+                    You can enter a postcode and press the button to search most
+                    relevant addresses.
+                  </VTooltip>
+                </template>
+
+                <!-- AppendInner -->
+                <template #append-inner>
+                  <VFadeTransition leave-absolute>
+                    <VProgressCircular
+                      v-if="loading"
+                      size="24"
+                      color="info"
+                      indeterminate
+                    />
+                  </VFadeTransition>
+                </template>
+
+                <!-- Append -->
+                <template #append>
+                  <VBtn
+                    :size="$vuetify.display.smAndDown ? 'small' : 'large'"
+                    :class="$vuetify.display.smAndDown ? 'mt-n2' : 'mt-n3'"
+                    :icon="$vuetify.display.smAndDown"
+                    @click="getSuggestions"
+                  >
+                    <VIcon icon="mdi-map-search-outline" />
+                  </VBtn>
+                </template>
+              </VTextField>
+            </VCol>
+
+            <VCol cols="12" lg="7">
+              <VCombobox
+                v-model="addressInformationForm.address"
+                ref="addressCombobox"
+                :items="suggestions"
+                :rules="[requiredValidator]"
+                label="Address"
+                placeholder="Enter postcode to search addresses"
+                type="text"
+                clearable
+                required
+              />
+            </VCol>
+
+            <VCol cols="12" v-if="addressInformationForm.post_code">
+              <VAlert border="start" color="info" variant="tonal">
+                <a
+                  :href="`https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${addressInformationForm.post_code}`"
+                  target="_blank"
+                >
+                  View EPCs of
+                  {{ addressInformationForm.post_code.toUpperCase() }}
+                </a>
+              </VAlert>
+            </VCol>
+
+            <VCol cols="12">
+              <VAlert border="start" color="info" variant="tonal">
+                <a
+                  href="https://www.ncm-pcdb.org.uk/sap/pcdbsearch.jsp?pid=26"
+                  target="_blank"
+                >
+                  Click here to check boiler efficiency
+                </a>
+              </VAlert>
+            </VCol>
+            <VCol cols="12">
+              <div
+                class="d-flex flex-wrap gap-4 justify-sm-space-between justify-center mt-8"
+              >
+                <VBtn color="secondary" variant="tonal" @click="currentStep--">
+                  <VIcon icon="mdi-arrow-left" start class="flip-in-rtl" />
+                  Previous
+                </VBtn>
+
+                <VBtn type="submit">
+                  Next
+                  <VIcon icon="mdi-arrow-right" end class="flip-in-rtl" />
+                </VBtn>
+              </div>
+            </VCol>
+          </VRow>
+        </VForm>
+      </VWindowItem>
       <VWindowItem>
         <VForm
           @submit.prevent="validatePersonalInformationForm"
@@ -283,7 +389,8 @@ onMounted(async () => await store.getExtras());
                 v-model="personalInformationForm.dob"
                 :rules="[requiredValidator]"
                 :config="{
-                  altInput: true,
+                  wrap: true,
+                  altInput: false,
                   altFormat: 'F j, Y',
                   dateFormat: 'Y-m-d',
                 }"
@@ -325,89 +432,6 @@ onMounted(async () => await store.getExtras());
               <div
                 class="d-flex flex-wrap gap-4 justify-sm-space-between justify-center mt-8"
               >
-                <VBtn type="submit">
-                  Next
-                  <VIcon icon="mdi-arrow-right" end class="flip-in-rtl" />
-                </VBtn>
-              </div>
-            </VCol>
-          </VRow>
-        </VForm>
-      </VWindowItem>
-      <VWindowItem>
-        <VForm
-          @submit.prevent="validateAddressInformationForm"
-          ref="refAddressForm"
-        >
-          <VRow>
-            <VCol cols="12" lg="8">
-              <VCombobox
-                v-model="addressInformationForm.address"
-                ref="addressCombobox"
-                :items="suggestions"
-                :rules="[requiredValidator]"
-                label="Address"
-                placeholder="Enter postcode to search addresses"
-                type="text"
-                clearable
-                required
-                @keydown.enter.prevent="getSuggestions"
-              >
-                <!-- Prepend -->
-                <template #prepend>
-                  <VTooltip location="bottom">
-                    <template #activator="{ props }">
-                      <VIcon v-bind="props" icon="mdi-help-circle-outline" />
-                    </template>
-                    You can enter a postcode and press the button to search most
-                    relevant addresses.
-                  </VTooltip>
-                </template>
-
-                <!-- AppendInner -->
-                <template #append-inner>
-                  <VFadeTransition leave-absolute>
-                    <VProgressCircular
-                      v-if="loading"
-                      size="24"
-                      color="info"
-                      indeterminate
-                    />
-                  </VFadeTransition>
-                </template>
-
-                <!-- Append -->
-                <template #append>
-                  <VBtn
-                    :size="$vuetify.display.smAndDown ? 'small' : 'large'"
-                    :class="$vuetify.display.smAndDown ? 'mt-n2' : 'mt-n3'"
-                    :icon="$vuetify.display.smAndDown"
-                    @click="getSuggestions"
-                  >
-                    <VIcon icon="mdi-map-search-outline" />
-                  </VBtn>
-                </template>
-              </VCombobox>
-            </VCol>
-
-            <VCol cols="12" lg="4">
-              <VTextField
-                v-model="addressInformationForm.post_code"
-                label="Postcode"
-                placeholder="No address selected"
-                readonly
-              />
-            </VCol>
-
-            <VCol cols="12">
-              <div
-                class="d-flex flex-wrap gap-4 justify-sm-space-between justify-center mt-8"
-              >
-                <VBtn color="secondary" variant="tonal" @click="currentStep--">
-                  <VIcon icon="mdi-arrow-left" start class="flip-in-rtl" />
-                  Previous
-                </VBtn>
-
                 <VBtn type="submit">
                   Next
                   <VIcon icon="mdi-arrow-right" end class="flip-in-rtl" />

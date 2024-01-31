@@ -232,10 +232,6 @@ input[altinputclass="inlinePicker"] {
     border-block-start: none;
   }
 
-  .numInputWrapper:hover {
-    background: transparent;
-  }
-
   .flatpickr-rContainer {
     inline-size: 300px;
 
@@ -391,22 +387,6 @@ input[altinputclass="inlinePicker"] {
   input {
     color: $body-color;
   }
-
-  .numInputWrapper {
-    span {
-      &.arrowUp {
-        &::after {
-          border-block-end-color: rgb(var(--v-border-color));
-        }
-      }
-
-      &.arrowDown {
-        &::after {
-          border-block-start-color: rgb(var(--v-border-color));
-        }
-      }
-    }
-  }
 }
 
 //  Added bg color for flatpickr input only as it has default readonly attribute
@@ -425,28 +405,6 @@ input[altinputclass="inlinePicker"] {
 .flatpickr-current-month {
   .flatpickr-monthDropdown-months {
     appearance: none;
-  }
-
-  .flatpickr-monthDropdown-months,
-  .numInputWrapper {
-    padding: 2px;
-    border-radius: 4px;
-    color: $heading-color;
-    font-size: 1rem;
-    font-weight: 400;
-    transition: all 0.15s ease-out;
-
-    span {
-      display: none;
-    }
-
-    .cur-year {
-      font-weight: 400;
-    }
-
-    .flatpickr-monthDropdown-month {
-      background-color: rgb(var(--v-theme-surface));
-    }
   }
 }
 
