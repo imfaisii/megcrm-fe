@@ -183,9 +183,14 @@ onMounted(async () => {
       <!-- <IconBtn :to="{ name: 'leads-edit-id', params: { id: item.raw.id } }">
         <VIcon icon="tabler-edit" />
       </IconBtn> -->
-      <IconBtn @click="store.deleteLead(item.raw.id)">
-        <VIcon color="error" icon="tabler-trash" />
-      </IconBtn>
+      <VTooltip location="bottom">
+        <template #activator="{ props }">
+          <IconBtn v-bind="props" @click="store.deleteLead(item.raw.id)">
+            <VIcon color="error" icon="tabler-trash" />
+          </IconBtn>
+        </template>
+        <span>Are you sure you want to delete this lead?</span>
+      </VTooltip>
     </template>
   </DataTable>
 

@@ -49,7 +49,7 @@ defineProps({
   },
 });
 
-const titles = ["Mr", "Mrs"];
+const titles = ["Mr", "Mrs", "Ms"];
 const $toast = useToast();
 const store = useLeadsStore();
 

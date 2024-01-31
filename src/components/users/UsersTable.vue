@@ -121,18 +121,26 @@ onMounted(async () => await usersStore.fetchUsers());
         />
         <VIcon v-else icon="tabler-edit" />
       </IconBtn>
-      <IconBtn
-        v-if="item.raw.id !== 1"
-        @click="usersStore.deleteUser(item.raw.id)"
-      >
-        <VProgressCircular
-          v-if="usersStore.isLoading && usersStore.selectedId === item.raw.id"
-          size="24"
-          color="info"
-          indeterminate
-        />
-        <VIcon v-else color="error" icon="tabler-trash" />
-      </IconBtn>
+      <VTooltip location="bottom">
+        <template #activator="{ props }">
+          <IconBtn
+            v-if="item.raw.id !== 1"
+            @click="usersStore.deleteUser(item.raw.id)"
+            v-bind="props"
+          >
+            <VProgressCircular
+              v-if="
+                usersStore.isLoading && usersStore.selectedId === item.raw.id
+              "
+              size="24"
+              color="info"
+              indeterminate
+            />
+            <VIcon v-else color="error" icon="tabler-trash" />
+          </IconBtn>
+        </template>
+        <span>Are you sure you want to delete this user?</span>
+      </VTooltip>
     </template>
   </DataTable>
 </template>

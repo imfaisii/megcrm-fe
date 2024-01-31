@@ -59,9 +59,14 @@ onMounted(async () => await store.fetchAll());
       <IconBtn @click="handleLeadStatusView(item.raw)">
         <VIcon icon="tabler-edit" />
       </IconBtn>
-      <IconBtn @click="store.destroy(item.raw.id)">
-        <VIcon color="error" icon="tabler-trash" />
-      </IconBtn>
+      <VTooltip location="bottom">
+        <template #activator="{ props }">
+          <IconBtn v-bind="props" @click="store.destroy(item.raw.id)">
+            <VIcon color="error" icon="tabler-trash" />
+          </IconBtn>
+        </template>
+        <span>Are you sure you want to delete this lead status?</span>
+      </VTooltip>
     </template>
   </DataTable>
 </template>
