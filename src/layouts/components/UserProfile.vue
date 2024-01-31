@@ -1,5 +1,13 @@
 <script setup lang="ts">
+import { useAuthStore } from "@/stores/auth/useAuthStore";
 import avatar1 from "@images/avatars/avatar-1.png";
+
+const store = useAuthStore();
+
+const logOut = () => {
+  store.$reset();
+  store.logout();
+};
 </script>
 
 <template>
@@ -36,16 +44,16 @@ import avatar1 from "@images/avatars/avatar-1.png";
             </template>
 
             <VListItemTitle class="font-weight-semibold">
-              John Doe
+              {{ store.user.name }}
             </VListItemTitle>
-            <VListItemSubtitle>Admin</VListItemSubtitle>
+            <VListItemSubtitle>{{ store.user.top_role }}</VListItemSubtitle>
           </VListItem>
 
           <!-- Divider -->
           <VDivider class="my-2" />
 
           <!-- 👉 Logout -->
-          <VListItem to="/login">
+          <VListItem @click="logOut">
             <template #prepend>
               <VIcon class="me-2" icon="tabler-logout" size="22" />
             </template>

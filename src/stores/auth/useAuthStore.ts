@@ -169,6 +169,15 @@ export const useAuthStore = defineStore('auth', () => {
     message.value = ''
   }
 
+  const $reset = () => {
+    accessToken.value = null
+    user.value = null
+    isLoading.value = false
+    errors.value = {}
+    success.value = false
+    message.value = ''
+  }
+
   // resetting errors if route changes
   watch(() => route.name, () => reset())
 
@@ -192,5 +201,6 @@ export const useAuthStore = defineStore('auth', () => {
     setUser,
     destroyUser,
     destroyToken,
+    $reset
   }
 })

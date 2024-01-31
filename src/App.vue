@@ -58,4 +58,18 @@ handleSkinChanges();
   /* stylelint-disable-next-line liberty/use-logical-spec */
   margin-top: 2px !important;
 }
+
+::-webkit-scrollbar {
+  block-size: 8px;
+  inline-size: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px; /* Optional: Set the border radius for a rounded look */
+  background-color: #c5c5c5; /* Set the color of the scrollbar thumb */
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Set the color of the scrollbar track */
+}
 </style>

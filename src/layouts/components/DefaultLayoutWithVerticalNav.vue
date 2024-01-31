@@ -1,27 +1,42 @@
 <script lang="ts" setup>
-import navItems from '@/navigation/vertical'
-import { useThemeConfig } from '@core/composable/useThemeConfig'
+import navItems from "@/navigation/vertical";
+import { useThemeConfig } from "@core/composable/useThemeConfig";
 
 // Components
-import Footer from '@/layouts/components/Footer.vue'
-import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
-import UserProfile from '@/layouts/components/UserProfile.vue'
+import Footer from "@/layouts/components/Footer.vue";
+import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue";
+import UserProfile from "@/layouts/components/UserProfile.vue";
 
 // @layouts plugin
-import { VerticalNavLayout } from '@layouts'
+import { VerticalNavLayout } from "@layouts";
 
-const { appRouteTransition, isLessThanOverlayNavBreakpoint, isVerticalNavCollapsed, isAppRtl } = useThemeConfig()
-const { width: windowWidth } = useWindowSize()
+const {
+  appRouteTransition,
+  isLessThanOverlayNavBreakpoint,
+  isVerticalNavCollapsed,
+  isAppRtl,
+} = useThemeConfig();
+const { width: windowWidth } = useWindowSize();
 
 // ℹ️ Provide animation name for vertical nav collapse icon.
-const verticalNavHeaderActionAnimationName = ref<null | 'rotate-180' | 'rotate-back-180'>(null)
+const verticalNavHeaderActionAnimationName = ref<
+  null | "rotate-180" | "rotate-back-180"
+>(null);
 
-watch([isVerticalNavCollapsed, isAppRtl], val => {
-  if (isAppRtl.value)
-    verticalNavHeaderActionAnimationName.value = val[0] ? 'rotate-back-180' : 'rotate-180'
-  else
-    verticalNavHeaderActionAnimationName.value = val[0] ? 'rotate-180' : 'rotate-back-180'
-}, { immediate: true })
+watch(
+  [isVerticalNavCollapsed, isAppRtl],
+  (val) => {
+    if (isAppRtl.value)
+      verticalNavHeaderActionAnimationName.value = val[0]
+        ? "rotate-back-180"
+        : "rotate-180";
+    else
+      verticalNavHeaderActionAnimationName.value = val[0]
+        ? "rotate-180"
+        : "rotate-back-180";
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -29,8 +44,12 @@ watch([isVerticalNavCollapsed, isAppRtl], val => {
     <!-- 👉 navbar -->
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center">
-        <IconBtn v-if="isLessThanOverlayNavBreakpoint(windowWidth)" id="vertical-nav-toggle-btn" class="ms-n3"
-          @click="toggleVerticalOverlayNavActive(true)">
+        <IconBtn
+          v-if="isLessThanOverlayNavBreakpoint(windowWidth)"
+          id="vertical-nav-toggle-btn"
+          class="ms-n3"
+          @click="toggleVerticalOverlayNavActive(true)"
+        >
           <VIcon icon="mdi-menu" />
         </IconBtn>
 

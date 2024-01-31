@@ -112,18 +112,14 @@ onMounted(async () => await usersStore.fetchUsers());
 
     <!-- Actions -->
     <template #item.actions="{ item }">
-      <IconBtn>
+      <IconBtn @click="usersStore.fetchUser(item.raw.id)">
         <VProgressCircular
           v-if="usersStore.isLoading && usersStore.selectedId === item.raw.id"
           size="24"
           color="info"
           indeterminate
         />
-        <VIcon
-          v-else
-          @click="usersStore.fetchUser(item.raw.id)"
-          icon="tabler-edit"
-        />
+        <VIcon v-else icon="tabler-edit" />
       </IconBtn>
       <IconBtn
         v-if="item.raw.id !== 1"

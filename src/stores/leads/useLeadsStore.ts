@@ -61,19 +61,21 @@ export const useLeadsStore = defineStore('leads', () => {
     isLoading.value = false
   }
 
-  const getExtras = async () => {
-    isLoading.value = true
-    const { data } = await useApiFetch('/lead-extras')
-    measures.value = data?.measures ?? []
-    jobTypes.value = data?.job_types ?? []
-    fuelTypes.value = data?.fuel_types ?? []
-    benefitTypes.value = data?.benefit_types ?? []
-    surveyors.value = data?.surveyors ?? []
-    leadGenerators.value = data?.lead_generators ?? []
-    leadSources.value = data?.lead_sources ?? []
-    leadStatuses.value = data?.lead_statuses ?? []
-    tableStatuses.value = data?.lead_table_filters ?? []
-    isLoading.value = false
+  const getExtras = async (force = false) => {
+    if (leadStatuses.value.length === 0 || force) {
+      isLoading.value = true
+      const { data } = await useApiFetch('/lead-extras')
+      measures.value = data?.measures ?? []
+      jobTypes.value = data?.job_types ?? []
+      fuelTypes.value = data?.fuel_types ?? []
+      benefitTypes.value = data?.benefit_types ?? []
+      surveyors.value = data?.surveyors ?? []
+      leadGenerators.value = data?.lead_generators ?? []
+      leadSources.value = data?.lead_sources ?? []
+      leadStatuses.value = data?.lead_statuses ?? []
+      tableStatuses.value = data?.lead_table_filters ?? []
+      isLoading.value = false
+    }
   }
 
   const storeLead = async (payload: any, options: any = { method: 'POST' }) => {
@@ -99,6 +101,18 @@ export const useLeadsStore = defineStore('leads', () => {
       await useApiFetch(`${endPoint}/${leadId}`, options)
       $toast.success('Lead was deleted successfully.')
       await fetchLeads()
+    } catch (error) {
+      $toast.error(getExceptionMessage(error))
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const fetchLead = async (leadId: number, options = {}) => {
+    try {
+      isLoading.value = true
+      const { data } = await useApiFetch(`${endPoint}/${leadId}`, options)
+      selectedLead.value = data.lead
     } catch (error) {
       $toast.error(getExceptionMessage(error))
     } finally {
@@ -140,6 +154,7 @@ export const useLeadsStore = defineStore('leads', () => {
 
     updateStatus,
     fetchLeads,
+    fetchLead,
     storeLead,
     deleteLead,
     getExtras

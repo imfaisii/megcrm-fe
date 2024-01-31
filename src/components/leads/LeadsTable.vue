@@ -180,9 +180,9 @@ onMounted(async () => {
 
     <!-- Actions -->
     <template #item.actions="{ item }">
-      <IconBtn>
-        <VIcon icon="tabler-eye" />
-      </IconBtn>
+      <!-- <IconBtn :to="{ name: 'leads-edit-id', params: { id: item.raw.id } }">
+        <VIcon icon="tabler-edit" />
+      </IconBtn> -->
       <IconBtn @click="store.deleteLead(item.raw.id)">
         <VIcon color="error" icon="tabler-trash" />
       </IconBtn>
