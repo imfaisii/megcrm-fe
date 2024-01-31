@@ -81,6 +81,7 @@ const refAddressForm = ref<VForm>();
 const refAdditionalInformationForm = ref<VForm>();
 const refReviewForm = ref<VForm>();
 const isCurrentStepValid = ref(true);
+const isScotland = ref<Boolean>(false);
 
 const personalInformationForm = ref({
   title: null,
@@ -165,7 +166,7 @@ const getSuggestions = async () => {
       `https://api.getAddress.io/autocomplete/${addressInformationForm.value.post_code.toUpperCase()}?api-key=${token}`,
       {
         all: true,
-        template: "{formatted_address}{postcode, } -- {postcode}",
+        template: "{formatted_address} -- {country}",
       }
     );
 
@@ -188,6 +189,25 @@ const handleSubmit = async () => {
     ...additionalInformationForm.value,
   });
 };
+
+const epcLink = computed(() => {
+  if (isScotland.value) {
+    return "https://www.scottishepcregister.org.uk/CustomerFacingPortal/EPCPostcodeSearch";
+  }
+
+  return `https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${addressInformationForm.value.post_code}`;
+});
+
+watch(
+  () => addressInformationForm.value.address,
+  (n: any) => {
+    if (n) {
+      const countryRegex = /--\s*(\w+(?:\s*\w+)*)/;
+      const match = n.match(countryRegex);
+      isScotland.value = match && match[1].toUpperCase() === "SCOTLAND";
+    }
+  }
+);
 
 onMounted(async () => await store.getExtras());
 </script>
@@ -274,10 +294,7 @@ onMounted(async () => await store.getExtras());
 
             <VCol cols="12" v-if="addressInformationForm.post_code">
               <VAlert border="start" color="info" variant="tonal">
-                <a
-                  :href="`https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${addressInformationForm.post_code}`"
-                  target="_blank"
-                >
+                <a :href="epcLink" target="_blank">
                   View EPCs of
                   {{ addressInformationForm.post_code.toUpperCase() }}
                 </a>
