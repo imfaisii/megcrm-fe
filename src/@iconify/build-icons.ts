@@ -171,9 +171,8 @@ const target = join(__dirname, 'icons-bundle.js');
       // Filter icons
       if (typeof item !== 'string' && item.icons?.length) {
         const filteredContent = getIcons(content, item.icons)
-        if (!filteredContent) {
+        if (!filteredContent)
           throw new Error(`Cannot find required icons in ${filename}`)
-        }
 
         content = filteredContent
       }
@@ -200,9 +199,8 @@ const target = join(__dirname, 'icons-bundle.js');
 
       // Validate, clean up, fix palette and optimise
       await iconSet.forEach(async (name, type) => {
-        if (type !== 'icon') {
+        if (type !== 'icon')
           return
-        }
 
         // Get SVG instance for parsing
         const svg = iconSet.toSVG(name)
@@ -291,9 +289,8 @@ function organizeIconsList(icons: string[]): Record<string, string[]> {
 
   icons.forEach(icon => {
     const item = stringToIcon(icon)
-    if (!item) {
+    if (!item)
       return
-    }
 
     const prefix = item.prefix
 
@@ -302,9 +299,8 @@ function organizeIconsList(icons: string[]): Record<string, string[]> {
       : (sorted[prefix] = [])
 
     const name = item.name
-    if (!prefixList.includes(name)) {
+    if (!prefixList.includes(name))
       prefixList.push(name)
-    }
   })
 
   return sorted

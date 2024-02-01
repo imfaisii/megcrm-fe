@@ -1,25 +1,33 @@
 <script lang="ts" setup>
-import { useSkins } from '@core/composable/useSkins'
-import { useThemeConfig } from '@core/composable/useThemeConfig'
+import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { useSkins } from "@core/composable/useSkins";
+import { useThemeConfig } from "@core/composable/useThemeConfig";
+import router from "@/router";
 
-// @layouts plugin
+const auth = useAuthStore();
 
-const DefaultLayoutWithVerticalNav = defineAsyncComponent(() => import('./components/DefaultLayoutWithVerticalNav.vue'))
+console.log("ROUTES", router.options.routes);
 
-const { width: windowWidth } = useWindowSize()
-const { switchToVerticalNavOnLtOverlayNavBreakpoint } = useThemeConfig()
+onMounted(async () => await auth.fetchUser());
+
+const DefaultLayoutWithVerticalNav = defineAsyncComponent(
+  () => import("./components/DefaultLayoutWithVerticalNav.vue")
+);
+
+const { width: windowWidth } = useWindowSize();
+const { switchToVerticalNavOnLtOverlayNavBreakpoint } = useThemeConfig();
 
 // ℹ️ This will switch to vertical nav when define breakpoint is reached when in horizontal nav layout
 // Remove below composable usage if you are not using horizontal nav layout in your app
-switchToVerticalNavOnLtOverlayNavBreakpoint(windowWidth)
+switchToVerticalNavOnLtOverlayNavBreakpoint(windowWidth);
 
-const { layoutAttrs, injectSkinClasses } = useSkins()
+const { layoutAttrs, injectSkinClasses } = useSkins();
 
-injectSkinClasses()
+injectSkinClasses();
 </script>
 
 <template>
-  <DefaultLayoutWithVerticalNav v-bind="layoutAttrs" />
+  <DefaultLayoutWithVerticalNav v-if="auth.isLoggedIn" v-bind="layoutAttrs" />
 </template>
 
 <style lang="scss">

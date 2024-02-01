@@ -1,7 +1,8 @@
 import { isToday } from './index'
 
 export const avatarText = (value: string) => {
-  if (!value) { return '' }
+  if (!value)
+    return ''
   const nameArray = value.split(' ')
 
   return nameArray.map(word => word.charAt(0).toUpperCase()).join('')
@@ -22,7 +23,8 @@ export const kFormatter = (num: number) => {
  * @param {Intl.DateTimeFormatOptions} formatting Intl object to format with
  */
 export const formatDate = (value: string, formatting: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' }) => {
-  if (!value) { return value }
+  if (!value)
+    return value
 
   return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
 }
@@ -37,7 +39,8 @@ export const formatDateToMonthShort = (value: string, toTimeForCurrentDay = true
   const date = new Date(value)
   let formatting: Record<string, string> = { month: 'short', day: 'numeric' }
 
-  if (toTimeForCurrentDay && isToday(date)) { formatting = { hour: 'numeric', minute: 'numeric' } }
+  if (toTimeForCurrentDay && isToday(date))
+    formatting = { hour: 'numeric', minute: 'numeric' }
 
   return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
 }

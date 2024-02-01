@@ -1,8 +1,8 @@
-import { config } from '@layouts/config'
-import { injectionKeyIsVerticalNavHovered } from '@layouts/symbols'
 import type { MaybeRef } from '@vueuse/shared'
 import type { Ref } from 'vue'
 import { AppContentLayoutNav, NavbarType } from '../enums'
+import { injectionKeyIsVerticalNavHovered } from '@layouts/symbols'
+import { config } from '@layouts/config'
 
 export const useLayouts = () => {
   const navbarType = computed({
@@ -66,9 +66,8 @@ export const useLayouts = () => {
 
       // If Navbar type is hidden while switching to horizontal nav => Reset it to sticky
       if (val === AppContentLayoutNav.Horizontal) {
-        if (navbarType.value === NavbarType.Hidden) {
+        if (navbarType.value === NavbarType.Hidden)
           navbarType.value = NavbarType.Sticky
-        }
 
         isVerticalNavCollapsed.value = false
       }
@@ -132,9 +131,8 @@ export const useLayouts = () => {
       For this we need to update the `lgAndUpNav` value if screen is `lgAndUp`
     */
     watch(appContentLayoutNav, value => {
-      if (!isLessThanOverlayNavBreakpoint.value(windowWidth)) {
+      if (!isLessThanOverlayNavBreakpoint.value(windowWidth))
         lgAndUpNav.value = value
-      }
     })
 
     /*
@@ -143,10 +141,10 @@ export const useLayouts = () => {
       Or if it's `lgAndUp` we need to switch back to `lgAndUp` nav type. For this we will tracker property `lgAndUpNav`
     */
     watch(() => isLessThanOverlayNavBreakpoint.value(windowWidth), val => {
-      if (!val) {
+      if (!val)
         appContentLayoutNav.value = lgAndUpNav.value
-      }
-      else { appContentLayoutNav.value = AppContentLayoutNav.Vertical }
+      else
+        appContentLayoutNav.value = AppContentLayoutNav.Vertical
     }, { immediate: true })
   }
 

@@ -30,7 +30,7 @@ export async function authMiddleware(to: any, from: any, next: any) {
     next('/login')
   }
   else if (isRequestingPublicRoute(to) && (auth.isLoggedIn || isValidToken(token.value))) {
-    next('/admin/dashboard')
+    next('/dashboard')
   }
   else {
     next() // Proceed with the navigation

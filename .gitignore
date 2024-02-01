@@ -32,3 +32,5 @@ dist-ssr
 
 # iconify dist files
 src/@iconify/*.js
+
+.env

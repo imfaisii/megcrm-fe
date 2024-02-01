@@ -41,10 +41,18 @@ export const useAuthStore = defineStore('auth', () => {
   const fetchUser = async () => {
     isLoading.value = true
 
-    const { data } = await useApiFetch('/user')
+    try {
+      const { data } = await useApiFetch('/user')
+      const { data: permissionsData } = await useApiFetch('/get-permissions')
+      window.Laravel.jsPermissions = permissionsData;
+      await setUser(data.user)
+    }
+    catch (e) {
+      //
+    } finally {
+      isLoading.value = false
+    }
 
-    isLoading.value = false
-    await setUser(data.user)
   }
 
   const login = async (credentials: Credentials) => {
@@ -161,6 +169,15 @@ export const useAuthStore = defineStore('auth', () => {
     message.value = ''
   }
 
+  const $reset = () => {
+    accessToken.value = null
+    user.value = null
+    isLoading.value = false
+    errors.value = {}
+    success.value = false
+    message.value = ''
+  }
+
   // resetting errors if route changes
   watch(() => route.name, () => reset())
 
@@ -184,5 +201,6 @@ export const useAuthStore = defineStore('auth', () => {
     setUser,
     destroyUser,
     destroyToken,
+    $reset
   }
 })

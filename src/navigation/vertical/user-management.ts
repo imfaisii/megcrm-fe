@@ -10,9 +10,6 @@ export default [
   {
     title: 'Roles & Permissions',
     icon: { icon: 'mdi-shield-account-outline' },
-    children: [
-      { title: 'Roles', to: 'users-roles' },
-      { title: 'Permissions', to: 'users-permissions' },
-    ],
+    to: 'users-roles'
   },
 ] as VerticalNavItems
