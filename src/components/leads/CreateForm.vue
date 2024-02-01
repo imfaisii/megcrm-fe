@@ -232,6 +232,37 @@ onMounted(async () => await store.getExtras());
           ref="refAddressForm"
         >
           <VRow>
+            <VCol cols="12" v-if="addressInformationForm.post_code">
+              <VAlert border="start" color="info" variant="tonal">
+                <a :href="epcLink" target="_blank">
+                  View EPCs of
+                  {{ addressInformationForm.post_code.toUpperCase() }}
+                </a>
+              </VAlert>
+            </VCol>
+
+            <VCol cols="12">
+              <VAlert border="start" color="info" variant="tonal">
+                <a
+                  href="https://www.ncm-pcdb.org.uk/sap/pcdbsearch.jsp?pid=26"
+                  target="_blank"
+                >
+                  Click here to check boiler efficiency
+                </a>
+              </VAlert>
+            </VCol>
+
+            <VCol cols="12">
+              <VAlert border="start" color="info" variant="tonal">
+                <a
+                  href="https://www.gassaferegister.co.uk/gas-safety/gas-safety-certificates-records/building-regulations-certificate/order-replacement-building-regulations-certificate/"
+                  target="_blank"
+                >
+                  Click here to check gas safe register
+                </a>
+              </VAlert>
+            </VCol>
+
             <VCol cols="12" lg="5">
               <VTextField
                 v-model="addressInformationForm.post_code"
@@ -241,17 +272,6 @@ onMounted(async () => await store.getExtras());
                 required
                 @keydown.enter.prevent="getSuggestions"
               >
-                <!-- Prepend -->
-                <template #prepend>
-                  <VTooltip location="bottom">
-                    <template #activator="{ props }">
-                      <VIcon v-bind="props" icon="mdi-help-circle-outline" />
-                    </template>
-                    You can enter a postcode and press the button to search most
-                    relevant addresses.
-                  </VTooltip>
-                </template>
-
                 <!-- AppendInner -->
                 <template #append-inner>
                   <VFadeTransition leave-absolute>
@@ -292,34 +312,10 @@ onMounted(async () => await store.getExtras());
               />
             </VCol>
 
-            <VCol cols="12" v-if="addressInformationForm.post_code">
-              <VAlert border="start" color="info" variant="tonal">
-                <a :href="epcLink" target="_blank">
-                  View EPCs of
-                  {{ addressInformationForm.post_code.toUpperCase() }}
-                </a>
-              </VAlert>
-            </VCol>
-
-            <VCol cols="12">
-              <VAlert border="start" color="info" variant="tonal">
-                <a
-                  href="https://www.ncm-pcdb.org.uk/sap/pcdbsearch.jsp?pid=26"
-                  target="_blank"
-                >
-                  Click here to check boiler efficiency
-                </a>
-              </VAlert>
-            </VCol>
             <VCol cols="12">
               <div
                 class="d-flex flex-wrap gap-4 justify-sm-space-between justify-center mt-8"
               >
-                <VBtn color="secondary" variant="tonal" @click="currentStep--">
-                  <VIcon icon="mdi-arrow-left" start class="flip-in-rtl" />
-                  Previous
-                </VBtn>
-
                 <VBtn type="submit">
                   Next
                   <VIcon icon="mdi-arrow-right" end class="flip-in-rtl" />
@@ -449,6 +445,11 @@ onMounted(async () => await store.getExtras());
               <div
                 class="d-flex flex-wrap gap-4 justify-sm-space-between justify-center mt-8"
               >
+                <VBtn color="secondary" variant="tonal" @click="currentStep--">
+                  <VIcon icon="mdi-arrow-left" start class="flip-in-rtl" />
+                  Previous
+                </VBtn>
+
                 <VBtn type="submit">
                   Next
                   <VIcon icon="mdi-arrow-right" end class="flip-in-rtl" />
