@@ -1,9 +1,10 @@
+import { Comment } from '@/components/leads/LeadsTable.vue'
 import useApiFetch from '@/composables/useApiFetch'
 import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
 import { LeadStatus } from '@/stores/leads/useLeadStatusesStore'
 import { EventBus } from '@/utils/useEventBus'
-import { getExceptionMessage, reshapeParams } from '@/utils/useHelper'
+import { getExceptionMessage, handleError, reshapeParams, setQueryParams } from '@/utils/useHelper'
 import { defineStore } from 'pinia'
 
 type BenefitType = {
@@ -38,6 +39,7 @@ export const useLeadsStore = defineStore('leads', () => {
   const endPoint = '/leads'
   const leads = ref([])
   const selectedLead = ref<any>(null)
+  const selectedId = ref<null | string | number>(null)
   const isLoading = ref(false)
   const meta = ref(defaultPagination)
   const $toast: any = useToast()
@@ -50,8 +52,9 @@ export const useLeadsStore = defineStore('leads', () => {
   const surveyors: Ref<Surveyor[]> = ref([])
   const leadStatuses: Ref<LeadStatus[]> = ref([])
   const tableStatuses: Ref<LeadStatus[]> = ref([])
+  const errors = ref({})
 
-  const isLeadSelected = computed(() => !!selectedLead.value)
+  const isLeadSelected = computed(() => !!selectedLead.value?.id)
 
   const fetchLeads = async (options = {}) => {
     isLoading.value = true
@@ -98,6 +101,7 @@ export const useLeadsStore = defineStore('leads', () => {
   const deleteLead = async (leadId: number, options = { method: 'DELETE' }) => {
     try {
       isLoading.value = true
+      selectedId.value = leadId
       await useApiFetch(`${endPoint}/${leadId}`, options)
       $toast.success('Lead was deleted successfully.')
       await fetchLeads()
@@ -105,13 +109,14 @@ export const useLeadsStore = defineStore('leads', () => {
       $toast.error(getExceptionMessage(error))
     } finally {
       isLoading.value = false
+      selectedId.value = null
     }
   }
 
   const fetchLead = async (leadId: number, options = {}) => {
     try {
       isLoading.value = true
-      const { data } = await useApiFetch(`${endPoint}/${leadId}`, options)
+      const { data } = await useApiFetch(`${endPoint}/${leadId}?${setQueryParams(options)}`)
       selectedLead.value = data.lead
     } catch (error) {
       $toast.error(getExceptionMessage(error))
@@ -120,7 +125,7 @@ export const useLeadsStore = defineStore('leads', () => {
     }
   }
 
-  const updateStatus = async (payload: any, options = { method: 'POST' }) => {
+  const updateStatus = async (payload: Comment, options = { method: 'POST' }) => {
     try {
       isLoading.value = true
       await useApiFetch(`/lead-status/${payload.leadId}`, {
@@ -128,13 +133,28 @@ export const useLeadsStore = defineStore('leads', () => {
         ...options
       })
       $toast.success('Lead status was updated successfully.')
-      await fetchLeads()
     } catch (error) {
-      $toast.error(getExceptionMessage(error))
+      handleError(error, errors)
     } finally {
       isLoading.value = false
     }
   }
+
+  const update = async (options = { method: 'PUT' }) => {
+    try {
+      isLoading.value = true
+      await useApiFetch(`/leads/${selectedLead.value.id}`, {
+        data: selectedLead.value,
+        ...options
+      })
+      $toast.success('Lead was updated successfully.')
+    } catch (error) {
+      handleError(error, errors)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
 
   return {
     tableStatuses,
@@ -150,9 +170,11 @@ export const useLeadsStore = defineStore('leads', () => {
     isLoading,
     isLeadSelected,
     selectedLead,
+    selectedId,
     meta,
 
     updateStatus,
+    update,
     fetchLeads,
     fetchLead,
     storeLead,

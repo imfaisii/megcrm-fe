@@ -38,6 +38,15 @@ handleSkinChanges();
   padding-inline: 0 !important;
 }
 
+.no-y-padding {
+  padding-block: 0 !important;
+}
+
+.v-label {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
 .v-field:has(input[required]) .v-label {
   padding-inline-end: 8px;
 }
@@ -71,5 +80,15 @@ handleSkinChanges();
 
 ::-webkit-scrollbar-track {
   background-color: #f1f1f1; /* Set the color of the scrollbar track */
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

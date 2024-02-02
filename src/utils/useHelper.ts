@@ -62,6 +62,10 @@ export const reshapeParams = (url: string, meta: any = {}, options: any) => {
   return queryString ? `${url}?${queryString}` : url
 }
 
+export const setQueryParams = (options: {}) => {
+  return new URLSearchParams(options).toString();
+}
+
 export const focusFirstErrorDiv = (fullPage = false) => {
   const errorDiv = document.getElementsByClassName("v-field--error")[0]
 
@@ -94,4 +98,16 @@ export const removeEmptyAndNull = (obj: any): any => {
       removeEmptyAndNull(value),
     ]).filter(([key, value]) => value !== null && value !== undefined && value !== '')
   );
+}
+
+export const getProgressColor = (percentage: number) => {
+  if (percentage < 30) {
+    return 'error'
+  }
+
+  if (percentage < 60) {
+    return 'info'
+  }
+
+  return 'success'
 }

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { titles } from "@/constants/leads/customerDetails";
 import { useToast } from "@/plugins/toastr";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { getExceptionMessage } from "@/utils/useHelper";
@@ -49,7 +50,6 @@ defineProps({
   },
 });
 
-const titles = ["Mr", "Mrs", "Ms"];
 const $toast = useToast();
 const store = useLeadsStore();
 
@@ -272,6 +272,16 @@ onMounted(async () => await store.getExtras());
                 required
                 @keydown.enter.prevent="getSuggestions"
               >
+                <!-- Prepend -->
+                <template #prepend>
+                  <VTooltip location="bottom">
+                    <template #activator="{ props }">
+                      <VIcon v-bind="props" icon="mdi-help-circle-outline" />
+                    </template>
+                    Search for available address to continue.
+                  </VTooltip>
+                </template>
+
                 <!-- AppendInner -->
                 <template #append-inner>
                   <VFadeTransition leave-absolute>
@@ -538,75 +548,76 @@ onMounted(async () => await store.getExtras());
                 counter
               />
             </VCol>
+            <transition name="fade" mode="out-in">
+              <VCol
+                v-show="additionalInformationForm.has_second_receipent"
+                cols="12"
+              >
+                <VRow>
+                  <VCol cols="12" lg="3">
+                    <VTextField
+                      v-model="
+                        additionalInformationForm.second_receipent.first_name
+                      "
+                      :rules="[
+                        additionalInformationForm.has_second_receipent &&
+                          requiredValidator,
+                      ]"
+                      label="First Name"
+                      placeholder="John"
+                      clearable
+                      required
+                    />
+                  </VCol>
 
-            <VCol
-              v-if="additionalInformationForm.has_second_receipent"
-              cols="12"
-            >
-              <VRow>
-                <VCol cols="12" lg="3">
-                  <VTextField
-                    v-model="
-                      additionalInformationForm.second_receipent.first_name
-                    "
-                    :rules="[
-                      additionalInformationForm.has_second_receipent &&
-                        requiredValidator,
-                    ]"
-                    label="First Name"
-                    placeholder="John"
-                    clearable
-                    required
-                  />
-                </VCol>
+                  <VCol cols="12" lg="3">
+                    <VTextField
+                      v-model="
+                        additionalInformationForm.second_receipent.middle_name
+                      "
+                      label="Middle Name"
+                      placeholder="-"
+                      clearable
+                    />
+                  </VCol>
 
-                <VCol cols="12" lg="3">
-                  <VTextField
-                    v-model="
-                      additionalInformationForm.second_receipent.middle_name
-                    "
-                    label="Middle Name"
-                    placeholder="-"
-                    clearable
-                  />
-                </VCol>
+                  <VCol cols="12" lg="3">
+                    <VTextField
+                      v-model="
+                        additionalInformationForm.second_receipent.last_name
+                      "
+                      :rules="[
+                        additionalInformationForm.has_second_receipent &&
+                          requiredValidator,
+                      ]"
+                      label="Last Name"
+                      placeholder="Doe"
+                      clearable
+                      required
+                    />
+                  </VCol>
 
-                <VCol cols="12" lg="3">
-                  <VTextField
-                    v-model="
-                      additionalInformationForm.second_receipent.last_name
-                    "
-                    :rules="[
-                      additionalInformationForm.has_second_receipent &&
-                        requiredValidator,
-                    ]"
-                    label="Last Name"
-                    placeholder="Doe"
-                    clearable
-                    required
-                  />
-                </VCol>
-
-                <VCol cols="12" lg="3">
-                  <AppDateTimePicker
-                    v-model="additionalInformationForm.second_receipent.dob"
-                    :rules="[
-                      additionalInformationForm.has_second_receipent &&
-                        requiredValidator,
-                    ]"
-                    :config="{
-                      altInput: true,
-                      altFormat: 'F j, Y',
-                      dateFormat: 'Y-m-d',
-                    }"
-                    label="Date of Birth"
-                    placeholder="Select date"
-                    required
-                  >
-                  </AppDateTimePicker>
-                </VCol>
-              </VRow>
-            </VCol>
+                  <VCol cols="12" lg="3">
+                    <AppDateTimePicker
+                      v-model="additionalInformationForm.second_receipent.dob"
+                      :rules="[
+                        additionalInformationForm.has_second_receipent &&
+                          requiredValidator,
+                      ]"
+                      :config="{
+                        altInput: true,
+                        altFormat: 'F j, Y',
+                        dateFormat: 'Y-m-d',
+                      }"
+                      label="Date of Birth"
+                      placeholder="Select date"
+                      required
+                    >
+                    </AppDateTimePicker>
+                  </VCol>
+                </VRow>
+              </VCol>
+            </transition>
 
             <VCol cols="12">
               <div class="demo-space-x">

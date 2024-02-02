@@ -1,8 +1,20 @@
 <script lang="ts">
+import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useSkins } from "@core/composable/useSkins";
 
 export default defineComponent({
   setup() {
+    const auth = useAuthStore();
+    const router = useRouter();
+
+    onMounted(async () => {
+      await auth.fetchUser();
+
+      if (auth.isLoggedIn) {
+        router.push("/dashboard");
+      }
+    });
+
     const routerView = resolveComponent("router-view");
     const { injectSkinClasses } = useSkins();
 

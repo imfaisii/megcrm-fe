@@ -13,7 +13,7 @@ export interface UserThemeConfig {
     theme: string
     isRtl: UserLayoutConfig['app']['isRtl']
     skin: typeof Skins[keyof typeof Skins]
-    routeTransition:typeof RouteTransitions[keyof typeof RouteTransitions]
+    routeTransition: typeof RouteTransitions[keyof typeof RouteTransitions]
     iconRenderer: UserLayoutConfig['app']['iconRenderer']
   }
   navbar: {
@@ -89,11 +89,11 @@ export interface ThemeConfig {
 // SECTION Custom Input
 export interface CustomInputContent {
   title: string
-  desc: string
+  desc?: string
   value: string
   subtitle?: string
   icon?: string
-  images?:string
+  images?: string
 }
 
 
@@ -103,15 +103,15 @@ export interface GridColumn {
   md?: string
   lg?: string
   xl?: string
-  xxl?:string
+  xxl?: string
 }
 
 // Data table
 export type SortItem = { key: string, order?: boolean | 'asc' | 'desc' }
 
-export interface Options { 
+export interface Options {
   page: number
-  itemsPerPage:  number
+  itemsPerPage: number
   sortBy: readonly SortItem[]
   groupBy: readonly SortItem[]
   search: string | undefined

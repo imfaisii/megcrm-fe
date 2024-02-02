@@ -1,0 +1,357 @@
+<script lang="ts" setup>
+import {
+  contactMethods,
+  priorityTypes,
+  timesToContact,
+  titles,
+} from "@/constants/leads/customerDetails";
+import { useLeadsStore } from "@/stores/leads/useLeadsStore";
+import {
+  emailValidator,
+  integerValidator,
+  requiredValidator,
+} from "@validators";
+
+const store = useLeadsStore();
+const selectedRadio = ref("LAD");
+const jobTypes = computed(() =>
+  store.jobTypes.map((i: any) => {
+    return { title: i.name, value: i.id };
+  })
+);
+
+onMounted(async () => {
+  await store.getExtras();
+});
+</script>
+
+<template>
+  <VCard>
+    <VCardItem>
+      <template #prepend>
+        <VIcon icon="mdi-account-edit-outline" class="text-disabled" />
+      </template>
+
+      <VCardTitle>Customer Details</VCardTitle>
+    </VCardItem>
+
+    <VDivider />
+
+    <VCardText>
+      <VRow>
+        <!-- Job Types -->
+        <VCol cols="12" lg="6">
+          <VLabel class="mb-4" text="Job Type" />
+          <CustomRadios
+            v-model:selected-radio="store.selectedLead.job_type_id"
+            :radio-content="jobTypes"
+            :grid-column="{ lg: '4', cols: '12' }"
+          />
+        </VCol>
+
+        <!-- Contact Methods -->
+        <VCol cols="12" lg="6">
+          <VLabel class="mb-4" text="Contact Methods" />
+          <CustomRadios
+            v-model:selected-radio="
+              store.selectedLead.lead_customer_additional_detail.contact_method
+            "
+            :radio-content="contactMethods"
+            :grid-column="{ lg: '4', cols: '12' }"
+          />
+        </VCol>
+
+        <!-- Priority Types -->
+        <VCol cols="12" lg="6">
+          <VLabel class="mb-4" text="Priority Type" />
+          <CustomRadios
+            v-model:selected-radio="
+              store.selectedLead.lead_customer_additional_detail.priority_type
+            "
+            :radio-content="priorityTypes"
+            :grid-column="{ lg: '4', cols: '12' }"
+          />
+        </VCol>
+
+        <!-- Time to contact -->
+        <VCol cols="12" lg="6">
+          <VLabel class="mb-4">
+            <!-- append -->
+            <template #default>
+              <span class="mr-2">Time to contact</span>
+
+              <VTooltip location="bottom">
+                <template #activator="{ props }">
+                  <VIcon v-bind="props" icon="mdi-help-circle-outline" />
+                </template>
+                Most suitable time to contact the customer.
+              </VTooltip>
+            </template>
+          </VLabel>
+          <CustomRadios
+            v-model:selected-radio="
+              store.selectedLead.lead_customer_additional_detail.time_to_contact
+            "
+            :radio-content="timesToContact"
+            :grid-column="{ lg: '4', cols: '12' }"
+          />
+        </VCol>
+
+        <VCardItem>
+          <template #prepend>
+            <VIcon icon="mdi-account-details-outline" class="text-disabled" />
+          </template>
+
+          <VCardTitle>Other Details</VCardTitle>
+        </VCardItem>
+
+        <VDivider class="my-2" />
+
+        <!--First Name -->
+        <VCol cols="12" lg="4">
+          <VTextField
+            v-model="store.selectedLead.first_name"
+            :rules="[requiredValidator]"
+            label="First Name"
+            placeholder="John"
+            clearable
+            required
+          />
+        </VCol>
+
+        <!--Middle Name -->
+        <VCol cols="12" lg="4">
+          <VTextField
+            v-model="store.selectedLead.middle_name"
+            label="Middle Name"
+            placeholder="-"
+            clearable
+            required
+          />
+        </VCol>
+
+        <!--Last Name -->
+        <VCol cols="12" lg="4">
+          <VTextField
+            v-model="store.selectedLead.last_name"
+            :rules="[requiredValidator]"
+            label="Last Name"
+            placeholder="Doe"
+            clearable
+            required
+          />
+        </VCol>
+
+        <!-- Title -->
+        <VCol cols="12" lg="4">
+          <VCombobox
+            v-model="store.selectedLead.title"
+            :items="titles"
+            :rules="[requiredValidator]"
+            label="Title"
+            placeholder="Select title"
+            clearable
+            required
+          />
+        </VCol>
+
+        <!--Email -->
+        <VCol cols="12" lg="4">
+          <VTextField
+            v-model="store.selectedLead.email"
+            :rules="[requiredValidator, emailValidator]"
+            label="Email"
+            placeholder="johndoe@example.com"
+            clearable
+            required
+          />
+        </VCol>
+
+        <!-- Phone No -->
+        <VCol cols="12" lg="4">
+          <VTextField
+            v-model="store.selectedLead.phone_no"
+            :rules="[requiredValidator, integerValidator]"
+            label="Phone"
+            placeholder="XXX-XXXXXXX"
+            type="number"
+            clearable
+            required
+          />
+        </VCol>
+
+        <!-- DOB -->
+        <VCol cols="12" lg="4">
+          <AppDateTimePicker
+            v-model="store.selectedLead.dob"
+            :rules="[requiredValidator]"
+            :config="{
+              wrap: true,
+              altInput: false,
+              altFormat: 'F j, Y',
+              dateFormat: 'Y-m-d',
+            }"
+            label="Date of Birth"
+            placeholder="Select date"
+            required
+          />
+        </VCol>
+
+        <!-- Post code -->
+        <VCol cols="12" lg="4">
+          <VTextField
+            v-model="store.selectedLead.post_code"
+            prepend-inner-icon="mdi-post-outline"
+            label="Postcode"
+            :rules="[requiredValidator]"
+            placeholder="Enter postcode to search addresses"
+            required
+            disabled
+          />
+        </VCol>
+
+        <!-- Address -->
+        <VCol cols="12" lg="4">
+          <VTextField
+            prepend-inner-icon="mdi-map-marker-outline"
+            v-model="store.selectedLead.address"
+            :rules="[requiredValidator]"
+            label="Address"
+            placeholder="Enter postcode to search addresses"
+            type="text"
+            clearable
+            required
+            disabled
+          />
+        </VCol>
+
+        <!-- Benefit Type -->
+        <VCol cols="12" lg="4">
+          <VCombobox
+            v-model="store.selectedLead.benefit_type_id"
+            :items="store.benefitTypes"
+            label="Benefit Type"
+            item-title="name"
+            item-value="id"
+            clearable
+            :return-object="false"
+          />
+        </VCol>
+
+        <!-- Lead Source -->
+        <VCol cols="12" lg="4">
+          <VCombobox
+            v-model="store.selectedLead.lead_source_id"
+            :items="store.leadSources"
+            label="Lead Source"
+            item-title="name"
+            item-value="id"
+            clearable
+            :return-object="false"
+          />
+        </VCol>
+
+        <!-- Comments -->
+        <VCol cols="12">
+          <VTextarea
+            v-model="store.selectedLead.comments"
+            label="Comments"
+            placeholder="Some comments..."
+            auto-grow
+            clearable
+            counter
+          />
+        </VCol>
+
+        <!-- Checkboxes -->
+        <VCol cols="12">
+          <div class="demo-space-x">
+            <!-- Second Receipent -->
+            <VSwitch
+              v-model="store.selectedLead.has_second_receipent"
+              label="Second Receipent"
+            />
+
+            <!-- Customer Owner -->
+            <VSwitch
+              v-model="
+                store.selectedLead.lead_customer_additional_detail
+                  .is_customer_owner
+              "
+              label="Is customer the owner"
+            />
+
+            <!-- Share Lead -->
+            <VSwitch
+              v-model="
+                store.selectedLead.lead_customer_additional_detail
+                  .is_lead_shared
+              "
+              label="Share Lead"
+            />
+
+            <!-- Datamatch required -->
+            <VSwitch
+              v-model="
+                store.selectedLead.lead_customer_additional_detail
+                  .is_datamatch_required
+              "
+              label="Requires datamatch"
+            />
+          </div>
+        </VCol>
+      </VRow>
+
+      <transition name="fade" mode="out-in">
+        <VRow
+          v-show="
+            store.selectedLead.lead_customer_additional_detail
+              .is_datamatch_required
+          "
+        >
+          <VCardItem>
+            <template #prepend>
+              <VIcon icon="mdi-bullseye-arrow" class="text-disabled" />
+            </template>
+
+            <VCardTitle>Other Details</VCardTitle>
+          </VCardItem>
+
+          <VDivider class="my-2" />
+
+          <!-- Dataprogress Value -->
+          <VCol cols="12" lg="6">
+            <VCombobox
+              v-model="
+                store.selectedLead.lead_customer_additional_detail
+                  .datamatch_progress
+              "
+              :items="['Required', 'Not required']"
+              :rules="[requiredValidator]"
+              label="Datamatch progress for {Name}"
+              placeholder="Select an option"
+              clearable
+              required
+            />
+          </VCol>
+
+          <!-- Dataprogress Date -->
+          <VCol cols="12" lg="6">
+            <VCombobox
+              v-model="
+                store.selectedLead.lead_customer_additional_detail
+                  .datamatch_progress_date
+              "
+              :rules="[requiredValidator]"
+              label="Date processed by DWP"
+              placeholder="Date processed"
+              clearable
+              required
+              disabled
+            />
+          </VCol>
+        </VRow>
+      </transition>
+    </VCardText>
+  </VCard>
+</template>

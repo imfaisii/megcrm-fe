@@ -26,7 +26,10 @@ const handleCommentsSubmit = async () => {
     emit("onCommentsUpdate", comments.value);
 
     // resetting
-    comments.value = "";
+    setTimeout(() => {
+      comments.value = "";
+    }, 1000);
+
     closeDialog();
   }
 };

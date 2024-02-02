@@ -2,11 +2,8 @@
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useSkins } from "@core/composable/useSkins";
 import { useThemeConfig } from "@core/composable/useThemeConfig";
-import router from "@/router";
 
 const auth = useAuthStore();
-
-console.log("ROUTES", router.options.routes);
 
 onMounted(async () => await auth.fetchUser());
 

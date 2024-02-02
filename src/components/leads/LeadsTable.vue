@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import useDataTable from "@/composables/useDatatable";
+import useTime from "@/composables/useTime";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { mergeProps } from "vue";
 
-type Comment = {
+export type Comment = {
   leadId: Number | String;
   status: String;
   comments: String;
@@ -37,6 +38,7 @@ const form = reactive<Comment>({
 
 // composables
 const store: any = useLeadsStore();
+const time = useTime();
 const { onSortChange, onPaginationChange } = useDataTable(
   store,
   filters,
@@ -46,6 +48,7 @@ const { onSortChange, onPaginationChange } = useDataTable(
 const handleCommentsSubmit = async (comments: String) => {
   form.comments = comments;
   await store.updateStatus(form);
+  await store.fetchLeads();
 };
 
 const onStatusSelect = (leadId: any, status: any) => {
@@ -150,7 +153,8 @@ onMounted(async () => {
               <VBtn
                 size="x-small"
                 :color="
-                  item.raw?.status_details?.lead_status?.color ?? 'primary'
+                  item.raw?.status_details?.lead_status_model?.color ??
+                  'primary'
                 "
                 v-bind="mergeProps(menu, tooltip)"
               >
@@ -161,7 +165,11 @@ onMounted(async () => {
               {{ item.raw?.status_details?.reason }}
               {{
                 item?.raw?.status_details?.user &&
-                `by ${item.raw.status_details.user.name} at ${item.raw.status_details.lead_status.created_at}`
+                `by ${
+                  item.raw.status_details?.user?.name ?? "System"
+                } at ${time.formatDate(
+                  item.raw.status_details?.lead_status_model?.created_at
+                )}`
               }}
             </span>
           </VTooltip>
@@ -180,13 +188,19 @@ onMounted(async () => {
 
     <!-- Actions -->
     <template #item.actions="{ item }">
-      <!-- <IconBtn :to="{ name: 'leads-edit-id', params: { id: item.raw.id } }">
+      <IconBtn :to="{ name: 'leads-edit-id', params: { id: item.raw.id } }">
         <VIcon icon="tabler-edit" />
-      </IconBtn> -->
+      </IconBtn>
       <VTooltip location="bottom">
         <template #activator="{ props }">
-          <IconBtn v-bind="props" @click="store.deleteLead(item.raw.id)">
-            <VIcon color="error" icon="tabler-trash" />
+          <IconBtn @click="store.deleteLead(item.raw.id)" v-bind="props">
+            <VProgressCircular
+              v-if="store.isLoading && store.selectedId === item.raw.id"
+              size="24"
+              color="info"
+              indeterminate
+            />
+            <VIcon v-else color="error" icon="tabler-trash" />
           </IconBtn>
         </template>
         <span>Are you sure you want to delete this lead?</span>

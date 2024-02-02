@@ -1,45 +1,43 @@
 <script setup lang="ts">
-import { useGenerateImageVariant } from '@/@core/composable/useGenerateImageVariant'
-import { useAuthStore } from '@/stores/auth/useAuthStore'
-import authV1ResetPasswordMaskDark from '@images/pages/auth-v1-reset-password-mask-dark.png'
-import authV1ResetPasswordMaskLight from '@images/pages/auth-v1-reset-password-mask-light.png'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
+import { useGenerateImageVariant } from "@/@core/composable/useGenerateImageVariant";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
+import authV1ResetPasswordMaskDark from "@images/pages/auth-v1-reset-password-mask-dark.png";
+import authV1ResetPasswordMaskLight from "@images/pages/auth-v1-reset-password-mask-light.png";
+import { VNodeRenderer } from "@layouts/components/VNodeRenderer";
+import { themeConfig } from "@themeConfig";
 
-const authV1ResetPasswordMask = useGenerateImageVariant(authV1ResetPasswordMaskLight, authV1ResetPasswordMaskDark)
+const authV1ResetPasswordMask = useGenerateImageVariant(
+  authV1ResetPasswordMaskLight,
+  authV1ResetPasswordMaskDark
+);
 
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 
-console.log(route)
+const auth = useAuthStore();
 
-const auth = useAuthStore()
-
-const form = ref({
+const form = ref<any>({
   token: route.params.id,
   email: route.query.email,
-  password: '',
-  password_confirmation: '',
-})
+  password: "",
+  password_confirmation: "",
+});
 
-const isPasswordVisible = ref(false)
-const isConfirmPasswordVisible = ref(false)
+const isPasswordVisible = ref(false);
+const isConfirmPasswordVisible = ref(false);
 
 const handleSubmit = async () => {
-  await auth.resetPassword(form.value)
+  await auth.resetPassword(form.value);
 
   if (auth.success) {
-    router.push('/dashboard')
+    router.push("/dashboard");
   }
-}
+};
 </script>
 
 <template>
   <div class="auth-wrapper d-flex align-center justify-center pa-4">
-    <VCard
-      class="auth-card pa-2 pt-7"
-      max-width="448"
-    >
+    <VCard class="auth-card pa-2 pt-7" max-width="448">
       <VCardItem class="justify-center">
         <template #prepend>
           <div class="me-n2">
@@ -53,11 +51,10 @@ const handleSubmit = async () => {
       </VCardItem>
 
       <VCardText class="pt-2">
-        <h5 class="text-h5 mb-1">
-          Reset Password 🔒
-        </h5>
+        <h5 class="text-h5 mb-1">Reset Password 🔒</h5>
         <p class="mb-0">
-          Enter your email and we'll send you instructions to reset your password
+          Enter your email and we'll send you instructions to reset your
+          password
         </p>
       </VCardText>
 
@@ -81,7 +78,9 @@ const handleSubmit = async () => {
                 label="New Password"
                 placeholder="············"
                 :type="isPasswordVisible ? 'text' : 'password'"
-                :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
+                :append-inner-icon="
+                  isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'
+                "
                 :error-messages="auth?.errors?.password?.[0]"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
               />
@@ -94,8 +93,14 @@ const handleSubmit = async () => {
                 label="Confirm Password"
                 placeholder="············"
                 :type="isConfirmPasswordVisible ? 'text' : 'password'"
-                :append-inner-icon="isConfirmPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
-                @click:append-inner="isConfirmPasswordVisible = !isConfirmPasswordVisible"
+                :append-inner-icon="
+                  isConfirmPasswordVisible
+                    ? 'mdi-eye-off-outline'
+                    : 'mdi-eye-outline'
+                "
+                @click:append-inner="
+                  isConfirmPasswordVisible = !isConfirmPasswordVisible
+                "
               />
             </VCol>
 

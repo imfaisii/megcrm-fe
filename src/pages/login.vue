@@ -1,33 +1,33 @@
 <script setup lang="ts">
-import { useGenerateImageVariant } from '@/@core/composable/useGenerateImageVariant'
-import env from '@/constants/env'
-import { useAuthStore } from '@/stores/auth/useAuthStore'
-import authV1LoginMaskDark from '@images/pages/auth-v1-login-mask-dark.png'
-import authV1LoginMaskLight from '@images/pages/auth-v1-login-mask-light.png'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
+import { useGenerateImageVariant } from "@/@core/composable/useGenerateImageVariant";
+import env from "@/constants/env";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
+import authV1LoginMaskDark from "@images/pages/auth-v1-login-mask-dark.png";
+import authV1LoginMaskLight from "@images/pages/auth-v1-login-mask-light.png";
+import { VNodeRenderer } from "@layouts/components/VNodeRenderer";
+import { themeConfig } from "@themeConfig";
 
-const authV1ThemeLoginMask = useGenerateImageVariant(authV1LoginMaskLight, authV1LoginMaskDark)
-const isPasswordVisible = ref(false)
+const authV1ThemeLoginMask = useGenerateImageVariant(
+  authV1LoginMaskLight,
+  authV1LoginMaskDark
+);
+const isPasswordVisible = ref(false);
 
 const form = reactive({
-  email: '',
-  password: '',
-})
+  email: "",
+  password: "",
+});
 
-const auth = useAuthStore()
+const auth = useAuthStore();
 
 async function handleSubmit() {
-  await auth.login(form)
+  await auth.login(form);
 }
 </script>
 
 <template>
   <div class="auth-wrapper d-flex align-center justify-center pa-4">
-    <VCard
-      class="auth-card pa-2 pt-7"
-      max-width="448"
-    >
+    <VCard class="auth-card pa-2 pt-7" max-width="448">
       <VCardItem class="justify-center">
         <template #prepend>
           <div class="me-n2">
@@ -42,7 +42,8 @@ async function handleSubmit() {
 
       <VCardText class="pt-2">
         <h5 class="text-h5 mb-1">
-          Welcome to <span class="text-capitalize">{{ env.VITE_APP_NAME }}! 👋🏻</span>
+          Welcome to
+          <span class="text-capitalize">{{ env.VITE_APP_NAME }}! 👋🏻</span>
         </h5>
 
         <p class="mb-0">
@@ -72,13 +73,17 @@ async function handleSubmit() {
                 label="Password"
                 placeholder="············"
                 :type="isPasswordVisible ? 'text' : 'password'"
-                :append-inner-icon="isPasswordVisible ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
+                :append-inner-icon="
+                  isPasswordVisible ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
+                "
                 :error-messages="auth?.errors?.password?.[0]"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
               />
 
               <!-- remember me checkbox -->
-              <div class="d-flex align-center justify-space-between flex-wrap mt-1 mb-4">
+              <div
+                class="d-flex align-center justify-space-between flex-wrap mt-1 mb-4"
+              >
                 <RouterLink
                   class="text-primary ms-2 mt-8"
                   :to="{ name: 'forgot-password' }"

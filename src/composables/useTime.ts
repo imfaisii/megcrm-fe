@@ -2,11 +2,15 @@ import moment from 'moment'
 import * as mt from 'moment-timezone'
 
 export default function useTime() {
-  const DEFAULT_FORMAT = 'YYYY-MM-DD HH:mm:ss'
+  const DEFAULT_FORMAT = 'MMMM Do YYYY, h:mm:ss a'
 
   // Function to format a date using Moment.js
   const formatDate = (date: any, format = DEFAULT_FORMAT) => {
     return moment(date).format(format)
+  }
+
+  const diffForHumans = (date: any, format = DEFAULT_FORMAT) => {
+    return moment(date).fromNow()
   }
 
   // Function to get the current date and time
@@ -26,6 +30,7 @@ export default function useTime() {
     formatDate,
     getCurrentDateTime,
     calculateDateDiff,
+    diffForHumans,
     getClientTimeZone
   }
 }
