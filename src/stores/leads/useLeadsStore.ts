@@ -104,7 +104,7 @@ export const useLeadsStore = defineStore('leads', () => {
       selectedId.value = leadId
       await useApiFetch(`${endPoint}/${leadId}`, options)
       $toast.success('Lead was deleted successfully.')
-      await fetchLeads()
+      await fetchLeads({ include: "leadGenerator" })
     } catch (error) {
       $toast.error(getExceptionMessage(error))
     } finally {
