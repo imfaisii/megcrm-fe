@@ -39,16 +39,14 @@ const form = reactive<Comment>({
 // composables
 const store: any = useLeadsStore();
 const time = useTime();
-const { onSortChange, onPaginationChange } = useDataTable(
-  store,
-  filters,
-  store.fetchLeads
+const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
+  store.fetchLeads({ include: "leadGenerator" })
 );
 
 const handleCommentsSubmit = async (comments: String) => {
   form.comments = comments;
   await store.updateStatus(form);
-  await store.fetchLeads();
+  await store.fetchLeads({ include: "leadGenerator" });
 };
 
 const onStatusSelect = (leadId: any, status: any) => {

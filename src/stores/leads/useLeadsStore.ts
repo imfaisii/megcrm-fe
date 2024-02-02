@@ -88,7 +88,7 @@ export const useLeadsStore = defineStore('leads', () => {
         data: payload,
         ...options,
       })
-      await fetchLeads()
+      await fetchLeads({ include: "leadGenerator" })
       $toast.success('Lead was saved successfully.')
       EventBus.$emit('hide-lead-dialog')
     } catch (error) {
