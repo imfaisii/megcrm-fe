@@ -7,6 +7,6 @@ import UserManagement from './user-management'
 export default [
   ...Home,
   ...LeadManagement,
+  ...Misc,
   ...UserManagement,
-  ...Misc
 ] as VerticalNavItems

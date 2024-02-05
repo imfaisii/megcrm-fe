@@ -11,10 +11,18 @@ const isAddUserDialogVisible: any = ref(false);
         <VCard class="users-card">
           <VCardTitle class="pl-4 pr-4 mt-3 mb-2">
             <VRow class="text-layout">
-              <VCol cols="6" class="text-left">
+              <VCol
+                cols="12"
+                lg="6"
+                :class="$vuetify.display.lgAndUp ? 'text-left' : 'text-center'"
+              >
                 <h6 class="text-h5">Users Table</h6>
               </VCol>
-              <VCol cols="6" class="text-right">
+              <VCol
+                cols="12"
+                lg="6"
+                :class="$vuetify.display.lgAndUp ? 'text-right' : 'text-center'"
+              >
                 <VBtn
                   v-if="is(roles.SUPER_ADMIN) || can('users.store')"
                   @click="isAddUserDialogVisible = true"

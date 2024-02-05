@@ -3,11 +3,11 @@ import LeadForm from "@/components/leads/CreateForm.vue";
 </script>
 
 <template>
-  <VCard class="pa-sm-8 pa-5">
+  <VCard>
     <!-- Title -->
     <VCardItem>
       <VCardTitle class="text-h4 mb-3"> Create Lead </VCardTitle>
-      <p class="text-muted">You can leads in the system here.</p>
+      <p class="text-muted">You can add leads in the system here.</p>
     </VCardItem>
 
     <VCardText>
