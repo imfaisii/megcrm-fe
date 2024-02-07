@@ -6,9 +6,10 @@ export default [
     title: 'Leads',
     icon: { icon: 'mdi-check-outline' },
     children: [
+      { title: 'Leads Statuses', to: 'leads-statuses' },
       { title: 'Create Lead', to: 'leads-create' },
       { title: 'List Leads', to: 'leads' },
-      { title: 'Leads Statuses', to: 'leads-statuses' },
+      { title: 'Assignments', to: 'leads-assignments' },
     ]
   },
 ] as VerticalNavItems

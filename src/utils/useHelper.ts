@@ -44,26 +44,38 @@ export const reshapeParams = (url: string, meta: any = {}, options: any) => {
     }
   }
 
+  let queryString = query.toString()
+
   // Add filters from meta.filters
   if (meta?.filters) {
-    for (const [filterKey, filterValue] of Object.entries(mergedParams.filters)) {
-      if (Array.isArray(filterValue) && filterValue.length > 0) {
-        query.append(`filter[${filterKey}]`, filterValue);
-      }
-
-      if (!Array.isArray(filterValue)) {
-        query.append(`filter[${filterKey}]`, filterValue);
-      }
-    }
+    queryString += `&${returnFilterString(meta.filters)}`
   }
 
-  const queryString = query.toString()
+  if (options?.filters) {
+    queryString += `&${returnFilterString(options.filters)}`
+  }
 
   return queryString ? `${url}?${queryString}` : url
 }
 
 export const setQueryParams = (options: {}) => {
   return new URLSearchParams(options).toString();
+}
+
+export const returnFilterString = (filters: any): string => {
+  const query = new URLSearchParams()
+
+  for (const [filterKey, filterValue] of Object.entries(filters)) {
+    if (Array.isArray(filterValue) && filterValue.length > 0) {
+      query.append(`filter[${filterKey}]`, filterValue as any);
+    }
+
+    if (!Array.isArray(filterValue)) {
+      query.append(`filter[${filterKey}]`, filterValue as any);
+    }
+  }
+
+  return query.toString();
 }
 
 export const focusFirstErrorDiv = (fullPage = false) => {

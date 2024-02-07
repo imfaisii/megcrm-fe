@@ -120,9 +120,9 @@ onMounted(async () => await permissionsStore.getPermissions());
                       dense
                     >
                       <template v-slot:label>
-                        <span style="font-size: 12px">{{
-                          permission.name
-                        }}</span>
+                        <span style="font-size: 12px">
+                          {{ permission.name }}
+                        </span>
                       </template>
                     </VCheckbox>
                   </VCol>
