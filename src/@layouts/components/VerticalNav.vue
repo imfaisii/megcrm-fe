@@ -1,61 +1,79 @@
 <script lang="ts" setup>
-import type { Component } from 'vue'
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { VNodeRenderer } from './VNodeRenderer'
-import { useLayouts } from '@layouts'
-import { VerticalNavGroup, VerticalNavLink, VerticalNavSectionTitle } from '@layouts/components'
-import { config } from '@layouts/config'
-import { injectionKeyIsVerticalNavHovered } from '@layouts/symbols'
-import type { NavGroup, NavLink, NavSectionTitle, VerticalNavItems } from '@layouts/types'
+import { useLayouts } from "@layouts";
+import {
+  VerticalNavGroup,
+  VerticalNavLink,
+  VerticalNavSectionTitle,
+} from "@layouts/components";
+import { config } from "@layouts/config";
+import { injectionKeyIsVerticalNavHovered } from "@layouts/symbols";
+import type {
+  NavGroup,
+  NavLink,
+  NavSectionTitle,
+  VerticalNavItems,
+} from "@layouts/types";
+import type { Component } from "vue";
+import { PerfectScrollbar } from "vue3-perfect-scrollbar";
+import { VNodeRenderer } from "./VNodeRenderer";
 
 interface Props {
-  tag?: string | Component
-  navItems: VerticalNavItems
-  isOverlayNavActive: boolean
-  toggleIsOverlayNavActive: (value: boolean) => void
+  tag?: string | Component;
+  navItems: VerticalNavItems;
+  isOverlayNavActive: boolean;
+  toggleIsOverlayNavActive: (value: boolean) => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  tag: 'aside',
-})
+  tag: "aside",
+});
 
-const refNav = ref()
+const refNav = ref();
 
-const { width: windowWidth } = useWindowSize()
+const { width: windowWidth } = useWindowSize();
 
-const isHovered = useElementHover(refNav)
+const isHovered = useElementHover(refNav);
 
-provide(injectionKeyIsVerticalNavHovered, isHovered)
+provide(injectionKeyIsVerticalNavHovered, isHovered);
 
-const { isVerticalNavCollapsed: isCollapsed, isLessThanOverlayNavBreakpoint, isVerticalNavMini, isAppRtl } = useLayouts()
+const {
+  isVerticalNavCollapsed: isCollapsed,
+  isLessThanOverlayNavBreakpoint,
+  isVerticalNavMini,
+  isAppRtl,
+} = useLayouts();
 
-const hideTitleAndIcon = isVerticalNavMini(windowWidth, isHovered)
+const hideTitleAndIcon = isVerticalNavMini(windowWidth, isHovered);
 
-const resolveNavItemComponent = (item: NavLink | NavSectionTitle | NavGroup) => {
-  if ('heading' in item)
-    return VerticalNavSectionTitle
-  if ('children' in item)
-    return VerticalNavGroup
+const resolveNavItemComponent = (
+  item: NavLink | NavSectionTitle | NavGroup
+) => {
+  if ("heading" in item) return VerticalNavSectionTitle;
+  if ("children" in item) return VerticalNavGroup;
 
-  return VerticalNavLink
-}
+  return VerticalNavLink;
+};
 
 /*
   ℹ️ Close overlay side when route is changed
   Close overlay vertical nav when link is clicked
 */
-const route = useRoute()
+const route = useRoute();
 
-watch(() => route.name, () => {
-  props.toggleIsOverlayNavActive(false)
-})
+watch(
+  () => route.name,
+  () => {
+    props.toggleIsOverlayNavActive(false);
+  }
+);
 
-const isVerticalNavScrolled = ref(false)
-const updateIsVerticalNavScrolled = (val: boolean) => isVerticalNavScrolled.value = val
+const isVerticalNavScrolled = ref(false);
+const updateIsVerticalNavScrolled = (val: boolean) =>
+  (isVerticalNavScrolled.value = val);
 
 const handleNavScroll = (evt: Event) => {
-  isVerticalNavScrolled.value = (evt.target as HTMLElement).scrollTop > 0
-}
+  isVerticalNavScrolled.value = (evt.target as HTMLElement).scrollTop > 0;
+};
 </script>
 
 <template>
@@ -66,9 +84,9 @@ const handleNavScroll = (evt: Event) => {
     :class="[
       {
         'overlay-nav': isLessThanOverlayNavBreakpoint(windowWidth),
-        'hovered': isHovered,
-        'visible': isOverlayNavActive,
-        'scrolled': isVerticalNavScrolled,
+        hovered: isHovered,
+        visible: isOverlayNavActive,
+        scrolled: isVerticalNavScrolled,
       },
     ]"
   >
@@ -150,14 +168,15 @@ const handleNavScroll = (evt: Event) => {
 // 👉 Vertical Nav
 .layout-vertical-nav {
   position: fixed;
-  z-index: variables.$layout-vertical-nav-z-index;
+  z-index: 1003;
   display: flex;
   flex-direction: column;
   block-size: 100%;
   inline-size: variables.$layout-vertical-nav-width;
   inset-block-start: 0;
   inset-inline-start: 0;
-  transition: transform 0.25s ease-in-out, inline-size 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
+  transition: transform 0.25s ease-in-out, inline-size 0.25s ease-in-out,
+    box-shadow 0.25s ease-in-out;
   will-change: transform, inline-size;
 
   .nav-header {

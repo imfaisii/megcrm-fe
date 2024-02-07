@@ -4,9 +4,11 @@ import Home from './home'
 import LeadManagement from './lead-management'
 import Misc from './misc'
 import UserManagement from './user-management'
+import Calendar from './calendar'
 
 export default [
   ...Home,
+  ...Calendar,
   ...LeadManagement,
   ...CallCenter,
   ...Misc,
