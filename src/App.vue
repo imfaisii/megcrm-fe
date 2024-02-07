@@ -91,4 +91,14 @@ handleSkinChanges();
 .fade-leave-to {
   opacity: 0;
 }
+
+.blink-animate {
+  animation: blinker 2s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
 </style>

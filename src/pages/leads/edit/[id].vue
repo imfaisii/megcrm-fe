@@ -65,23 +65,34 @@ onUnmounted(() => (store.selectedLead = null));
         <VCol cols="12">
           <VCard title="Lead Status" class="mb-6">
             <template #append>
-              <div class="me-n3 mt-n2">
-                <VTooltip location="top">
-                  <template #activator="{ props }">
-                    <VProgressCircular
-                      v-bind="props"
-                      class="mr-4"
-                      :rotate="360"
-                      :size="70"
-                      :width="6"
-                      :model-value="25"
-                      :color="getProgressColor(25)"
-                    >
-                      {{ "25" }}
-                    </VProgressCircular>
-                  </template>
-                  Current Lead Progress
-                </VTooltip>
+              <div class="d-flex flex-column-reverse ga-2 me-n3 mt-n2">
+                <div class="d-flex justify-center">
+                  <VTooltip location="top">
+                    <template #activator="{ props }">
+                      <VProgressCircular
+                        v-bind="props"
+                        class="mr-4"
+                        :rotate="360"
+                        :size="70"
+                        :width="6"
+                        :model-value="25"
+                        :color="getProgressColor(25)"
+                      >
+                        {{ "25" }}
+                      </VProgressCircular>
+                    </template>
+                    Current Lead Progress
+                  </VTooltip>
+                </div>
+
+                <VChip
+                  label
+                  size="small"
+                  class="text-capitalize mb-2 blink-animate"
+                  color="warning"
+                >
+                  {{ store.selectedLead.status_details.name }}
+                </VChip>
               </div>
             </template>
 
