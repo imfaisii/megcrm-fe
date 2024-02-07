@@ -177,16 +177,12 @@ onUnmounted(() => (store.selectedLead = null));
       </VTabs>
       <VDivider />
 
-      <VWindow
-        v-model="activeTab"
-        class="mt-6 disable-tab-transition"
-        :touch="false"
-      >
-        <VWindowItem>
+      <VWindow v-model="activeTab" class="mt-6" :touch="true">
+        <VWindowItem :transition="false">
           <CustomerDetailsForm />
         </VWindowItem>
 
-        <VWindowItem>
+        <VWindowItem :transition="false">
           <ActivityTimeline
             :logs="store.selectedLead?.logs ?? []"
             :statuses="store.selectedLead?.statuses ?? []"
