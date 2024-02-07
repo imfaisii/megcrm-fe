@@ -1,5 +1,5 @@
-import type { Router } from 'vue-router'
 import type { NavGroup, NavLink, NavLinkProps } from '@layouts/types'
+import type { Router } from 'vue-router'
 
 export const openGroups = ref<string[]>([])
 
@@ -53,7 +53,7 @@ export const isNavLinkActive = (link: NavLink, router: Router) => {
     return false
 
   return matchedRoutes.some(route => {
-    return route.name === resolveRoutedName || route.meta.navActiveLink === resolveRoutedName
+    return route.name === resolveRoutedName || route.meta.navActiveLink === resolveRoutedName || (route.meta?.navActiveLink?.startsWith(resolveRoutedName) ?? false)
   })
 }
 
@@ -77,7 +77,7 @@ export const isNavGroupActive = (children: (NavLink | NavGroup)[], router: Route
  */
 
 export const hexToRgb = (hex: string) => {
-// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
   const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
 
   hex = hex.replace(shorthandRegex, (m: string, r: string, g: string, b: string) => {
@@ -94,15 +94,14 @@ export const hexToRgb = (hex: string) => {
  */
 export const rgbaToHex = (rgba: string, forceRemoveAlpha = false) => {
   return (
-    `#${
-      rgba
-        .replace(/^rgba?\(|\s+|\)$/g, '') // Get's rgba / rgb string values
-        .split(',') // splits them at ","
-        .filter((string, index) => !forceRemoveAlpha || index !== 3)
-        .map(string => parseFloat(string)) // Converts them to numbers
-        .map((number, index) => (index === 3 ? Math.round(number * 255) : number)) // Converts alpha to 255 number
-        .map(number => number.toString(16)) // Converts numbers to hex
-        .map(string => (string.length === 1 ? `0${string}` : string)) // Adds 0 when length of one number is 1
-        .join('')}`
+    `#${rgba
+      .replace(/^rgba?\(|\s+|\)$/g, '') // Get's rgba / rgb string values
+      .split(',') // splits them at ","
+      .filter((string, index) => !forceRemoveAlpha || index !== 3)
+      .map(string => parseFloat(string)) // Converts them to numbers
+      .map((number, index) => (index === 3 ? Math.round(number * 255) : number)) // Converts alpha to 255 number
+      .map(number => number.toString(16)) // Converts numbers to hex
+      .map(string => (string.length === 1 ? `0${string}` : string)) // Adds 0 when length of one number is 1
+      .join('')}`
   )
 }

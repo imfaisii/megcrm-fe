@@ -24,7 +24,6 @@ const isAddLeadDialogVisible: any = ref(false);
                 :class="$vuetify.display.lgAndUp ? 'text-right' : 'text-center'"
               >
                 <VBtn
-                  v-if="is(roles.SUPER_ADMIN) || can('leads.index')"
                   @click="isAddLeadDialogVisible = true"
                   color="primary"
                 >
@@ -34,7 +33,7 @@ const isAddLeadDialogVisible: any = ref(false);
             </VRow>
           </VCardTitle>
 
-          <LeadsTable v-if="is(roles.SUPER_ADMIN) || can('leads.store')" />
+          <LeadsTable />
         </VCard>
       </VCol>
     </VRow>

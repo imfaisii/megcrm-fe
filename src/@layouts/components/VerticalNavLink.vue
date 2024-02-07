@@ -1,30 +1,36 @@
 <script lang="ts" setup>
-import { useLayouts } from '@layouts'
-import { config } from '@layouts/config'
-import { can } from '@layouts/plugins/casl'
-import type { NavLink } from '@layouts/types'
-import { getComputedNavLinkToProp, isNavLinkActive } from '@layouts/utils'
+import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
+import { useLayouts } from "@layouts";
+import { config } from "@layouts/config";
+import type { NavLink } from "@layouts/types";
+import { getComputedNavLinkToProp, isNavLinkActive } from "@layouts/utils";
 
 defineProps<{
-  item: NavLink
-}>()
+  item: NavLink;
+}>();
 
-const { width: windowWidth } = useWindowSize()
-const { isVerticalNavMini, dynamicI18nProps } = useLayouts()
+const store = usePermissionsStore();
+const { width: windowWidth } = useWindowSize();
+const { isVerticalNavMini, dynamicI18nProps } = useLayouts();
 
-const hideTitleAndBadge = isVerticalNavMini(windowWidth)
+const hideTitleAndBadge = isVerticalNavMini(windowWidth);
 </script>
 
 <template>
   <li
-    v-if="can(item.action, item.subject)"
+    v-if="store.can(item?.permissions ?? [])"
     class="nav-link"
     :class="{ disabled: item.disable }"
   >
     <Component
       :is="item.to ? 'RouterLink' : 'a'"
       v-bind="getComputedNavLinkToProp(item)"
-      :class="{ 'router-link-active router-link-exact-active': isNavLinkActive(item, $router) }"
+      :class="{
+        'router-link-active router-link-exact-active': isNavLinkActive(
+          item,
+          $router
+        ),
+      }"
     >
       <Component
         :is="config.app.iconRenderer || 'div'"

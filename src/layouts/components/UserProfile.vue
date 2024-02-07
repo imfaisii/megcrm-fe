@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import useApiFetch from "@/composables/useApiFetch";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import avatar1 from "@images/avatars/avatar-1.png";
 
 const store = useAuthStore();
 
-const logOut = () => {
-  store.$reset();
+const logOut = async () => {
+  await useApiFetch("/logout", { method: "POST" });
+
   store.logout();
 };
 </script>

@@ -81,7 +81,6 @@ const refAddressForm = ref<VForm>();
 const refAdditionalInformationForm = ref<VForm>();
 const refReviewForm = ref<VForm>();
 const isCurrentStepValid = ref(true);
-const isScotland = ref<Boolean>(false);
 
 const personalInformationForm = ref({
   title: null,
@@ -190,25 +189,6 @@ const handleSubmit = async () => {
   });
 };
 
-const epcLink = computed(() => {
-  if (isScotland.value) {
-    return "https://www.scottishepcregister.org.uk/CustomerFacingPortal/EPCPostcodeSearch";
-  }
-
-  return `https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${addressInformationForm.value.post_code}`;
-});
-
-watch(
-  () => addressInformationForm.value.address,
-  (n: any) => {
-    if (n) {
-      const countryRegex = /--\s*(\w+(?:\s*\w+)*)/;
-      const match = n.match(countryRegex);
-      isScotland.value = match && match[1].toUpperCase() === "SCOTLAND";
-    }
-  }
-);
-
 onMounted(async () => await store.getExtras());
 </script>
 
@@ -232,36 +212,11 @@ onMounted(async () => await store.getExtras());
           ref="refAddressForm"
         >
           <VRow>
-            <VCol cols="12" v-if="addressInformationForm.post_code">
-              <VAlert border="start" color="info" variant="tonal">
-                <a :href="epcLink" target="_blank">
-                  View EPCs of
-                  {{ addressInformationForm.post_code.toUpperCase() }}
-                </a>
-              </VAlert>
-            </VCol>
-
-            <VCol cols="12">
-              <VAlert border="start" color="info" variant="tonal">
-                <a
-                  href="https://www.ncm-pcdb.org.uk/sap/pcdbsearch.jsp?pid=26"
-                  target="_blank"
-                >
-                  Click here to check boiler efficiency
-                </a>
-              </VAlert>
-            </VCol>
-
-            <VCol cols="12">
-              <VAlert border="start" color="info" variant="tonal">
-                <a
-                  href="https://www.gassaferegister.co.uk/gas-safety/gas-safety-certificates-records/building-regulations-certificate/order-replacement-building-regulations-certificate/"
-                  target="_blank"
-                >
-                  Click here to check gas safe register
-                </a>
-              </VAlert>
-            </VCol>
+            <LeadAlertMessages
+              v-if="addressInformationForm.post_code"
+              :postCode="addressInformationForm.post_code"
+              :address="addressInformationForm.address"
+            />
 
             <VCol cols="12" lg="5">
               <VTextField
@@ -413,7 +368,7 @@ onMounted(async () => await store.getExtras());
                 :rules="[requiredValidator]"
                 :config="{
                   wrap: true,
-                  altInput: false,
+                  altInput: true,
                   altFormat: 'F j, Y',
                   dateFormat: 'Y-m-d',
                 }"

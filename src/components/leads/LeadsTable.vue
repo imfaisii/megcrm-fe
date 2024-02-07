@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import useDataTable from "@/composables/useDatatable";
 import useTime from "@/composables/useTime";
+import router from "@/router";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { mergeProps } from "vue";
 
@@ -17,6 +18,7 @@ const headers = [
   { title: "Post Code", key: "post_code" },
   { title: "Lead Generator", key: "lead_generator_id", sortable: false },
   { title: "Status", key: "status_details", sortable: false },
+  { title: "Date", key: "created_at" },
   { title: "Actions", key: "actions", sortable: false },
 ];
 
@@ -26,6 +28,7 @@ const filters = ref({
   post_code: "",
   statuses: [],
   lead_generator_id: [],
+  timestamp: "",
 });
 
 const isCommentsDialogVisible = ref(false);
@@ -56,6 +59,17 @@ const onStatusSelect = (leadId: any, status: any) => {
   isCommentsDialogVisible.value = true;
 };
 
+const onRowClick = ($event: PointerEvent, item: any) => {
+  handleRedirect(item.item.raw.id);
+};
+
+const handleRedirect = (itemId: any) => {
+  store.selectedId = itemId;
+  store.isLoading = true;
+
+  router.push({ name: "leads-edit-id", params: { id: itemId } });
+};
+
 onMounted(async () => {
   await store.getExtras();
   await store.fetchLeads({ include: "leadGenerator" });
@@ -65,15 +79,15 @@ onMounted(async () => {
 <template>
   <!-- Filters -->
   <VRow class="pa-4">
-    <VCol cols="12" lg="3">
+    <VCol cols="12" lg="4">
       <VTextField v-model="filters.email" label="Email address" clearable />
     </VCol>
 
-    <VCol cols="12" lg="3">
+    <VCol cols="12" lg="4">
       <VTextField v-model="filters.post_code" label="Post code" clearable />
     </VCol>
 
-    <VCol cols="12" lg="3">
+    <VCol cols="12" lg="4">
       <VCombobox
         v-model="filters.statuses"
         :items="store.tableStatuses"
@@ -88,7 +102,7 @@ onMounted(async () => {
       />
     </VCol>
 
-    <VCol cols="12" lg="3">
+    <VCol cols="12" lg="6">
       <VCombobox
         v-model="filters.lead_generator_id"
         :items="store.leadGenerators"
@@ -102,6 +116,20 @@ onMounted(async () => {
         :return-object="false"
       />
     </VCol>
+    <VCol cols="12" lg="6">
+      <AppDateTimePicker
+        v-model="filters.timestamp"
+        :config="{
+          mode: 'range',
+          wrap: true,
+          altInput: true,
+          altFormat: 'F j, Y',
+          dateFormat: 'Y-m-d',
+        }"
+        label="Dated"
+        placeholder="Select date"
+      />
+    </VCol>
   </VRow>
 
   <!-- Table-->
@@ -111,6 +139,7 @@ onMounted(async () => {
     :headers="headers"
     class="text-no-wrap"
     show-select
+    @click:row="onRowClick"
     @update:on-pagination-change="onPaginationChange"
     @update:on-sort-change="onSortChange"
   >
@@ -184,12 +213,28 @@ onMounted(async () => {
       </VMenu>
     </template>
 
+    <!-- Created Ay -->
+    <template #item.created_at="{ item }">
+      <p>{{ time.formatDate(item.raw.created_at, "DD/MM/YYYY") }}</p>
+    </template>
+
     <!-- Actions -->
     <template #item.actions="{ item }">
-      <IconBtn :to="{ name: 'leads-edit-id', params: { id: item.raw.id } }">
-        <VIcon icon="tabler-edit" />
-      </IconBtn>
       <VTooltip location="bottom">
+        <template #activator="{ props }">
+          <IconBtn v-bind="props" @click="handleRedirect(item.raw.id)">
+            <VProgressCircular
+              v-if="store.isLoading && store.selectedId === item.raw.id"
+              size="24"
+              color="info"
+              indeterminate
+            />
+            <VIcon v-else icon="tabler-edit" />
+          </IconBtn>
+        </template>
+        <span>View Lead Details</span>
+      </VTooltip>
+      <!-- <VTooltip location="bottom">
         <template #activator="{ props }">
           <IconBtn @click="store.deleteLead(item.raw.id)" v-bind="props">
             <VProgressCircular
@@ -202,7 +247,7 @@ onMounted(async () => {
           </IconBtn>
         </template>
         <span>Are you sure you want to delete this lead?</span>
-      </VTooltip>
+      </VTooltip> -->
     </template>
   </DataTable>
 

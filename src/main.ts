@@ -7,7 +7,6 @@ import { loadFonts } from '@/plugins/webfontloader'
 import router from '@/router'
 import '@core/scss/template/index.scss'
 import '@styles/styles.scss'
-import LaravelPermissionToVueJS from 'laravel-permission-to-vuejs'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import ToastPlugin from 'vue-toast-notification'
@@ -18,12 +17,11 @@ loadFonts()
 const app = createApp(App)
 
 // Use plugins
-app.use(vuetify)
 app.use(createPinia())
+app.use(vuetify)
 app.use(router)
 app.use(layoutsPlugin)
 app.use(ToastPlugin)
-app.use(LaravelPermissionToVueJS)
 
 // Mount vue app
 app.mount('#app')

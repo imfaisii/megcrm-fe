@@ -18,7 +18,7 @@ export interface UserConfig {
     navbarBlur: boolean
   }
   footer: {
-    type:typeof FooterType[keyof typeof FooterType]
+    type: typeof FooterType[keyof typeof FooterType]
   }
   verticalNav: {
     isVerticalNavCollapsed: boolean
@@ -86,6 +86,7 @@ interface AclProperties {
 // 👉 Vertical nav section title
 export interface NavSectionTitle extends Partial<AclProperties> {
   heading: string
+  permissions?: string[]
 }
 
 // 👉 Vertical nav link
@@ -118,6 +119,7 @@ export interface NavLink extends NavLinkProps, Partial<AclProperties> {
   badgeContent?: string
   badgeClass?: string
   disable?: boolean
+  permissions?: string[]
 }
 
 // 👉 Vertical nav group
@@ -128,6 +130,7 @@ export interface NavGroup extends Partial<AclProperties> {
   badgeClass?: string
   children: (NavLink | NavGroup)[]
   disable?: boolean
+  permissions?: string[]
 }
 
 export declare type VerticalNavItems = (NavLink | NavGroup | NavSectionTitle)[]
@@ -143,17 +146,17 @@ interface I18nLanguage {
 // avatar | text | icon
 // Thanks: https://stackoverflow.com/a/60617060/10796681
 type Notification = {
-  id:number
+  id: number
   title: string
   subtitle: string
   time: string
   color?: string
   isSeen: boolean
 } & (
-  | { img: string; text?: never; icon?: never }
-  | { img?: never; text: string; icon?: never }
-  | { img?: never; text?: never; icon: string }
-)
+    | { img: string; text?: never; icon?: never }
+    | { img?: never; text: string; icon?: never }
+    | { img?: never; text?: never; icon: string }
+  )
 
 interface ThemeSwitcherTheme {
   name: string

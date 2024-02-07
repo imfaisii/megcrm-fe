@@ -2,6 +2,7 @@ import useApiFetch from '@/composables/useApiFetch'
 import { ACCESS_TOKEN_KEY } from '@/constants/general'
 import { isValidToken } from '@/middlewares/auth'
 import { useToast } from '@/plugins/toastr'
+import { usePermissionsStore } from '@/stores/permissions/usePermissionsStore'
 import { handleError } from '@/utils/useHelper'
 
 interface User {
@@ -37,14 +38,13 @@ export const useAuthStore = defineStore('auth', () => {
   const router = useRouter()
   const $toast = useToast()
   const route = useRoute()
+  const permissionsStore = usePermissionsStore()
 
   const fetchUser = async () => {
     isLoading.value = true
 
     try {
       const { data } = await useApiFetch('/user')
-      const { data: permissionsData } = await useApiFetch('/get-permissions')
-      window.Laravel.jsPermissions = permissionsData;
       await setUser(data.user)
     }
     catch (e) {
@@ -150,13 +150,14 @@ export const useAuthStore = defineStore('auth', () => {
   const logout = async () => {
     destroyUser()
     destroyToken()
+
+    permissionsStore.$reset()
+    $reset()
+
     redirectToLogin()
   }
 
-  const redirectToLogin = () => {
-    $toast.success('Redirecting to login')
-    router.push('/login')
-  }
+  const redirectToLogin = () => router.push('/login')
 
   const redirectToDashboard = () => {
     $toast.success('Redirecting to dashboard')

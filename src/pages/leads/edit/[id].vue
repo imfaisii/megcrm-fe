@@ -6,15 +6,15 @@ import { requiredValidator } from "@validators";
 const store = useLeadsStore();
 const route = useRoute();
 
-const activeTab = ref("timeline");
+const activeTab = ref("customer-details");
 
 const tabs = [
-  { title: "Timeline", icon: "mdi-clock-outline", tab: "timeline" },
   {
     title: "Customer Details",
     icon: "mdi-account-outline",
     tab: "customer-details",
   },
+  { title: "History", icon: "mdi-clock-outline", tab: "history" },
   {
     title: "Coming soon...",
     icon: "mdi-clock-alert-outline",
@@ -86,7 +86,7 @@ onUnmounted(() => (store.selectedLead = null));
             </template>
 
             <VCardText>
-              <VRow>
+              <VRow class="mb-3">
                 <VCol cols="12">
                   <VCombobox
                     v-model="store.selectedLead.status_details.name"
@@ -140,6 +140,15 @@ onUnmounted(() => (store.selectedLead = null));
                   </VCombobox>
                 </VCol>
               </VRow>
+
+              <VRow>
+                <LeadAlertMessages
+                  class="mt-4"
+                  v-if="store.selectedLead.post_code"
+                  :postCode="store.selectedLead.post_code"
+                  :address="store.selectedLead.address"
+                />
+              </VRow>
             </VCardText>
           </VCard>
         </VCol>
@@ -163,14 +172,14 @@ onUnmounted(() => (store.selectedLead = null));
         :touch="false"
       >
         <VWindowItem>
+          <CustomerDetailsForm />
+        </VWindowItem>
+
+        <VWindowItem>
           <ActivityTimeline
             :logs="store.selectedLead?.logs ?? []"
             :statuses="store.selectedLead?.statuses ?? []"
           />
-        </VWindowItem>
-
-        <VWindowItem>
-          <CustomerDetailsForm />
         </VWindowItem>
       </VWindow>
     </div>
@@ -233,3 +242,8 @@ onUnmounted(() => (store.selectedLead = null));
     </VScaleTransition>
   </section>
 </template>
+
+<route lang="yaml">
+meta:
+  navActiveLink: leads
+</route>

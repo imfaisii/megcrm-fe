@@ -13,7 +13,6 @@ import {
 } from "@validators";
 
 const store = useLeadsStore();
-const selectedRadio = ref("LAD");
 const jobTypes = computed(() =>
   store.jobTypes.map((i: any) => {
     return { title: i.name, value: i.id };

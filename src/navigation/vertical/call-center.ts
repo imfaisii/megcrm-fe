@@ -1,7 +1,13 @@
 import type { VerticalNavItems } from '@/@layouts/types'
+import { modules } from '@/constants/modules'
 
 export default [
-  { heading: 'Call Center' },
+  {
+    heading: 'Call Center',
+    permissions: [
+      modules.CALL_CENTER + '.*',
+    ]
+  },
   {
     title: 'Calls',
     to: { name: 'dashboard' },

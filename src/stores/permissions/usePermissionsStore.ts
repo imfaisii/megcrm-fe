@@ -1,7 +1,8 @@
-import useApiFetch from '@/composables/useApiFetch'
-import { useToast } from '@/plugins/toastr'
-import { getExceptionMessage, reshapeParams } from '@/utils/useHelper'
-import { defineStore } from 'pinia'
+import useApiFetch from '@/composables/useApiFetch';
+import { roles as roleConstants } from '@/constants/rolesAndPermissions';
+import { useToast } from '@/plugins/toastr';
+import { getExceptionMessage, reshapeParams } from '@/utils/useHelper';
+import { defineStore } from 'pinia';
 
 type RoleData = {
   name: string
@@ -18,8 +19,37 @@ export const usePermissionsStore = defineStore('permissions', () => {
   })
   const isLoading = ref(false)
   const $toast: any = useToast()
+  const userPermissions: any = ref([])
+  const userRoles: any = ref([])
+
+  const isSuperAdmin = computed(() => !!userRoles.value.includes(roleConstants.SUPER_ADMIN))
 
   const isRoleSelected = computed(() => !!selectedRole.value)
+
+  const getUserPermissions = async () => {
+    const { data: permissionsData } = await useApiFetch('/get-permissions')
+    userRoles.value = permissionsData.roles
+    userPermissions.value = permissionsData.permissions
+  }
+
+  const can = (permissionsToCheck: any) => {
+    //! SUPER ADMIN HAS FULL ACCESS
+    if (isSuperAdmin.value) {
+      return true
+    }
+
+    return permissionsToCheck.some((permission: string) => {
+      if (permission.includes('*')) {
+        const prefix = permission.split('.')[0];
+        return userPermissions.value.some((userPermission: string) => userPermission.startsWith(prefix));
+      } else {
+        return userPermissions.value.includes(permission);
+      }
+    });
+  }
+
+
+  const is = (role: string) => userRoles.value.includes(role)
 
   const getPermissions = async (options: any = { all: true }) => {
     isLoading.value = true
@@ -108,16 +138,33 @@ export const usePermissionsStore = defineStore('permissions', () => {
     }
   }
 
+  const $reset = () => {
+    roles.value = []
+    permissions.value = []
+    selectedRole.value = { permissions: [] }
+    isLoading.value = false
+    userPermissions.value = []
+    userRoles.value = []
+  }
+
   return {
     roles,
     permissions,
     isLoading,
     selectedRole,
     isRoleSelected,
+    userRoles,
+    userPermissions,
+    isSuperAdmin,
+
+    is,
+    can,
     storeRole,
     updateRole,
     deleteRole,
     getRoles,
     getPermissions,
+    getUserPermissions,
+    $reset
   }
 })

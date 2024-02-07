@@ -24,7 +24,6 @@ const isAddUserDialogVisible: any = ref(false);
                 :class="$vuetify.display.lgAndUp ? 'text-right' : 'text-center'"
               >
                 <VBtn
-                  v-if="is(roles.SUPER_ADMIN) || can('users.store')"
                   @click="isAddUserDialogVisible = true"
                   color="primary"
                 >
@@ -34,7 +33,7 @@ const isAddUserDialogVisible: any = ref(false);
             </VRow>
           </VCardTitle>
 
-          <UsersTable v-if="is(roles.SUPER_ADMIN) || can('users.index')" />
+          <UsersTable />
         </VCard>
       </VCol>
     </VRow>

@@ -49,6 +49,7 @@ declare module '@vue/runtime-core' {
     FuelTypesTable: typeof import('./src/components/fuel-types/FuelTypesTable.vue')['default']
     I18n: typeof import('./src/@core/components/I18n.vue')['default']
     JobTypesTable: typeof import('./src/components/job-types/JobTypesTable.vue')['default']
+    LeadAlertMessages: typeof import('./src/components/leads/LeadAlertMessages.vue')['default']
     LeadAssignmentsTable: typeof import('./src/components/leads/assignments/LeadAssignmentsTable.vue')['default']
     LeadGeneratorsTable: typeof import('./src/components/lead-generators/LeadGeneratorsTable.vue')['default']
     LeadSourcesTable: typeof import('./src/components/lead-sources/LeadSourcesTable.vue')['default']

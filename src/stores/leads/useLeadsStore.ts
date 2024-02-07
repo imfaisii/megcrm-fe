@@ -155,6 +155,17 @@ export const useLeadsStore = defineStore('leads', () => {
     }
   }
 
+  const checkIfCountryIsScotland = (n: string): boolean | null => {
+    if (n === null) {
+      return false;
+    }
+
+    const countryRegex = /--\s*(\w+(?:\s*\w+)*)/;
+    const match = n.match(countryRegex);
+
+    return match && match[1].toUpperCase() === "SCOTLAND";
+  }
+
 
   return {
     tableStatuses,
@@ -173,6 +184,7 @@ export const useLeadsStore = defineStore('leads', () => {
     selectedId,
     meta,
 
+    checkIfCountryIsScotland,
     updateStatus,
     update,
     fetchLeads,

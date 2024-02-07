@@ -1,11 +1,16 @@
 <script lang="ts" setup>
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { usePermissionsStore } from '@/stores/permissions/usePermissionsStore';
 import { useSkins } from "@core/composable/useSkins";
 import { useThemeConfig } from "@core/composable/useThemeConfig";
 
 const auth = useAuthStore();
+const store = usePermissionsStore();
 
-onMounted(async () => await auth.fetchUser());
+onMounted(async () => {
+  await auth.fetchUser()
+  await store.getUserPermissions()
+});
 
 const DefaultLayoutWithVerticalNav = defineAsyncComponent(
   () => import("./components/DefaultLayoutWithVerticalNav.vue")

@@ -55,7 +55,6 @@ onMounted(
     <VRow>
       <!-- Roles -->
       <VCol
-        v-if="is(roles.SUPER_ADMIN) || can('roles.index')"
         v-for="role in rolesStore.roles"
         :key="role?.name"
         cols="12"
@@ -119,12 +118,7 @@ onMounted(
             <h4 class="text-h4">
               {{ role?.formatted_name }}
             </h4>
-            <div
-              v-if="
-                role.id !== 1 && (is(roles.SUPER_ADMIN) || can('roles.update'))
-              "
-              class="d-flex align-center"
-            >
+            <div v-if="role.id !== 1" class="d-flex align-center">
               <a href="javascript:void(0)" @click="editPermission(role)">
                 Edit Role
               </a>
@@ -132,7 +126,6 @@ onMounted(
               <VSpacer />
 
               <VBtn
-                v-if="is(roles.SUPER_ADMIN) || can('roles.store')"
                 icon
                 color="error"
                 variant="text"
@@ -148,12 +141,7 @@ onMounted(
       </VCol>
 
       <!-- Add New Role -->
-      <VCol
-        v-if="is(roles.SUPER_ADMIN) || can('roles.store')"
-        cols="12"
-        sm="6"
-        lg="4"
-      >
+      <VCol cols="12" sm="6" lg="4">
         <VCard class="h-100" :ripple="false" @click="createRole()">
           <VRow no-gutters class="h-100">
             <VCol
