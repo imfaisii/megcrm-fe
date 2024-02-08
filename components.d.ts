@@ -74,6 +74,7 @@ declare module '@vue/runtime-core' {
     Table: typeof import('./src/components/leads/Table.vue')['default']
     TheCustomizer: typeof import('./src/@core/components/TheCustomizer.vue')['default']
     ThemeSwitcher: typeof import('./src/@core/components/ThemeSwitcher.vue')['default']
+    UploadLeadForm: typeof import('./src/components/leads/UploadLeadForm.vue')['default']
     UsersTable: typeof import('./src/components/users/UsersTable.vue')['default']
   }
 }

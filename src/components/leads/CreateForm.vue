@@ -43,7 +43,7 @@ type SecondReceipent = {
   dob: String | null;
 };
 
-defineProps({
+const props = defineProps({
   isFullPage: {
     default: false,
     type: Boolean,
@@ -52,6 +52,7 @@ defineProps({
 
 const $toast = useToast();
 const store = useLeadsStore();
+const router = useRouter();
 
 const steps = [
   {
@@ -81,6 +82,7 @@ const refAddressForm = ref<VForm>();
 const refAdditionalInformationForm = ref<VForm>();
 const refReviewForm = ref<VForm>();
 const isCurrentStepValid = ref(true);
+const isAddressFormValid = ref(false);
 
 const personalInformationForm = ref({
   title: null,
@@ -128,14 +130,12 @@ const validatePersonalInformationForm = () => {
 };
 
 const validateAddressInformationForm = () => {
-  refAddressForm.value?.validate().then((valid: any) => {
-    if (valid.valid) {
-      currentStep.value++;
-      isCurrentStepValid.value = true;
-    } else {
-      isCurrentStepValid.value = false;
-    }
-  });
+  if (isAddressFormValid.value) {
+    currentStep.value++;
+    isCurrentStepValid.value = true;
+  } else {
+    isCurrentStepValid.value = false;
+  }
 };
 
 const validateAdditionalInformationForm = () => {
@@ -181,12 +181,41 @@ const getSuggestions = async () => {
   }
 };
 
+const checkDuplicate = async (v: any) => {
+  if (!v) {
+    isAddressFormValid.value = false;
+
+    return "The address is required";
+  }
+
+  await store.storeLead(
+    {
+      ...addressInformationForm.value,
+    },
+    { method: "POST" },
+    false
+  );
+
+  if (store.errors.hasOwnProperty("address")) {
+    isAddressFormValid.value = false;
+
+    return "This address already exists";
+  } else {
+    isAddressFormValid.value = true;
+    return true;
+  }
+};
+
 const handleSubmit = async () => {
   await store.storeLead({
     ...personalInformationForm.value,
     ...addressInformationForm.value,
     ...additionalInformationForm.value,
   });
+
+  if (props.isFullPage) {
+    await router.push("/leads");
+  }
 };
 
 onMounted(async () => await store.getExtras());
@@ -268,7 +297,7 @@ onMounted(async () => await store.getExtras());
                 v-model="addressInformationForm.address"
                 ref="addressCombobox"
                 :items="suggestions"
-                :rules="[requiredValidator]"
+                :rules="[checkDuplicate]"
                 label="Address"
                 placeholder="Enter postcode to search addresses"
                 type="text"
@@ -281,7 +310,11 @@ onMounted(async () => await store.getExtras());
               <div
                 class="d-flex flex-wrap gap-4 justify-sm-space-between justify-center mt-8"
               >
-                <VBtn type="submit">
+                <VBtn
+                  :loading="store.isLoading"
+                  :disabled="store.isLoading"
+                  type="submit"
+                >
                   Next
                   <VIcon icon="mdi-arrow-right" end class="flip-in-rtl" />
                 </VBtn>
@@ -698,7 +731,11 @@ onMounted(async () => await store.getExtras());
                   Previous
                 </VBtn>
 
-                <VBtn type="submit">
+                <VBtn
+                  type="submit"
+                  :disabled="store.isLoading"
+                  :loading="store.isLoading"
+                >
                   Submit
                   <VIcon icon="mdi-arrow-right" end class="flip-in-rtl" />
                 </VBtn>

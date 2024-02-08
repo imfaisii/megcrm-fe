@@ -1,8 +1,8 @@
+import env from '@/constants/env'
+import { useToast } from '@/plugins/toastr'
+import { useAuthStore } from '@/stores/auth/useAuthStore'
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { default as axios } from 'axios'
-import env from '@/constants/env'
-import { useAuthStore } from '@/stores/auth/useAuthStore'
-import { useToast } from '@/plugins/toastr'
 
 const { VITE_APP_API_URL: BASE_URL } = env
 

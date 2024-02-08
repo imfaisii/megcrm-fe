@@ -272,22 +272,22 @@ onMounted(async () => {
             />
 
             <!-- Customer Owner -->
-            <VSwitch
+            <!-- <VSwitch
               v-model="
                 store.selectedLead.lead_customer_additional_detail
                   .is_customer_owner
               "
               label="Is customer the owner"
-            />
+            /> -->
 
             <!-- Share Lead -->
-            <VSwitch
+            <!-- <VSwitch
               v-model="
                 store.selectedLead.lead_customer_additional_detail
                   .is_lead_shared
               "
               label="Share Lead"
-            />
+            /> -->
 
             <!-- Datamatch required -->
             <VSwitch

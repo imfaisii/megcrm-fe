@@ -14,7 +14,7 @@ export type Comment = {
 // Headers
 const headers = [
   { title: "Name", key: "first_name" },
-  { title: "Email", key: "email" },
+  { title: "Phone", key: "phone_no" },
   { title: "Post Code", key: "post_code" },
   { title: "Lead Generator", key: "lead_generator_id", sortable: false },
   { title: "Status", key: "status_details", sortable: false },
@@ -24,7 +24,7 @@ const headers = [
 
 // filters
 const filters = ref({
-  email: "",
+  phone_no: "",
   post_code: "",
   statuses: [],
   lead_generator_id: [],
@@ -80,7 +80,7 @@ onMounted(async () => {
   <!-- Filters -->
   <VRow class="pa-4">
     <VCol cols="12" lg="4">
-      <VTextField v-model="filters.email" label="Email address" clearable />
+      <VTextField v-model="filters.phone_no" label="Phone No" clearable />
     </VCol>
 
     <VCol cols="12" lg="4">

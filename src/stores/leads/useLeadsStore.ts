@@ -81,8 +81,9 @@ export const useLeadsStore = defineStore('leads', () => {
     }
   }
 
-  const storeLead = async (payload: any, options: any = { method: 'POST' }) => {
+  const storeLead = async (payload: any, options: any = { method: 'POST' }, showAlert: boolean = true) => {
     try {
+      errors.value = {}
       isLoading.value = true
       await useApiFetch('/leads', {
         data: payload,
@@ -91,8 +92,14 @@ export const useLeadsStore = defineStore('leads', () => {
       await fetchLeads({ include: "leadGenerator" })
       $toast.success('Lead was saved successfully.')
       EventBus.$emit('hide-lead-dialog')
-    } catch (error) {
-      $toast.error(getExceptionMessage(error))
+    } catch (error: any) {
+      if (error?.response?.status === 422) {
+        errors.value = error?.response?.data?.errors
+      }
+
+      if (showAlert) {
+        $toast.error(getExceptionMessage(error))
+      }
     } finally {
       isLoading.value = false
     }
@@ -182,6 +189,7 @@ export const useLeadsStore = defineStore('leads', () => {
     isLeadSelected,
     selectedLead,
     selectedId,
+    errors,
     meta,
 
     checkIfCountryIsScotland,

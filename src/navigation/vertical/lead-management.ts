@@ -30,6 +30,10 @@ export default [
         permissions: [modules.LEADS + '.index'],
       },
       {
+        title: 'Upload Leads', to: 'leads-upload',
+        permissions: [modules.LEADS + '.upload'],
+      },
+      {
         title: 'Assignments', to: 'leads-assignments',
         permissions: [modules.LEAD_GENERATOR_ASSIGNMENTS + '.*'],
       },
