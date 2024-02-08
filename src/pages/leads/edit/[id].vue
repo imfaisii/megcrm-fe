@@ -63,9 +63,22 @@ onUnmounted(() => (store.selectedLead = null));
     <div v-if="!isDialogVisible">
       <VRow no-gutters>
         <VCol cols="12">
-          <VCard title="Lead Status" class="mb-6">
-            <template #append>
-              <div class="d-flex flex-column-reverse ga-2 me-n3 mt-n2">
+          <VCard class="mb-6">
+            <VCardTitle>
+              <div class="d-flex justify-space-between">
+                <div class="pa-5">
+                  <p>Lead Details</p>
+                  <VCardSubtitle>
+                    <VChip
+                      label
+                      size="small"
+                      class="text-capitalize mb-2 blink-animate pl-0"
+                      color="warning"
+                    >
+                      {{ store.selectedLead.status_details.name }}
+                    </VChip>
+                  </VCardSubtitle>
+                </div>
                 <div class="d-flex justify-center">
                   <VTooltip location="top">
                     <template #activator="{ props }">
@@ -84,17 +97,8 @@ onUnmounted(() => (store.selectedLead = null));
                     Current Lead Progress
                   </VTooltip>
                 </div>
-
-                <VChip
-                  label
-                  size="small"
-                  class="text-capitalize mb-2 blink-animate"
-                  color="warning"
-                >
-                  {{ store.selectedLead.status_details.name }}
-                </VChip>
               </div>
-            </template>
+            </VCardTitle>
 
             <VCardText>
               <VRow class="mb-3">
