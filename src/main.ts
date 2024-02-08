@@ -10,6 +10,7 @@ import '@styles/styles.scss'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import ToastPlugin from 'vue-toast-notification'
+// import './style.css'
 
 loadFonts()
 
