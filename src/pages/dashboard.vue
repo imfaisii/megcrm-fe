@@ -1,10 +1,11 @@
 <template>
-  <div>
-    <VCard
-      class="mb-6"
-      title="Kick start your leads 🚀"
-    >
-      <VCardText>All the best for your new lead.</VCardText>
-    </VCard>
-  </div>
+  <VRow>
+    <VCol cols="12" lg="8">
+      <Congratulations />
+    </VCol>
+
+    <VCol cols="12" lg="4">
+      <MonthlyStatistics />
+    </VCol>
+  </VRow>
 </template>
