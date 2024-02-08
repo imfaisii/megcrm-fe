@@ -62,8 +62,8 @@ const statisticsVertical = [
     <VCol cols="12">
       <VCard>
         <VCardItem class="d-flex flex-wrap justify-space-between gap-4">
-          <VCardTitle>Area Chart</VCardTitle>
-          <VCardSubtitle>Commercial networks</VCardSubtitle>
+          <VCardTitle>Leads Chart</VCardTitle>
+          <VCardSubtitle>Statistics in system</VCardSubtitle>
 
           <template #append>
             <div class="date-picker-wrapper">
