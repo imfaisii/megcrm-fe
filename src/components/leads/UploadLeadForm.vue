@@ -59,7 +59,7 @@ watch(file, () => {
         </VAlert>
 
         <VAlert v-if="isSuccess" type="success">
-          You file was uploaded successfully. Please visit
+          Your file was uploaded successfully. Please visit
           <router-link :to="{ name: 'leads' }">Leads</router-link> to view new
           leads.
         </VAlert>
