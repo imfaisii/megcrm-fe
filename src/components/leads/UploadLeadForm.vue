@@ -20,6 +20,8 @@ const handleFileUpload = async () => {
 
       try {
         loading.value = true;
+        isError.value = false;
+        isSuccess.value = false;
         await useApiFetch("/leads/upload", {
           method: "POST",
           headers: {
