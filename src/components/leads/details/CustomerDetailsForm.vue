@@ -225,7 +225,7 @@ onMounted(async () => {
         </VCol>
 
         <!-- Benefit Type -->
-        <VCol cols="12" lg="4">
+        <VCol cols="12" lg="6">
           <VCombobox
             v-model="store.selectedLead.benefit_type_id"
             :items="store.benefitTypes"
@@ -238,7 +238,7 @@ onMounted(async () => {
         </VCol>
 
         <!-- Lead Source -->
-        <VCol cols="12" lg="4">
+        <VCol cols="12" lg="6">
           <VCombobox
             v-model="store.selectedLead.lead_source_id"
             :items="store.leadSources"
@@ -297,6 +297,25 @@ onMounted(async () => {
               "
               label="Requires datamatch"
             />
+
+            <span
+              v-if="
+                store.selectedLead.lead_customer_additional_detail
+                  .is_datamatch_required
+              "
+            >
+              <VChip
+                label
+                size="small"
+                class="text-capitalize blink-animate"
+                color="info"
+              >
+                {{
+                  store.selectedLead.lead_customer_additional_detail
+                    .datamatch_progress
+                }}
+              </VChip>
+            </span>
           </div>
         </VCol>
       </VRow>
@@ -327,10 +346,11 @@ onMounted(async () => {
               "
               :items="['Required', 'Not required']"
               :rules="[requiredValidator]"
-              label="Datamatch progress for {Name}"
+              :label="`Datamatch progress for ${store.selectedLead.full_name}`"
               placeholder="Select an option"
               clearable
               required
+              :disabled="true"
             />
           </VCol>
 

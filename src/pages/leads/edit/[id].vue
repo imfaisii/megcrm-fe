@@ -98,6 +98,15 @@ onUnmounted(() => (store.selectedLead = null));
 
             <VCardText>
               <VRow class="mb-3">
+                <LeadAlertMessages
+                  class="mt-4"
+                  v-if="store.selectedLead.post_code"
+                  :postCode="store.selectedLead.post_code"
+                  :address="store.selectedLead.address"
+                />
+              </VRow>
+
+              <VRow>
                 <VCol cols="12">
                   <VCombobox
                     v-model="store.selectedLead.status_details.name"
@@ -150,15 +159,6 @@ onUnmounted(() => (store.selectedLead = null));
                     </template>
                   </VCombobox>
                 </VCol>
-              </VRow>
-
-              <VRow>
-                <LeadAlertMessages
-                  class="mt-4"
-                  v-if="store.selectedLead.post_code"
-                  :postCode="store.selectedLead.post_code"
-                  :address="store.selectedLead.address"
-                />
               </VRow>
             </VCardText>
           </VCard>
