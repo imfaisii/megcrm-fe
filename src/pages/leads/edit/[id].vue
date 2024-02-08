@@ -72,7 +72,7 @@ onUnmounted(() => (store.selectedLead = null));
                     <VChip
                       label
                       size="small"
-                      class="text-capitalize mb-2 blink-animate pl-0"
+                      class="text-capitalize mb-2 blink-animate ml-0"
                       color="warning"
                     >
                       {{ store.selectedLead.status_details.name }}
