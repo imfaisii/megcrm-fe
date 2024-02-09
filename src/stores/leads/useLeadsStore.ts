@@ -38,7 +38,9 @@ type Surveyor = {
 export const useLeadsStore = defineStore('leads', () => {
   const endPoint = '/leads'
   const leads = ref([])
-  const selectedLead = ref<any>(null)
+  const selectedLead = ref<any>({
+    benefits: []
+  })
   const selectedId = ref<null | string | number>(null)
   const isLoading = ref(false)
   const meta = ref(defaultPagination)
@@ -53,6 +55,7 @@ export const useLeadsStore = defineStore('leads', () => {
   const leadStatuses: Ref<LeadStatus[]> = ref([])
   const tableStatuses: Ref<LeadStatus[]> = ref([])
   const errors = ref({})
+  const router = useRouter()
 
   const isLeadSelected = computed(() => !!selectedLead.value?.id)
 
@@ -85,13 +88,14 @@ export const useLeadsStore = defineStore('leads', () => {
     try {
       errors.value = {}
       isLoading.value = true
-      await useApiFetch('/leads', {
+      const { data } = await useApiFetch('/leads', {
         data: payload,
         ...options,
       })
       await fetchLeads({ include: "leadGenerator" })
       $toast.success('Lead was saved successfully.')
       EventBus.$emit('hide-lead-dialog')
+      router.push({ name: "leads-edit-id", params: { id: data.lead.id } });
     } catch (error: any) {
       if (error?.response?.status === 422) {
         errors.value = error?.response?.data?.errors
@@ -125,6 +129,7 @@ export const useLeadsStore = defineStore('leads', () => {
       isLoading.value = true
       const { data } = await useApiFetch(`${endPoint}/${leadId}?${setQueryParams(options)}`)
       selectedLead.value = data.lead
+      selectedLead.value.benefits = data.lead?.benefits.map((i: any) => i.id)
     } catch (error) {
       $toast.error(getExceptionMessage(error))
     } finally {

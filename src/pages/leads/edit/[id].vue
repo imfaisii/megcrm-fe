@@ -23,7 +23,12 @@ const tabs = [
 
 const isDialogVisible = computed(() => !store.isLeadSelected);
 const isCommentsDialogVisible = ref(false);
-const includes = ["leadGenerator", "statuses", "leadCustomerAdditionalDetail"];
+const includes = [
+  "leadGenerator",
+  "statuses",
+  "leadCustomerAdditionalDetail",
+  "benefits",
+];
 const appends = ["leads_logs"];
 
 const handleCommentsSubmit = async (comments: string) => {

@@ -27,7 +27,7 @@ type Lead = {
   measures: Number[];
   job_type_id: Number | null;
   fuel_type_id: Number | null;
-  benefit_type_id: Number | null;
+  benefits: Number[] | null;
   surveyor_id: Number | null;
   lead_generator_id: Number | null;
   lead_source_id: Number | null;
@@ -104,7 +104,7 @@ const additionalInformationForm = ref({
   measures: [],
   job_type_id: null,
   fuel_type_id: null,
-  benefit_type_id: null,
+  benefits: [],
   surveyor_id: null,
   lead_generator_id: null,
   lead_source_id: null,
@@ -212,10 +212,6 @@ const handleSubmit = async () => {
     ...addressInformationForm.value,
     ...additionalInformationForm.value,
   });
-
-  if (props.isFullPage) {
-    await router.push("/leads");
-  }
 };
 
 onMounted(async () => await store.getExtras());
@@ -516,13 +512,15 @@ onMounted(async () => await store.getExtras());
 
             <VCol cols="12" lg="6">
               <VCombobox
-                v-model="additionalInformationForm.benefit_type_id"
+                v-model="additionalInformationForm.benefits"
                 :items="store.benefitTypes"
                 label="Benefit Type"
                 item-title="name"
                 item-value="id"
                 clearable
                 :return-object="false"
+                multiple
+                chips
               />
             </VCol>
 

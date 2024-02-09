@@ -227,13 +227,15 @@ onMounted(async () => {
         <!-- Benefit Type -->
         <VCol cols="12" lg="6">
           <VCombobox
-            v-model="store.selectedLead.benefit_type_id"
+            v-model="store.selectedLead.benefits"
             :items="store.benefitTypes"
             label="Benefit Type"
             item-title="name"
             item-value="id"
             clearable
             :return-object="false"
+            multiple
+            chips
           />
         </VCol>
 
