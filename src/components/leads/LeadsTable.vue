@@ -155,7 +155,7 @@ onMounted(async () => {
       </a>
     </template>
 
-    <!-- Marked as Job -->
+    <!-- Lead Generator -->
     <template #item.lead_generator_id="{ item }">
       <div class="pa-2">
         <VBadge
@@ -194,9 +194,7 @@ onMounted(async () => {
                 item?.raw?.status_details?.user &&
                 `by ${
                   item.raw.status_details?.user?.name ?? "System"
-                } at ${time.formatDate(
-                  item.raw.status_details?.lead_status_model?.created_at
-                )}`
+                } at ${time.formatDate(item.raw.status_details?.created_at)}`
               }}
             </span>
           </VTooltip>
@@ -213,7 +211,7 @@ onMounted(async () => {
       </VMenu>
     </template>
 
-    <!-- Created Ay -->
+    <!-- Created At -->
     <template #item.created_at="{ item }">
       <p>{{ time.formatDate(item.raw.created_at, "DD/MM/YYYY") }}</p>
     </template>
