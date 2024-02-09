@@ -24,6 +24,7 @@ const headers = [
 
 // filters
 const filters = ref({
+  name: "",
   phone_no: "",
   post_code: "",
   statuses: [],
@@ -80,6 +81,10 @@ onMounted(async () => {
   <!-- Filters -->
   <VRow class="pa-4">
     <VCol cols="12" lg="4">
+      <VTextField v-model="filters.name" label="Name" clearable />
+    </VCol>
+
+    <VCol cols="12" lg="4">
       <VTextField v-model="filters.phone_no" label="Phone No" clearable />
     </VCol>
 
@@ -102,7 +107,7 @@ onMounted(async () => {
       />
     </VCol>
 
-    <VCol cols="12" lg="6">
+    <VCol cols="12" lg="4">
       <VCombobox
         v-model="filters.lead_generator_id"
         :items="store.leadGenerators"
@@ -116,7 +121,7 @@ onMounted(async () => {
         :return-object="false"
       />
     </VCol>
-    <VCol cols="12" lg="6">
+    <VCol cols="12" lg="4">
       <AppDateTimePicker
         v-model="filters.timestamp"
         :config="{

@@ -68,7 +68,7 @@ onUnmounted(() => (store.selectedLead = null));
               <div class="d-flex justify-space-between">
                 <div class="pa-5">
                   <p>Lead Details</p>
-                  <VCardSubtitle>
+                  <VCardSubtitle class="pl-0">
                     <VChip
                       label
                       size="small"
