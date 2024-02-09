@@ -25,7 +25,7 @@ export default [
       },
       {
         title: 'Upload Leads', to: 'leads-upload',
-        permissions: [modules.LEADS + '.upload'],
+        permissions: [modules.LEADS + '.file-upload'],
       },
     ]
   },
