@@ -168,7 +168,7 @@ const handleNavScroll = (evt: Event) => {
 // 👉 Vertical Nav
 .layout-vertical-nav {
   position: fixed;
-  z-index: 1003;
+  z-index: variables.$layout-vertical-nav-z-index;
   display: flex;
   flex-direction: column;
   block-size: 100%;
