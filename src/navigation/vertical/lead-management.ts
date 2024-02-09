@@ -3,8 +3,6 @@ import { modules } from '@/constants/modules'
 
 const globalPermissions = [
   modules.LEADS + '.*',
-  modules.LEAD_STATUSES + '.*',
-  modules.LEAD_GENERATOR_ASSIGNMENTS + '.*',
 ]
 
 export default [
@@ -18,10 +16,6 @@ export default [
     permissions: globalPermissions,
     children: [
       {
-        title: 'Leads Statuses', to: 'leads-statuses',
-        permissions: [modules.LEAD_STATUSES + '.*'],
-      },
-      {
         title: 'Create Lead', to: 'leads-create',
         permissions: [modules.LEADS + '.create'],
       },
@@ -32,10 +26,6 @@ export default [
       {
         title: 'Upload Leads', to: 'leads-upload',
         permissions: [modules.LEADS + '.upload'],
-      },
-      {
-        title: 'Assignments', to: 'leads-assignments',
-        permissions: [modules.LEAD_GENERATOR_ASSIGNMENTS + '.*'],
       },
     ]
   },

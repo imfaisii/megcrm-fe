@@ -9,6 +9,8 @@ const globalPermissions = [
   modules.SURVEYORS + '.*',
   modules.LEAD_GENERATORS + '.*',
   modules.LEAD_SOURCES + '.*',
+  modules.LEAD_STATUSES + '.*',
+  modules.LEAD_GENERATOR_ASSIGNMENTS + '.*',
 ]
 
 export default [
@@ -55,6 +57,14 @@ export default [
         title: 'Measures',
         to: 'measures',
         permissions: [modules.MEASURES + '.*'],
+      },
+      {
+        title: 'Leads Statuses', to: 'leads-statuses',
+        permissions: [modules.LEAD_STATUSES + '.*'],
+      },
+      {
+        title: 'Assignments', to: 'leads-assignments',
+        permissions: [modules.LEAD_GENERATOR_ASSIGNMENTS + '.*'],
       },
     ]
   },
