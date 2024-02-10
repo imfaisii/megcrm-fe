@@ -194,14 +194,14 @@ onUnmounted(() => (store.selectedLead = null));
         </VWindowItem>
 
         <VWindowItem :transition="false">
+          <CallCenterTab />
+        </VWindowItem>
+
+        <VWindowItem :transition="false">
           <ActivityTimeline
             :logs="store.selectedLead?.logs ?? []"
             :statuses="store.selectedLead?.statuses ?? []"
           />
-        </VWindowItem>
-
-        <VWindowItem :transition="false">
-          <CallCenterTab />
         </VWindowItem>
       </VWindow>
     </div>

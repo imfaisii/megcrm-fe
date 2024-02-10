@@ -9,36 +9,40 @@ const store = useCallCentersStore();
 const time = useTime();
 
 const isDialogVisible = ref(false);
-const totalCallsThreshold = 6;
+const totalCallsThreshold = 12;
 
-onMounted(async () => {
-  await store.fetchCallCenterStatuses();
-});
+const isThresholdReached = computed(
+  () => leadStore.selectedLead.call_centers.length >= totalCallsThreshold
+);
+
+onMounted(async () => await store.fetchCallCenterStatuses());
 </script>
 
 <template>
   <VCard
     :title="`Calling Schedule (${leadStore.selectedLead.call_centers.length}/${totalCallsThreshold})`"
+    class="pa-5"
   >
     <template #append>
       <div class="me-n3 mt-n2">
         <VCol cols="12">
-          <VTooltip location="bottom">
-            <template #activator="{ props }">
-              <VBtn
-                :disabled="
-                  leadStore.selectedLead.call_centers.length >=
-                  totalCallsThreshold
-                "
-                v-bind="props"
-                @click="isDialogVisible = true"
-                color="primary"
-              >
-                Add a call
-              </VBtn>
+          <VTooltip bottom :disabled="!isThresholdReached">
+            <template v-slot:activator="{ props }">
+              <div v-bind="props" class="d-inline-block">
+                <VBtn
+                  :disabled="isThresholdReached"
+                  v-bind="props"
+                  @click="isDialogVisible = true"
+                  :color="isThresholdReached ? 'error' : 'primary'"
+                >
+                  Add a call
+                </VBtn>
+              </div>
             </template>
-            Only {{ totalCallsThreshold }} call entries are allowed per
-            customer.
+            <span>
+              Only {{ totalCallsThreshold }} call entries are allowed per
+              customer.
+            </span>
           </VTooltip>
         </VCol>
       </div>
@@ -58,7 +62,16 @@ onMounted(async () => {
             </thead>
 
             <tbody class="text-high-emphasis">
+              <tr v-if="leadStore.selectedLead.call_centers < 1">
+                <td
+                  class="font-italic font-weight-medium text-center"
+                  colspan="4"
+                >
+                  No records found.
+                </td>
+              </tr>
               <tr
+                v-else
                 v-for="(callRecord, index) in leadStore.selectedLead
                   .call_centers"
               >
