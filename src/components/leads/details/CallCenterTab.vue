@@ -51,6 +51,15 @@ onMounted(async () => await store.fetchCallCenterStatuses());
     <VCardText>
       <VList lines="two" class="meeting-schedule-list card-list">
         <template #default>
+          <VRow>
+            <VCol class="mb-3" cols="12">
+              <VAlert border="start" color="info" variant="tonal">
+                Once you have added a call record, you will not be able to
+                delete or edit it.
+              </VAlert>
+            </VCol>
+          </VRow>
+
           <VTable fixed-header>
             <thead>
               <tr>
