@@ -51,15 +51,16 @@ onMounted(async () => await store.fetchCallCenterStatuses());
     <VCardText>
       <VList lines="two" class="meeting-schedule-list card-list">
         <template #default>
-          <VAlert clas="mb-3" border="start" color="info" variant="tonal">
+          <VAlert clas="mb-4" border="start" color="info" variant="tonal">
             Once you have added a call record, you will not be able to delete or
             edit it.
           </VAlert>
 
-          <VTable fixed-header>
+          <VTable class="mt-4" fixed-header>
             <thead>
               <tr>
                 <th class="text-uppercase">Call No</th>
+                <th class="text-uppercase">Caller Name</th>
                 <th class="text-uppercase">Details</th>
                 <th class="text-uppercase">Comments</th>
                 <th class="text-uppercase">Status</th>
@@ -82,6 +83,11 @@ onMounted(async () => await store.fetchCallCenterStatuses());
               >
                 <td>
                   <p>#{{ index + 1 }}</p>
+                </td>
+                <td>
+                  <p class="font-weight-medium">
+                    {{ callRecord.created_by.name }}
+                  </p>
                 </td>
                 <td>
                   <div class="d-flex align-center my-3">
