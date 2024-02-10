@@ -10,7 +10,7 @@ export default [
   },
   {
     title: 'Calls',
-    to: { name: 'dashboard' },
+    to: { name: 'call-center' },
     icon: { icon: 'mdi-headset' },
     badgeContent: '1',
     badgeClass: 'bg-primary',

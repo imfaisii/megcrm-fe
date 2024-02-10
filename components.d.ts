@@ -10,6 +10,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ActivityTimeline: typeof import('./src/components/leads/details/ActivityTimeline.vue')['default']
+    AddCallRecordDialog: typeof import('./src/components/call-center/AddCallRecordDialog.vue')['default']
     AddEditLeadDialog: typeof import('./src/components/leads/AddEditLeadDialog.vue')['default']
     AddEditLeadStatusDialog: typeof import('./src/components/leads/AddEditLeadStatusDialog.vue')['default']
     AddEditPermissionDialog: typeof import('./src/components/permissions/AddEditPermissionDialog.vue')['default']
@@ -27,6 +28,7 @@ declare module '@vue/runtime-core' {
     AppStepper: typeof import('./src/@core/components/AppStepper.vue')['default']
     AssignLeadGeneratorDialog: typeof import('./src/components/leads/assignments/AssignLeadGeneratorDialog.vue')['default']
     BenefitTypesTable: typeof import('./src/components/benefit-types/BenefitTypesTable.vue')['default']
+    CallCenterTab: typeof import('./src/components/leads/details/CallCenterTab.vue')['default']
     CardCongratulations: typeof import('./src/components/dashboard/CardCongratulations.vue')['default']
     CardMonthlyStatistics: typeof import('./src/components/dashboard/CardMonthlyStatistics.vue')['default']
     CardMostSalesInCountries: typeof import('./src/components/dashboard/CardMostSalesInCountries.vue')['default']

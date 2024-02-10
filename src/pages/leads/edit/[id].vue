@@ -15,6 +15,7 @@ const tabs = [
     tab: "customer-details",
   },
   { title: "History", icon: "mdi-clock-outline", tab: "history" },
+  { title: "Communications", icon: "mdi-phone-outline", tab: "communications" },
   {
     title: "Coming soon...",
     icon: "mdi-clock-alert-outline",
@@ -28,6 +29,7 @@ const includes = [
   "statuses",
   "leadCustomerAdditionalDetail",
   "benefits",
+  "callCenters.callCenterStatus",
 ];
 const appends = ["leads_logs"];
 
@@ -163,7 +165,7 @@ onUnmounted(() => (store.selectedLead = null));
                         :icon="$vuetify.display.smAndDown"
                         @click="isCommentsDialogVisible = true"
                       >
-                        Update Status
+                        Save
                       </VBtn>
                     </template>
                   </VCombobox>
@@ -196,6 +198,10 @@ onUnmounted(() => (store.selectedLead = null));
             :logs="store.selectedLead?.logs ?? []"
             :statuses="store.selectedLead?.statuses ?? []"
           />
+        </VWindowItem>
+
+        <VWindowItem :transition="false">
+          <CallCenterTab />
         </VWindowItem>
       </VWindow>
     </div>

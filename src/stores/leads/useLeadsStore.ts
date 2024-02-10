@@ -39,7 +39,8 @@ export const useLeadsStore = defineStore('leads', () => {
   const endPoint = '/leads'
   const leads = ref([])
   const selectedLead = ref<any>({
-    benefits: []
+    benefits: [],
+    cell_centers: []
   })
   const selectedId = ref<null | string | number>(null)
   const isLoading = ref(false)

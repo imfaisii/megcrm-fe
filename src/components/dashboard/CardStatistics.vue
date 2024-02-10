@@ -5,7 +5,7 @@ interface Props {
   icon: string;
   stats: string;
   change: number;
-  subtitle: string;
+  subtitle?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
