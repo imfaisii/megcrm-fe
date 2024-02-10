@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import useTime from "@/composables/useTime";
 import { useCallCentersStore } from "@/stores/call-center/useCallCentersStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import avatar1 from "@images/avatars/avatar-4.png";
 
 const leadStore = useLeadsStore();
-const isDialogVisible = ref(false);
 const store = useCallCentersStore();
-const totalCallsThreshold = 12;
+const time = useTime();
+
+const isDialogVisible = ref(false);
+const totalCallsThreshold = 6;
 
 onMounted(async () => {
   await store.fetchCallCenterStatuses();
@@ -20,15 +23,23 @@ onMounted(async () => {
     <template #append>
       <div class="me-n3 mt-n2">
         <VCol cols="12">
-          <VBtn
-            :disabled="
-              leadStore.selectedLead.call_centers.length >= totalCallsThreshold
-            "
-            @click="isDialogVisible = true"
-            color="primary"
-          >
-            Add a call
-          </VBtn>
+          <VTooltip location="bottom">
+            <template #activator="{ props }">
+              <VBtn
+                :disabled="
+                  leadStore.selectedLead.call_centers.length >=
+                  totalCallsThreshold
+                "
+                v-bind="props"
+                @click="isDialogVisible = true"
+                color="primary"
+              >
+                Add a call
+              </VBtn>
+            </template>
+            Only {{ totalCallsThreshold }} call entries are allowed per
+            customer.
+          </VTooltip>
         </VCol>
       </div>
     </template>
@@ -67,7 +78,9 @@ onMounted(async () => {
                         class="text-xs text-no-wrap d-flex align-center"
                       >
                         <VIcon start :size="16" icon="mdi-calendar-blank" />
-                        <span>{{ callRecord.created_at }}</span>
+                        <span>
+                          {{ time.formatDate(callRecord.created_at) }}
+                        </span>
                       </VListItemSubtitle>
                     </div>
                   </div>

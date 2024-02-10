@@ -14,8 +14,8 @@ const tabs = [
     icon: "mdi-account-outline",
     tab: "customer-details",
   },
-  { title: "History", icon: "mdi-clock-outline", tab: "history" },
   { title: "Communications", icon: "mdi-phone-outline", tab: "communications" },
+  { title: "History", icon: "mdi-clock-outline", tab: "history" },
   {
     title: "Coming soon...",
     icon: "mdi-clock-alert-outline",
