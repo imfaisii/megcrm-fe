@@ -1,6 +1,6 @@
 import { useCalendarStore } from '@/views/calendar/useCalendarStore'
 import { useThemeConfig } from '@core/composable/useThemeConfig'
-import type { CalendarApi, CalendarOptions, EventApi, EventSourceFunc } from '@fullcalendar/core'
+import type { CalendarApi, CalendarOptions, EventSourceFunc } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
@@ -44,17 +44,15 @@ export const useCalendar = (event: Ref<Event | NewEvent>, isEventHandlerSidebarA
   }
 
   // ℹ️ Extract event data from event API
-  const extractEventDataFromEventApi = (eventApi: EventApi) => {
-    // @ts-expect-error EventApi has extendProps type Dictionary (Record<string, any>) and we have fully typed extended props => Type conflict
+  const extractEventDataFromEventApi = (eventApi: any) => {
     const {
       id,
       title,
       start,
       end,
       url,
-      extendedProps: { calendar, guests, location, description },
       allDay,
-    }: Event = eventApi
+    }: any = eventApi
 
     return {
       id,
@@ -62,12 +60,6 @@ export const useCalendar = (event: Ref<Event | NewEvent>, isEventHandlerSidebarA
       start,
       end,
       url,
-      extendedProps: {
-        calendar,
-        guests,
-        location,
-        description,
-      },
       allDay,
     }
   }
@@ -84,8 +76,8 @@ export const useCalendar = (event: Ref<Event | NewEvent>, isEventHandlerSidebarA
           ...e,
 
           // Convert string representation of date to Date object
-          start: new Date(e.start),
-          end: new Date(e.end),
+          start: new Date(e.start_date),
+          end: new Date(e.end_date),
         })))
       })
       .catch(e => {

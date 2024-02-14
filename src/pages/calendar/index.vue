@@ -35,10 +35,16 @@ const checkAll = computed({
   get: () => store.selectedCalendars.length === store.availableCalendars.length,
   set: (val) => {
     if (val)
-      store.selectedCalendars = store.availableCalendars.map((i) => i.label);
+      store.selectedCalendars = store.availableCalendars.map((i: any) => i.id);
     else if (store.selectedCalendars.length === store.availableCalendars.length)
       store.selectedCalendars = [];
   },
+});
+
+onMounted(async () => {
+  await store.fetchCalendars();
+
+  store.selectedCalendars = store.availableCalendars.map((i: any) => i.id);
 });
 
 // !SECTION
@@ -81,11 +87,11 @@ const checkAll = computed({
                 />
                 <VCheckbox
                   v-for="calendar in store.availableCalendars"
-                  :key="calendar.label"
+                  :key="calendar.name"
                   v-model="store.selectedCalendars"
-                  :value="calendar.label"
+                  :value="calendar.id"
                   :color="calendar.color"
-                  :label="calendar.label"
+                  :label="calendar.name"
                   density="default"
                 />
               </div>

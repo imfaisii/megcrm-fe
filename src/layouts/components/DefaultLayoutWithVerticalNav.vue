@@ -5,6 +5,7 @@ import { useThemeConfig } from "@core/composable/useThemeConfig";
 // Components
 import Footer from "@/layouts/components/Footer.vue";
 import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue";
+import NavBarNotifications from '@/layouts/components/NavBarNotifications.vue'
 import UserProfile from "@/layouts/components/UserProfile.vue";
 
 // @layouts plugin
@@ -57,6 +58,7 @@ watch(
 
         <VSpacer />
 
+        <NavBarNotifications class="me-3" />
         <UserProfile />
       </div>
     </template>

@@ -1,39 +1,38 @@
 <script lang="ts" setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { avatarText } from '@core/utils/formatters'
-import type { Notification } from '@layouts/types'
+import { avatarText } from "@core/utils/formatters";
+import type { Notification } from "@layouts/types";
+import { PerfectScrollbar } from "vue3-perfect-scrollbar";
 
 interface Props {
-  notifications: Notification[]
-  badgeProps?: unknown
+  notifications: Notification[];
+  badgeProps?: unknown;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  location?: any
+  location?: any;
 }
 interface Emit {
-  (e: 'read', value: number[]): void
-  (e: 'unread', value: number[]): void
-  (e: 'remove', value: number): void
-  (e: 'click:notification', value: Notification): void
+  (e: "read", value: number[]): void;
+  (e: "unread", value: number[]): void;
+  (e: "remove", value: number): void;
+  (e: "click:notification", value: Notification): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  location: 'bottom end',
+  location: "bottom end",
   badgeProps: undefined,
-})
+});
 
-const emit = defineEmits<Emit>()
+const emit = defineEmits<Emit>();
 
-const isAllMarkRead = computed(() => props.notifications.some(item => item.isSeen === false),
-)
+const isAllMarkRead = computed(() =>
+  props.notifications.some((item) => item.isSeen === false)
+);
 
 const markAllReadOrUnread = () => {
-  const allNotificationsIds = props.notifications.map(item => item.id)
+  const allNotificationsIds = props.notifications.map((item) => item.id);
 
-  if (!isAllMarkRead.value)
-    emit('unread', allNotificationsIds)
-  else
-    emit('read', allNotificationsIds)
-}
+  if (!isAllMarkRead.value) emit("unread", allNotificationsIds);
+  else emit("read", allNotificationsIds);
+};
 </script>
 
 <template>
@@ -41,7 +40,7 @@ const markAllReadOrUnread = () => {
     <VBadge
       dot
       v-bind="props.badgeProps"
-      :model-value="props.notifications.some(n => !n.isSeen)"
+      :model-value="props.notifications.some((n) => !n.isSeen)"
       color="error"
       bordered
       offset-x="1"
@@ -69,13 +68,16 @@ const markAllReadOrUnread = () => {
               v-show="props.notifications.length"
               @click="markAllReadOrUnread"
             >
-              <VIcon :icon="!isAllMarkRead ? 'mdi-email-outline' : 'mdi-email-open-outline' " />
+              <VIcon
+                :icon="
+                  !isAllMarkRead
+                    ? 'mdi-email-outline'
+                    : 'mdi-email-open-outline'
+                "
+              />
 
-              <VTooltip
-                activator="parent"
-                location="start"
-              >
-                {{ !isAllMarkRead ? 'Mark all as unread' : 'Mark all as read' }}
+              <VTooltip activator="parent" location="start">
+                {{ !isAllMarkRead ? "Mark all as unread" : "Mark all as read" }}
               </VTooltip>
             </IconBtn>
           </template>
@@ -86,7 +88,7 @@ const markAllReadOrUnread = () => {
         <!-- 👉 Notifications list -->
         <PerfectScrollbar
           :options="{ wheelPropagation: false }"
-          style="max-block-size: 23.75rem;"
+          style="max-block-size: 23.75rem"
         >
           <VList class="py-0">
             <template
@@ -107,23 +109,33 @@ const markAllReadOrUnread = () => {
                   <VListItemAction start>
                     <VAvatar
                       size="40"
-                      :color="notification.color && notification.icon ? notification.color : undefined"
+                      :color="
+                        notification.color && notification.icon
+                          ? notification.color
+                          : undefined
+                      "
                       :image="notification.img || undefined"
                       :icon="notification.icon || undefined"
-                      :variant="notification.img ? undefined : 'tonal' "
+                      :variant="notification.img ? undefined : 'tonal'"
                     >
-                      <span v-if="notification.text">{{ avatarText(notification.text) }}</span>
+                      <span v-if="notification.text">{{
+                        avatarText(notification.text)
+                      }}</span>
                     </VAvatar>
                   </VListItemAction>
                 </template>
 
                 <VListItemTitle>
-                  <span class="text-sm text-high-emphasis font-weight-medium">{{ notification.title }}</span>
+                  <span class="text-sm text-high-emphasis font-weight-medium">{{
+                    notification.title
+                  }}</span>
                 </VListItemTitle>
                 <VListItemSubtitle>
                   <span class="text-xs">{{ notification.subtitle }}</span>
                 </VListItemSubtitle>
-                <span class="text-xs text-disabled">{{ notification.time }}</span>
+                <span class="text-xs text-disabled">{{
+                  notification.time
+                }}</span>
 
                 <!-- Slot: Append -->
                 <template #append>
@@ -131,20 +143,23 @@ const markAllReadOrUnread = () => {
                     <VBadge
                       dot
                       :color="!notification.isSeen ? 'primary' : '#a8aaae'"
-                      :class="`${notification.isSeen ? 'visible-in-hover' : ''} ms-1`"
-                      @click.stop="$emit(notification.isSeen ? 'unread' : 'read', [notification.id])"
+                      :class="`${
+                        notification.isSeen ? 'visible-in-hover' : ''
+                      } ms-1`"
+                      @click.stop="
+                        $emit(notification.isSeen ? 'unread' : 'read', [
+                          notification.id,
+                        ])
+                      "
                     />
 
-                    <div style="block-size: 28px; inline-size: 28px;">
+                    <div style="block-size: 28px; inline-size: 28px">
                       <IconBtn
                         size="x-small"
                         class="visible-in-hover"
                         @click="$emit('remove', notification.id)"
                       >
-                        <VIcon
-                          size="20"
-                          icon="mdi-close"
-                        />
+                        <VIcon size="20" icon="mdi-close" />
                       </IconBtn>
                     </div>
                   </div>
@@ -155,7 +170,7 @@ const markAllReadOrUnread = () => {
             <VListItem
               v-show="!props.notifications.length"
               class="text-center text-medium-emphasis"
-              style="block-size: 56px;"
+              style="block-size: 56px"
             >
               <VListItemTitle>No Notification Found!</VListItemTitle>
             </VListItem>
@@ -169,9 +184,7 @@ const markAllReadOrUnread = () => {
           v-show="props.notifications.length"
           class="notification-footer"
         >
-          <VBtn block>
-            VIEW ALL NOTIFICATIONS
-          </VBtn>
+          <VBtn block> VIEW ALL NOTIFICATIONS </VBtn>
         </VCardText>
       </VCard>
     </VMenu>
