@@ -7,16 +7,7 @@ import avatar1 from "@images/avatars/avatar-4.png";
 const leadStore = useLeadsStore();
 const store = useCallCentersStore();
 const time = useTime();
-const emit = defineEmits(["onDialogToggle"]);
 const isDialogVisible = ref(false);
-
-watch(
-  () => isDialogVisible.value,
-  (n) => {
-    alert(n);
-    emit("onDialogToggle", n);
-  }
-);
 
 onMounted(async () => await store.fetchCallCenterStatuses());
 </script>
@@ -100,11 +91,20 @@ onMounted(async () => await store.fetchCallCenterStatuses());
                   </p>
                 </td>
                 <td>
-                  <VChip
-                    size="x-small"
-                    color="primary"
-                    :text="callRecord?.call_center_status?.name"
-                  />
+                  <div class="mt-3">
+                    <VChip
+                      size="x-small"
+                      color="primary"
+                      :text="callRecord?.call_center_status?.name"
+                    />
+
+                    <div v-if="callRecord?.is_call_scheduled">
+                      <p class="font-italic mt-2">
+                        Call scheduled at:
+                        {{ time.formatDate(callRecord?.call_scheduled_time) }}
+                      </p>
+                    </div>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -113,6 +113,11 @@ onMounted(async () => await store.fetchCallCenterStatuses());
       </VList>
     </VCardText>
   </VCard>
+
+  <AddCallRecordDialog
+    v-model:is-dialog-visible="isDialogVisible"
+    @on-dialog-close="isDialogVisible = false"
+  />
 </template>
 
 <style lang="scss" scoped>

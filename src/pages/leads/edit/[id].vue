@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
+import { EventBus } from "@/utils/useEventBus";
 import { getProgressColor } from "@/utils/useHelper";
 import { requiredValidator } from "@validators";
-import { EventBus } from "../../../utils/useEventBus";
 
 const store = useLeadsStore();
 const route = useRoute();
@@ -24,7 +24,6 @@ const tabs = [
 ];
 
 const isDialogVisible = computed(() => !store.isLeadSelected);
-const isCallCenterDialogVisible = ref(false);
 const isCommentsDialogVisible = ref(false);
 const includes = [
   "leadGenerator",
@@ -59,8 +58,6 @@ const handleLeadUpdate = async () => {
   await store.update();
   await getLead();
 };
-
-const onAddCallDialogToggle = (v: any) => (isCallCenterDialogVisible.value = v);
 
 onMounted(async () => {
   await store.getExtras();
@@ -119,15 +116,6 @@ onUnmounted(() => {
             </VCardTitle>
 
             <VCardText>
-              <VRow class="mb-3">
-                <LeadAlertMessages
-                  class="mt-4"
-                  v-if="store.selectedLead.post_code"
-                  :postCode="store.selectedLead.post_code"
-                  :address="store.selectedLead.address"
-                />
-              </VRow>
-
               <VRow>
                 <VCol cols="12">
                   <VCombobox
@@ -182,6 +170,15 @@ onUnmounted(() => {
                   </VCombobox>
                 </VCol>
               </VRow>
+
+              <VRow class="mb-3">
+                <LeadAlertMessages
+                  class="mt-4"
+                  v-if="store.selectedLead.post_code"
+                  :postCode="store.selectedLead.post_code"
+                  :address="store.selectedLead.address"
+                />
+              </VRow>
             </VCardText>
           </VCard>
         </VCol>
@@ -205,7 +202,7 @@ onUnmounted(() => {
         </VWindowItem>
 
         <VWindowItem :transition="false">
-          <CallCenterTab @on-dialog-toggle="onAddCallDialogToggle" />
+          <CallCenterTab />
         </VWindowItem>
 
         <VWindowItem :transition="false">
@@ -274,11 +271,6 @@ onUnmounted(() => {
       </VLayoutItem>
     </VScaleTransition>
   </section>
-
-  <AddCallRecordDialog
-    v-model:is-dialog-visible="isCallCenterDialogVisible"
-    @on-dialog-close="isCallCenterDialogVisible = false"
-  />
 </template>
 
 <route lang="yaml">
