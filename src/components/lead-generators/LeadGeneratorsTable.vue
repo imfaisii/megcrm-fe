@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import useDataTable from "@/composables/useDatatable";
-import { useLeadGeneratorsStore } from '@/stores/lead-generators/useLeadGeneratorsStore';
+import { useLeadGeneratorsStore } from "@/stores/lead-generators/useLeadGeneratorsStore";
 import { EventBus } from "@/utils/useEventBus";
 
 // Headers
@@ -56,9 +56,9 @@ onMounted(async () => await store.fetchAll({ include: includes.join(",") }));
 
     <!-- Actions -->
     <template #item.actions="{ item }">
-      <IconBtn @click="handleView(item.raw)">
+      <!-- <IconBtn @click="handleView(item.raw)">
         <VIcon icon="tabler-edit" />
-      </IconBtn>
+      </IconBtn> -->
       <VTooltip location="bottom">
         <template #activator="{ props }">
           <IconBtn v-bind="props" @click="store.destroy(item.raw.id)">
