@@ -20,7 +20,7 @@ export default [
         permissions: [modules.LEADS + '.create'],
       },
       {
-        title: 'List Leads', to: 'leads',
+        title: 'All Leads', to: 'leads',
         permissions: [modules.LEADS + '.index'],
       },
       {

@@ -64,7 +64,7 @@ const isCommentsRequired = computed(() => {
 
 const shouldScheduleCall = computed(() => {
   const record: any = store.callCenterStatuses.find((i: any) =>
-    i.name.toLowerCase().includes("call me")
+    i.name.toLowerCase().includes("call")
   );
 
   return (
@@ -135,7 +135,7 @@ onUnmounted(() => EventBus.$off("hide-dialog"));
           <VSwitch v-model="form.is_call_scheduled" />
         </VCol>
 
-        <VCol v-if="form.is_call_scheduled" cols="12">
+        <VCol v-if="shouldScheduleCall && form.is_call_scheduled" cols="12">
           <transition name="fade" mode="out-in">
             <AppDateTimePicker
               v-model="form.call_scheduled_time"
