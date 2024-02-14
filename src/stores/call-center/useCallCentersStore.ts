@@ -35,7 +35,11 @@ export const useCallCentersStore = defineStore('call-centers', () => {
   const fetchCallCenterStatuses = async (force = false) => {
     if (callCenterStatuses.value.length === 0 || force) {
       isLoading.value = true
-      const { data } = await useApiFetch('/call-center-statuses')
+      const { data } = await useApiFetch('/call-center-statuses', {
+        params: {
+          all: true
+        }
+      })
       callCenterStatuses.value = data?.call_center_statuses ?? []
       isLoading.value = false
     }
@@ -61,6 +65,7 @@ export const useCallCentersStore = defineStore('call-centers', () => {
         ...options,
       })
       EventBus.$emit('hide-dialog')
+      EventBus.$emit('refresh-lead-data')
       $toast.success(`${entity} was saved successfully.`)
     } catch (error) {
       handleError(error, errors)

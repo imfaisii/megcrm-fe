@@ -183,6 +183,8 @@ onMounted(async () => {
           <VTooltip location="top">
             <template v-slot:activator="{ props: tooltip }">
               <VBtn
+            :class="
+            item.raw?.status_details?.name.toUpperCase() === 'CANCELLED' && 'text-white'"
                 size="x-small"
                 :color="
                   item.raw?.status_details?.lead_status_model?.color ??

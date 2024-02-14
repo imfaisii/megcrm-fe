@@ -7,43 +7,28 @@ import avatar1 from "@images/avatars/avatar-4.png";
 const leadStore = useLeadsStore();
 const store = useCallCentersStore();
 const time = useTime();
-
+const emit = defineEmits(["onDialogToggle"]);
 const isDialogVisible = ref(false);
-const totalCallsThreshold = 12;
 
-const isThresholdReached = computed(
-  () => leadStore.selectedLead.call_centers.length >= totalCallsThreshold
+watch(
+  () => isDialogVisible.value,
+  (n) => {
+    alert(n);
+    emit("onDialogToggle", n);
+  }
 );
 
 onMounted(async () => await store.fetchCallCenterStatuses());
 </script>
 
 <template>
-  <VCard
-    :title="`Calling Schedule (${leadStore.selectedLead.call_centers.length}/${totalCallsThreshold})`"
-    class="pa-5"
-  >
+  <VCard title="Calling Schedule" class="pa-5">
     <template #append>
       <div class="me-n3 mt-n2">
         <VCol cols="12">
-          <VTooltip bottom :disabled="!isThresholdReached">
-            <template v-slot:activator="{ props }">
-              <div v-bind="props" class="d-inline-block">
-                <VBtn
-                  :disabled="isThresholdReached"
-                  v-bind="props"
-                  @click="isDialogVisible = true"
-                  :color="isThresholdReached ? 'error' : 'primary'"
-                >
-                  Add a call
-                </VBtn>
-              </div>
-            </template>
-            <span>
-              Only {{ totalCallsThreshold }} call entries are allowed per
-              customer.
-            </span>
-          </VTooltip>
+          <VBtn @click="isDialogVisible = true" color="primary">
+            Add a call
+          </VBtn>
         </VCol>
       </div>
     </template>
@@ -111,7 +96,7 @@ onMounted(async () => await store.fetchCallCenterStatuses());
                 </td>
                 <td>
                   <p class="text-button font-italic">
-                    {{ callRecord.comments }}
+                    {{ callRecord?.comments ?? "No comments." }}
                   </p>
                 </td>
                 <td>
@@ -128,11 +113,6 @@ onMounted(async () => await store.fetchCallCenterStatuses());
       </VList>
     </VCardText>
   </VCard>
-
-  <AddCallRecordDialog
-    v-model:is-dialog-visible="isDialogVisible"
-    @on-dialog-close="isDialogVisible = false"
-  />
 </template>
 
 <style lang="scss" scoped>

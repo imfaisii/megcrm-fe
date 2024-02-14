@@ -2,6 +2,7 @@
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { getProgressColor } from "@/utils/useHelper";
 import { requiredValidator } from "@validators";
+import { EventBus } from "../../../utils/useEventBus";
 
 const store = useLeadsStore();
 const route = useRoute();
@@ -23,6 +24,7 @@ const tabs = [
 ];
 
 const isDialogVisible = computed(() => !store.isLeadSelected);
+const isCallCenterDialogVisible = ref(false);
 const isCommentsDialogVisible = ref(false);
 const includes = [
   "leadGenerator",
@@ -58,12 +60,20 @@ const handleLeadUpdate = async () => {
   await getLead();
 };
 
+const onAddCallDialogToggle = (v: any) => (isCallCenterDialogVisible.value = v);
+
 onMounted(async () => {
   await store.getExtras();
   await getLead();
+
+  EventBus.$on("refresh-lead-data", async () => await getLead());
 });
 
-onUnmounted(() => (store.selectedLead = null));
+onUnmounted(() => {
+  store.selectedLead = null;
+
+  EventBus.$off("refresh-lead-data");
+});
 </script>
 
 <template>
@@ -195,7 +205,7 @@ onUnmounted(() => (store.selectedLead = null));
         </VWindowItem>
 
         <VWindowItem :transition="false">
-          <CallCenterTab />
+          <CallCenterTab @on-dialog-toggle="onAddCallDialogToggle" />
         </VWindowItem>
 
         <VWindowItem :transition="false">
@@ -264,6 +274,11 @@ onUnmounted(() => (store.selectedLead = null));
       </VLayoutItem>
     </VScaleTransition>
   </section>
+
+  <AddCallRecordDialog
+    v-model:is-dialog-visible="isCallCenterDialogVisible"
+    @on-dialog-close="isCallCenterDialogVisible = false"
+  />
 </template>
 
 <route lang="yaml">

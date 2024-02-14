@@ -1,19 +1,17 @@
 <script lang="ts" setup>
-import { requiredValidator } from "@validators";
+import useTime from "@/composables/useTime";
 import { useCallCentersStore } from "@/stores/call-center/useCallCentersStore";
-import { EventBus } from "../../utils/useEventBus";
+import { EventBus } from "@/utils/useEventBus";
+import { requiredValidator } from "@validators";
 
-const props = defineProps({
+defineProps({
   isDialogVisible: {
     type: Boolean,
     default: () => false,
   },
-  leadId: {
-    required: true,
-    type: Number,
-  },
 });
 
+const time = useTime();
 const route = useRoute();
 const store = useCallCentersStore();
 const formRef = ref();
@@ -21,6 +19,8 @@ const form = ref({
   call_center_status_id: null,
   called_at: null,
   comments: "",
+  is_call_scheduled: false,
+  call_scheduled_time: null,
 });
 
 const emit = defineEmits(["onDialogClose"]);
@@ -45,8 +45,36 @@ const handleSubmit = async () => {
 const reset = () => {
   form.value.call_center_status_id = null;
   form.value.called_at = null;
+  form.value.is_call_scheduled = false;
+  form.value.call_scheduled_time = null;
   form.value.comments = "";
 };
+
+const isCommentsRequired = computed(() => {
+  const record: any = store.callCenterStatuses.find((i: any) =>
+    i.name.toLowerCase().includes("cancel")
+  );
+
+  return (
+    form.value.call_center_status_id !== null &&
+    record &&
+    form.value.call_center_status_id === record.id
+  );
+});
+
+const shouldScheduleCall = computed(() => {
+  const record: any = store.callCenterStatuses.find((i: any) =>
+    i.name.toLowerCase().includes("call me")
+  );
+
+  return (
+    form.value.call_center_status_id !== null &&
+    record &&
+    form.value.call_center_status_id === record.id
+  );
+});
+
+const hasCheckedSchedule = computed(() => !!form.value.is_call_scheduled);
 
 onMounted(() => EventBus.$on("hide-dialog", () => closeDialog()));
 onUnmounted(() => EventBus.$off("hide-dialog"));
@@ -54,7 +82,7 @@ onUnmounted(() => EventBus.$off("hide-dialog"));
 
 <template>
   <VDialog
-    :width="$vuetify.display.smAndDown ? 'auto' : 600"
+    :width="$vuetify.display.smAndDown ? 'auto' : 800"
     :model-value="isDialogVisible"
     @update:model-value="closeDialog"
     persistent
@@ -70,20 +98,9 @@ onUnmounted(() => EventBus.$off("hide-dialog"));
 
       <VForm ref="formRef" @submit.prevent="handleSubmit">
         <VCol cols="12">
-          <AppDateTimePicker
-            v-model="form.called_at"
-            :rules="[requiredValidator]"
-            :config="{
-              wrap: true,
-              altInput: true,
-              altFormat: 'F j, Y H:i',
-              dateFormat: 'Y-m-d H:i',
-              enableTime: true,
-            }"
-            label="Call Time"
-            placeholder="Select date and time"
-            required
-          />
+          <p class="text-sm font-weight-medium font-italic">
+            This call will be timestamped at: {{ time.currentTime() }}
+          </p>
         </VCol>
 
         <VCol cols="12">
@@ -103,7 +120,7 @@ onUnmounted(() => EventBus.$off("hide-dialog"));
         <VCol cols="12">
           <VTextarea
             v-model="form.comments"
-            :rules="[requiredValidator]"
+            :rules="isCommentsRequired ? [requiredValidator] : []"
             label="Comments"
             placeholder="Some comments..."
             auto-grow
@@ -111,6 +128,30 @@ onUnmounted(() => EventBus.$off("hide-dialog"));
             counter
             required
           />
+        </VCol>
+
+        <VCol v-if="shouldScheduleCall" cols="12">
+          <VLabel>Do you want to schedule a call?</VLabel>
+          <VSwitch v-model="form.is_call_scheduled" />
+        </VCol>
+
+        <VCol v-if="form.is_call_scheduled" cols="12">
+          <transition name="fade" mode="out-in">
+            <AppDateTimePicker
+              v-model="form.call_scheduled_time"
+              :rules="hasCheckedSchedule ? [requiredValidator] : []"
+              :config="{
+                wrap: true,
+                altInput: true,
+                altFormat: 'F j, Y H:i',
+                dateFormat: 'Y-m-d H:i',
+                enableTime: true,
+              }"
+              label="Call Time"
+              placeholder="Select date and time"
+              required
+            />
+          </transition>
         </VCol>
 
         <VCol cols="12">

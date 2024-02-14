@@ -4,6 +4,8 @@ import * as mt from 'moment-timezone'
 export default function useTime() {
   const DEFAULT_FORMAT = 'MMMM Do YYYY, h:mm:ss a'
 
+  const currentTime = (format = DEFAULT_FORMAT) => moment().format(format)
+
   // Function to format a date using Moment.js
   const formatDate = (date: any, format = DEFAULT_FORMAT) => {
     return moment(date).format(format)
@@ -31,6 +33,7 @@ export default function useTime() {
     getCurrentDateTime,
     calculateDateDiff,
     diffForHumans,
-    getClientTimeZone
+    getClientTimeZone,
+    currentTime
   }
 }
