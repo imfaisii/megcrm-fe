@@ -44,15 +44,25 @@ export const reshapeParams = (url: string, meta: any = {}, options: any) => {
     }
   }
 
+  console.log("aaaaa", mergedParams);
+
   let queryString = query.toString()
 
   // Add filters from meta.filters
   if (meta?.filters) {
-    queryString += `&${returnFilterString(meta.filters)}`
+    const filters = returnFilterString(meta.filters);
+
+    if (filters) {
+      queryString += `&${filters}`
+    }
   }
 
   if (options?.filters) {
-    queryString += `&${returnFilterString(options.filters)}`
+    const filters = returnFilterString(options.filters);
+
+    if (filters) {
+      queryString += `&${filters}`
+    }
   }
 
   return queryString ? `${url}?${queryString}` : url

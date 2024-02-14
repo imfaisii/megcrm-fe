@@ -24,6 +24,10 @@ export default [
         permissions: [modules.LEADS + '.index'],
       },
       {
+        title: 'Jobs', to: 'leads-jobs',
+        permissions: [modules.LEADS + '.jobs'],
+      },
+      {
         title: 'Upload Leads', to: 'leads-upload',
         permissions: [modules.LEADS + '.file-upload'],
       },

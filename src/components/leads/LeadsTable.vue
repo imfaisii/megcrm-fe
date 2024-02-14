@@ -3,6 +3,7 @@ import useDataTable from "@/composables/useDatatable";
 import useTime from "@/composables/useTime";
 import router from "@/router";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
+import { removeEmptyAndNull } from "@/utils/useHelper";
 import { mergeProps } from "vue";
 
 export type Comment = {
@@ -10,6 +11,14 @@ export type Comment = {
   status: String;
   comments: String;
 };
+
+const props = defineProps({
+  filters: {
+    required: false,
+    type: Object,
+    default: () => {},
+  },
+});
 
 // Headers
 const headers = [
@@ -32,6 +41,11 @@ const filters = ref({
   timestamp: "",
 });
 
+filters.value = {
+  ...filters.value,
+  ...props.filters,
+};
+
 const isCommentsDialogVisible = ref(false);
 
 const form = reactive<Comment>({
@@ -50,7 +64,10 @@ const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
 const handleCommentsSubmit = async (comments: String) => {
   form.comments = comments;
   await store.updateStatus(form);
-  await store.fetchLeads({ include: "leadGenerator" });
+  await store.fetchLeads({
+    include: "leadGenerator",
+    filters: removeEmptyAndNull(filters.value),
+  });
 };
 
 const onStatusSelect = (leadId: any, status: any) => {
@@ -73,7 +90,10 @@ const handleRedirect = (itemId: any) => {
 
 onMounted(async () => {
   await store.getExtras();
-  await store.fetchLeads({ include: "leadGenerator" });
+  await store.fetchLeads({
+    include: "leadGenerator",
+    filters: removeEmptyAndNull(filters.value),
+  });
 });
 </script>
 

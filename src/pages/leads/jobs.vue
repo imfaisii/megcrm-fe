@@ -15,23 +15,14 @@ const isAddLeadDialogVisible: any = ref(false);
                 lg="6"
                 :class="$vuetify.display.lgAndUp ? 'text-left' : 'text-center'"
               >
-                <h6 class="text-h5">Leads Table</h6>
-              </VCol>
-              <VCol
-                cols="12"
-                lg="6"
-                :class="$vuetify.display.lgAndUp ? 'text-right' : 'text-center'"
-              >
-                <VBtn @click="isAddLeadDialogVisible = true" color="primary">
-                  Create Lead
-                </VBtn>
+                <h6 class="text-h5">Jobs Table</h6>
               </VCol>
             </VRow>
           </VCardTitle>
 
           <LeadsTable
             :filters="{
-              is_marked_as_job: false,
+              is_marked_as_job: true,
             }"
           />
         </VCard>
