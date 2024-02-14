@@ -273,6 +273,11 @@ onMounted(async () => {
               label="Second Receipent"
             />
 
+            <VSwitch
+              v-model="store.selectedLead.is_marked_as_job"
+              label="Mark as job"
+            />
+
             <!-- Customer Owner -->
             <!-- <VSwitch
               v-model="
