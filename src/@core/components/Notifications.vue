@@ -134,9 +134,9 @@ const markAllReadOrUnread = () => {
                   </span>
                 </VListItemTitle>
                 <VListItemSubtitle>
-                  <span class="text-xs">{{
-                    notification?.data?.subtitle ?? "Subtitle"
-                  }}</span>
+                  <span class="text-xs">
+                    {{ notification?.data?.subtitle ?? "Subtitle" }}
+                  </span>
                 </VListItemSubtitle>
                 <span class="text-xs text-disabled">
                   {{ time.diffForHumans(notification.created_at) }}
