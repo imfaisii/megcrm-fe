@@ -147,7 +147,7 @@ onUnmounted(() => EventBus.$off("hide-dialog"));
                 altFormat: 'F j, Y H:i',
                 dateFormat: 'Y-m-d H:i',
                 enableTime: true,
-              }"
+            }"
               label="Call Time"
               placeholder="Select date and time"
               required

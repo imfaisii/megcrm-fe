@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LeadsTable from "@/components/leads/LeadsTable.vue";
+import LeadJobsTable from "@/components/leads/LeadJobsTable.vue";
 
 const isAddLeadDialogVisible: any = ref(false);
 </script>
@@ -20,11 +20,7 @@ const isAddLeadDialogVisible: any = ref(false);
             </VRow>
           </VCardTitle>
 
-          <LeadsTable
-            :filters="{
-              is_marked_as_job: true,
-            }"
-          />
+          <LeadJobsTable />
         </VCard>
       </VCol>
     </VRow>

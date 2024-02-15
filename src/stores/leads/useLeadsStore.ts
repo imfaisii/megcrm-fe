@@ -54,7 +54,8 @@ export const useLeadsStore = defineStore('leads', () => {
   const measures: Ref<Measure[]> = ref([])
   const surveyors: Ref<Surveyor[]> = ref([])
   const leadStatuses: Ref<LeadStatus[]> = ref([])
-  const tableStatuses: Ref<LeadStatus[]> = ref([])
+  const leadTableStatuses: Ref<LeadStatus[]> = ref([])
+  const leadJobTableStatuses: Ref<LeadStatus[]> = ref([])
   const errors = ref({})
   const router = useRouter()
 
@@ -80,7 +81,8 @@ export const useLeadsStore = defineStore('leads', () => {
       leadGenerators.value = data?.lead_generators ?? []
       leadSources.value = data?.lead_sources ?? []
       leadStatuses.value = data?.lead_statuses ?? []
-      tableStatuses.value = data?.lead_table_filters ?? []
+      leadTableStatuses.value = data?.lead_table_filters ?? []
+      leadJobTableStatuses.value = data?.lead_jobs_filters ?? []
       isLoading.value = false
     }
   }
@@ -181,8 +183,9 @@ export const useLeadsStore = defineStore('leads', () => {
 
 
   return {
-    tableStatuses,
+    leadTableStatuses,
     leadStatuses,
+    leadJobTableStatuses,
     jobTypes,
     fuelTypes,
     leadGenerators,

@@ -2,6 +2,7 @@
 import useDataTable from "@/composables/useDatatable";
 import useTime from "@/composables/useTime";
 import router from "@/router";
+import { useLeadJobsStore } from "@/stores/leads/useLeadJobsStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { removeEmptyAndNull } from "@/utils/useHelper";
 import { mergeProps } from "vue";
@@ -31,7 +32,7 @@ const filters = ref({
   statuses: [],
   lead_generator_id: [],
   timestamp: "",
-  is_marked_as_job: false,
+  is_marked_as_job: true,
 });
 
 const isCommentsDialogVisible = ref(false);
@@ -44,15 +45,18 @@ const form = reactive<Comment>({
 
 // composables
 const store: any = useLeadsStore();
+const leadJobStore: any = useLeadJobsStore();
 const time = useTime();
-const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
-  store.fetchLeads({ include: "leadGenerator" })
+const { onSortChange, onPaginationChange } = useDataTable(
+  leadJobStore,
+  filters,
+  () => leadJobStore.fetchLeads({ include: "leadGenerator" })
 );
 
 const handleCommentsSubmit = async (comments: String) => {
   form.comments = comments;
   await store.updateStatus(form);
-  await store.fetchLeads({
+  await leadJobStore.fetchLeads({
     include: "leadGenerator",
     filters: removeEmptyAndNull(filters.value),
   });
@@ -78,7 +82,7 @@ const handleRedirect = (itemId: any) => {
 
 onMounted(async () => {
   await store.getExtras();
-  await store.fetchLeads({
+  await leadJobStore.fetchLeads({
     include: "leadGenerator",
     filters: removeEmptyAndNull(filters.value),
   });
@@ -103,7 +107,7 @@ onMounted(async () => {
     <VCol cols="12" lg="4">
       <VCombobox
         v-model="filters.statuses"
-        :items="store.leadTableStatuses"
+        :items="store.leadJobTableStatuses"
         label="Status"
         placeholder="Select status"
         item-title="name"
@@ -147,8 +151,8 @@ onMounted(async () => {
 
   <!-- Table-->
   <DataTable
-    :store="store"
-    :items="store.leads"
+    :store="leadJobStore"
+    :items="leadJobStore.leads"
     :headers="headers"
     class="text-no-wrap"
     show-select
@@ -219,7 +223,7 @@ onMounted(async () => {
         <VList>
           <VListItem
             @click="onStatusSelect(item.raw.id, status.name)"
-            v-for="(status, index) in store.leadTableStatuses"
+            v-for="(status, index) in store.leadJobTableStatuses"
             :key="`${item.raw.id}-${index}`"
           >
             {{ status.name }}

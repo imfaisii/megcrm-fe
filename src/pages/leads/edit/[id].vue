@@ -120,7 +120,11 @@ onUnmounted(() => {
                 <VCol cols="12">
                   <VCombobox
                     v-model="store.selectedLead.status_details.name"
-                    :items="store.leadStatuses"
+                    :items="
+                      store.selectedLead.is_marked_as_job
+                        ? store.leadJobTableStatuses
+                        : store.leadTableStatuses
+                    "
                     :rules="[requiredValidator]"
                     label="Lead Status"
                     placeholder="Select Status"

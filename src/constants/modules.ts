@@ -13,5 +13,6 @@ export const modules = {
   ROLES: 'roles',
   SURVEYORS: 'surveyors',
   USERS: 'users',
-  CALL_CENTER: 'call-center'
+  CALL_CENTER: 'call-center',
+  LEAD_JOBS: 'lead-jobs'
 }
