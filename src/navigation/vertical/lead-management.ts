@@ -17,7 +17,7 @@ export default [
     children: [
       {
         title: 'Create Lead', to: 'leads-create',
-        permissions: [modules.LEADS + '.create'],
+        permissions: [modules.LEADS + '.store'],
       },
       {
         title: 'Leads', to: 'leads',
