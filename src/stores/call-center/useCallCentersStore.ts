@@ -1,6 +1,7 @@
 import useApiFetch from '@/composables/useApiFetch'
 import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
+import { useAuthStore } from '@/stores/auth/useAuthStore'
 import { EventBus } from '@/utils/useEventBus'
 import { getExceptionMessage, handleError, setQueryParams } from '@/utils/useHelper'
 import { defineStore } from 'pinia'
@@ -29,6 +30,7 @@ export const useCallCentersStore = defineStore('call-centers', () => {
   const entries = ref([])
   const $toast: any = useToast()
   const callCenterStatuses = ref([])
+  const auth = useAuthStore()
 
   const isSelected = computed(() => !!selected.value.id)
 
@@ -64,6 +66,7 @@ export const useCallCentersStore = defineStore('call-centers', () => {
         data: payload,
         ...options,
       })
+      await auth.fetchUser()
       EventBus.$emit('hide-dialog')
       EventBus.$emit('refresh-lead-data')
       $toast.success(`${entity} was saved successfully.`)

@@ -63,14 +63,15 @@ const isCommentsRequired = computed(() => {
 });
 
 const shouldScheduleCall = computed(() => {
-  const record: any = store.callCenterStatuses.find((i: any) =>
-    i.name.toLowerCase().includes("call")
+  const callStatuses = store.callCenterStatuses.filter((status: any) =>
+    status.name.toLowerCase().includes("call")
   );
 
   return (
     form.value.call_center_status_id !== null &&
-    record &&
-    form.value.call_center_status_id === record.id
+    callStatuses.some(
+      (status: any) => status.id === form.value.call_center_status_id
+    )
   );
 });
 
