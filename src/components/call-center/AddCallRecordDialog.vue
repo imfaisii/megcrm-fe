@@ -142,7 +142,7 @@ onUnmounted(() => EventBus.$off("hide-dialog"));
               v-model="form.call_scheduled_time"
               :rules="hasCheckedSchedule ? [requiredValidator] : []"
               :config="{
-                wrap: true,
+                minDate: 'today',
                 altInput: true,
                 altFormat: 'F j, Y H:i',
                 dateFormat: 'Y-m-d H:i',
