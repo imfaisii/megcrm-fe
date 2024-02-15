@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import UsersTable from "@/components/users/UsersTable.vue";
-import { roles } from "@/constants/rolesAndPermissions";
 
 const isAddUserDialogVisible: any = ref(false);
 </script>
@@ -23,10 +22,7 @@ const isAddUserDialogVisible: any = ref(false);
                 lg="6"
                 :class="$vuetify.display.lgAndUp ? 'text-right' : 'text-center'"
               >
-                <VBtn
-                  @click="isAddUserDialogVisible = true"
-                  color="primary"
-                >
+                <VBtn @click="isAddUserDialogVisible = true" color="primary">
                   Create User
                 </VBtn>
               </VCol>

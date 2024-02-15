@@ -147,16 +147,11 @@ interface I18nLanguage {
 // Thanks: https://stackoverflow.com/a/60617060/10796681
 type Notification = {
   id: number
-  title: string
-  subtitle: string
-  time: string
+  data: any
+  read_at: null | string
+  created_at: string
   color?: string
-  isSeen: boolean
-} & (
-    | { img: string; text?: never; icon?: never }
-    | { img?: never; text: string; icon?: never }
-    | { img?: never; text?: never; icon: string }
-  )
+}
 
 interface ThemeSwitcherTheme {
   name: string

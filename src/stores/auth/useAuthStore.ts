@@ -3,7 +3,7 @@ import { ACCESS_TOKEN_KEY } from '@/constants/general'
 import { isValidToken } from '@/middlewares/auth'
 import { useToast } from '@/plugins/toastr'
 import { usePermissionsStore } from '@/stores/permissions/usePermissionsStore'
-import { handleError } from '@/utils/useHelper'
+import { handleError, reshapeParams } from '@/utils/useHelper'
 
 interface User {
   id: number
@@ -28,6 +28,8 @@ interface ResetPassword {
 }
 
 export const useAuthStore = defineStore('auth', () => {
+  const endPoint = '/user'
+
   const accessToken = ref<string | null>(null)
   const user = ref<User | null>(null)
   const isLoading = ref<boolean>(false)
@@ -44,7 +46,10 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading.value = true
 
     try {
-      const { data } = await useApiFetch('/user')
+      const { data } = await useApiFetch(reshapeParams(endPoint, {}, {
+        include: 'notifications'
+      }))
+
       await setUser(data.user)
     }
     catch (e) {
