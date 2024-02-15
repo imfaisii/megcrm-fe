@@ -13,16 +13,8 @@ export const blankEvent = {
   start: '',
   end: '',
   allDay: false,
-  url: '',
   extendedProps: {
-    /*
-      ℹ️ We have to use undefined here because if we have blank string as value then select placeholder will be active (moved to top).
-      Hence, we need to set it to undefined or null
-    */
     calendar: undefined,
-    guests: [],
-    location: '',
-    description: '',
   },
 }
 
@@ -36,13 +28,6 @@ export const useCalendar = (event: Ref<Event | NewEvent>, isEventHandlerSidebarA
   // 👉 Calendar template ref
   const refCalendar = ref()
 
-  // 👉 Calendar colors
-  const calendarsColor = {
-    Business: 'primary',
-    Holiday: 'success',
-    Personal: 'error',
-  }
-
   // ℹ️ Extract event data from event API
   const extractEventDataFromEventApi = (eventApi: any) => {
     const {
@@ -50,8 +35,11 @@ export const useCalendar = (event: Ref<Event | NewEvent>, isEventHandlerSidebarA
       title,
       start,
       end,
-      url,
       allDay,
+      extendedProps: {
+        calendar,
+        description
+      }
     }: any = eventApi
 
     return {
@@ -59,8 +47,11 @@ export const useCalendar = (event: Ref<Event | NewEvent>, isEventHandlerSidebarA
       title,
       start,
       end,
-      url,
       allDay,
+      extendedProps: {
+        calendar,
+        description
+      }
     }
   }
 
@@ -72,12 +63,13 @@ export const useCalendar = (event: Ref<Event | NewEvent>, isEventHandlerSidebarA
 
     store.fetchEvents()
       .then(r => {
-        successCallback(r.data.map((e: Event) => ({
+        successCallback(r.data?.calender_events?.map((e: Event) => ({
           ...e,
 
           // Convert string representation of date to Date object
           start: new Date(e.start_date),
           end: new Date(e.end_date),
+          allDay: e.all_day
         })))
       })
       .catch(e => {
@@ -147,8 +139,8 @@ export const useCalendar = (event: Ref<Event | NewEvent>, isEventHandlerSidebarA
   const updateEvent = (_event: Event) => {
     store.updateEvent(_event)
       .then(r => {
-        const propsToUpdate = ['id', 'title', 'url'] as (keyof Event)[]
-        const extendedPropsToUpdate = ['calendar', 'guests', 'location', 'description'] as (keyof Event['extendedProps'])[]
+        const propsToUpdate = ['id', 'title'] as (keyof Event)[]
+        const extendedPropsToUpdate = ['calendar'] as (keyof Event['extendedProps'])[]
 
         updateEventInCalendar(r.data.event, propsToUpdate, extendedPropsToUpdate)
       })
@@ -205,7 +197,7 @@ export const useCalendar = (event: Ref<Event | NewEvent>, isEventHandlerSidebarA
     navLinks: true,
 
     eventClassNames({ event: calendarEvent }) {
-      const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar as keyof typeof calendarsColor]
+      const colorName = calendarEvent.extendedProps?.calendar?.color ?? 'primary'
 
       return [
         // Background Color

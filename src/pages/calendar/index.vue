@@ -34,10 +34,13 @@ const checkAll = computed({
   */
   get: () => store.selectedCalendars.length === store.availableCalendars.length,
   set: (val) => {
-    if (val)
+    if (val) {
       store.selectedCalendars = store.availableCalendars.map((i: any) => i.id);
-    else if (store.selectedCalendars.length === store.availableCalendars.length)
+    } else if (
+      store.selectedCalendars.length === store.availableCalendars.length
+    ) {
       store.selectedCalendars = [];
+    }
   },
 });
 

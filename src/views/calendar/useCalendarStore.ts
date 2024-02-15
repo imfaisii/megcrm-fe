@@ -31,8 +31,15 @@ export const useCalendarStore = defineStore('calendar', () => {
   }
 
   const fetchEvents = async () => {
-    return useApiFetch('/calendar-events', { params: { calendars: selectedCalendars.value.join(',') } })
+    return useApiFetch('/calendar-events', {
+      params:
+      {
+        "filter[calendars]": selectedCalendars.value.join(','),
+        include: ['calendar'].join(',')
+      }
+    })
   }
+
   const addEvent = async (event: NewEvent) => {
     return axios.post('/calendar/events', { event })
   }
