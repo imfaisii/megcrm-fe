@@ -59,15 +59,22 @@ export const usePermissionsStore = defineStore('permissions', () => {
   }
 
   const getRoles = async (options: any = { all: true }) => {
-    isLoading.value = true
-    const { data } = await useApiFetch(reshapeParams(rolesEndpoint, null, options))
-    roles.value = data.roles
+    if (roles.value.length < 1) {
+      isLoading.value = true
+      const { data } = await useApiFetch(reshapeParams(rolesEndpoint, null, options))
+      roles.value = data.roles.map((i: any) => {
+        return {
+          ...i,
+          name_formatted: i.name.replace("_", " ").toUpperCase()
+        }
+      })
 
-    roles.value.forEach((role: any) => {
-      role.meta = getCountTotalPermissionsCountFromRole(role.name)
-    })
+      roles.value.forEach((role: any) => {
+        role.meta = getCountTotalPermissionsCountFromRole(role.name)
+      })
 
-    isLoading.value = false
+      isLoading.value = false
+    }
   }
 
   const storeRole = async (roleData: RoleData, options: any = { method: 'POST' }) => {

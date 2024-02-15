@@ -1,7 +1,10 @@
 <script lang="ts" setup>
+import useDataTable from "@/composables/useDatatable";
+import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { useUsersStore } from "@/stores/users/useUsersStore";
 
 const usersStore: any = useUsersStore();
+const rolesStore: any = usePermissionsStore();
 
 // Headers
 const headers = [
@@ -11,6 +14,14 @@ const headers = [
   { title: "Role", key: "role", sortable: false },
   { title: "Actions", key: "actions", sortable: false },
 ];
+
+const filters = ref({
+  name: "",
+  email: "",
+  roles: [],
+});
+
+const includes = ["createdBy"];
 
 const resolveUserRoleVariant = (role: string) => {
   const roleLowerCase = role.toLowerCase();
@@ -29,24 +40,44 @@ const resolveUserStatusVariant = (stat: string) => {
   return "error";
 };
 
-const onPaginationChange = async ($event: any) => {
-  usersStore.meta.per_page = $event.pagination.per_page;
-  usersStore.meta.current_page = $event.pagination.current_page;
-  usersStore.meta.sort = $event.sort;
+// composables
+const { onSortChange, onPaginationChange } = useDataTable(
+  usersStore,
+  filters,
+  () => usersStore.fetchUsers({ include: includes.join(",") })
+);
 
-  await usersStore.fetchUsers();
-};
-
-const onSortChange = async ($event: any) => {
-  usersStore.meta.sort = $event.sort;
-
-  await usersStore.fetchUsers();
-};
-
-onMounted(async () => await usersStore.fetchUsers());
+onMounted(
+  async () => await usersStore.fetchUsers({ include: includes.join(",") })
+);
 </script>
 
 <template>
+  <!-- Filters -->
+  <VRow class="pa-4">
+    <VCol cols="12" lg="4">
+      <VTextField v-model="filters.name" label="Name" clearable />
+    </VCol>
+
+    <VCol cols="12" lg="4">
+      <VTextField v-model="filters.email" label="Email" clearable />
+    </VCol>
+
+    <VCol cols="12" lg="4">
+      <VCombobox
+        v-model="filters.roles"
+        :items="rolesStore.roles"
+        label="Roles"
+        item-title="name_formatted"
+        item-value="id"
+        chips
+        multiple
+        clearable
+        :return-object="false"
+      />
+    </VCol>
+  </VRow>
+
   <DataTable
     :store="usersStore"
     :items="usersStore.users"

@@ -1,30 +1,5 @@
 <script lang="ts" setup>
-import { useSurveyorsStore } from "@/stores/surveyors/useSurveyorsStore";
-import { EventBus } from "@/utils/useEventBus";
-
-const store = useSurveyorsStore();
-const isAddNameOnlyDialogVisible: any = ref(false);
-const includes = ["createdBy"];
-
-const onNameFormSubmit = async (form: any) => {
-  if (store.selected.id) {
-    await store.update(store.selected.id, form);
-  } else {
-    await store.store(form);
-  }
-
-  await store.fetchAll({ include: includes.join(",") });
-};
-
-onMounted(() => {
-  EventBus.$on("item-selected", () => {
-    isAddNameOnlyDialogVisible.value = true;
-  });
-});
-
-onUnmounted(() => {
-  EventBus.$off("item-selected");
-});
+const isAddUserDialogVisible: any = ref(false);
 </script>
 
 <template>
@@ -46,10 +21,7 @@ onUnmounted(() => {
                 lg="6"
                 :class="$vuetify.display.lgAndUp ? 'text-right' : 'text-center'"
               >
-                <VBtn
-                  @click="isAddNameOnlyDialogVisible = true"
-                  color="primary"
-                >
+                <VBtn @click="isAddUserDialogVisible = true" color="primary">
                   Create Surveyor
                 </VBtn>
               </VCol>
@@ -62,10 +34,6 @@ onUnmounted(() => {
     </VRow>
   </section>
 
-  <AddNameOnlyDialog
-    v-model:is-name-only-dialog-visible="isAddNameOnlyDialogVisible"
-    title="Surveyors"
-    :store="store"
-    @on-form-submitted="onNameFormSubmit"
-  />
+  <AddEditUserDialog v-model:is-dialog-visible="isAddUserDialogVisible"
+  roles="store." />
 </template>

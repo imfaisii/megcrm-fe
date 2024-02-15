@@ -14,6 +14,10 @@ const props = defineProps({
     type: Boolean,
     default: () => false,
   },
+  roles: {
+    required: false,
+    default: () => [],
+  },
 });
 
 const emit = defineEmits<Emit>();
@@ -29,7 +33,7 @@ const form = reactive<any>({
   password: "",
   password_confirmation: "",
   is_active: true,
-  roles: [],
+  roles: props.roles,
 });
 
 const statuses = [

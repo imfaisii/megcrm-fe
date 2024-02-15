@@ -16,9 +16,11 @@ export const useSurveyorsStore = defineStore('surveyors', () => {
     name: null
   }
 
-  const endPoint = '/surveyors'
+  const endPoint = '/users'
   const entity = 'Surveyor'
   const selected = ref<Surveyor>(defaultModel)
+  const selectedUser = ref<any>(null)
+  const selectedId = ref<any>(null)
   const isLoading = ref(false)
   const errors = ref({})
   const meta = ref(defaultPagination)
@@ -30,9 +32,18 @@ export const useSurveyorsStore = defineStore('surveyors', () => {
   const fetchAll = async (options = {}) => {
     isLoading.value = true
     const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPoint, meta.value, options))
-    entries.value = data.surveyors
+    entries.value = data.users
     meta.value = serverMeta
     isLoading.value = false
+  }
+
+  const fetch = async (userId: Number) => {
+    isLoading.value = true
+    selectedId.value = userId
+    const { data } = await useApiFetch(`${endPoint}/${userId}`)
+    selectedUser.value = data.user
+    isLoading.value = false
+    EventBus.$emit('toggle-users-dialog', true)
   }
 
   const store = async (payload: any, options: any = { method: 'POST' }) => {
@@ -73,7 +84,6 @@ export const useSurveyorsStore = defineStore('surveyors', () => {
       selected.value.id = id
       await useApiFetch(`${endPoint}/${id}`, options)
       $toast.success(`${entity} was deleted successfully.`)
-      await fetchAll({ include: "createdBy" })
     } catch (error) {
       handleError(error, errors)
     } finally {
@@ -96,6 +106,7 @@ export const useSurveyorsStore = defineStore('surveyors', () => {
 
     resetState,
     fetchAll,
+    fetch,
     destroy,
     update,
     store,

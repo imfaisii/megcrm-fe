@@ -37,6 +37,7 @@ export default function useDataTable(store: PiniaStore<any>, filters: any, fetch
   );
 
   return {
+    update,
     onSortChange,
     onPaginationChange
   }
