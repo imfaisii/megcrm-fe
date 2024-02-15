@@ -12,9 +12,8 @@ interface Props {
   location?: any;
 }
 interface Emit {
-  (e: "read", value: number[]): void;
-  (e: "unread", value: number[]): void;
   (e: "remove", value: number): void;
+  (e: "markAllAsRead"): void;
   (e: "click:notification", value: Notification): void;
 }
 
@@ -31,10 +30,7 @@ const isAllMarkRead = computed(() =>
 );
 
 const markAllReadOrUnread = () => {
-  const allNotificationsIds = props.notifications.map((item: any) => item.id);
-
-  if (!isAllMarkRead.value) emit("unread", allNotificationsIds);
-  else emit("read", allNotificationsIds);
+  emit("markAllAsRead");
 };
 </script>
 
@@ -73,14 +69,12 @@ const markAllReadOrUnread = () => {
             >
               <VIcon
                 :icon="
-                  !isAllMarkRead
-                    ? 'mdi-email-outline'
-                    : 'mdi-email-open-outline'
+                  isAllMarkRead ? 'mdi-email-outline' : 'mdi-email-open-outline'
                 "
               />
 
               <VTooltip activator="parent" location="start">
-                {{ !isAllMarkRead ? "Mark all as unread" : "Mark all as read" }}
+                {{ !isAllMarkRead ? "All read" : "Mark all as read" }}
               </VTooltip>
             </IconBtn>
           </template>
@@ -104,7 +98,7 @@ const markAllReadOrUnread = () => {
                 lines="one"
                 min-height="66px"
                 class="list-item-hover-class"
-                @click="$emit('click:notification', notification)"
+                @click.stop="$emit('click:notification', notification)"
               >
                 <!-- Slot: Prepend -->
                 <!-- Handles Avatar: Image, Icon, Text -->
@@ -147,23 +141,17 @@ const markAllReadOrUnread = () => {
                   <div class="d-flex flex-column align-center gap-4">
                     <VBadge
                       dot
-                      :color="!notification.isSeen ? 'primary' : '#a8aaae'"
+                      :color="!notification.read_at ? 'primary' : '#a8aaae'"
                       :class="`${
-                        notification.isSeen ? 'visible-in-hover' : ''
+                        notification.read_at ? 'visible-in-hover' : ''
                       } ms-1`"
-                      @click.stop="
-                        $emit(
-                          notification.read_at === null ? 'unread' : 'read',
-                          [notification.id]
-                        )
-                      "
                     />
 
                     <div style="block-size: 28px; inline-size: 28px">
                       <IconBtn
                         size="x-small"
                         class="visible-in-hover"
-                        @click="$emit('remove', notification.id)"
+                        @click.stop="$emit('remove', notification.id)"
                       >
                         <VIcon size="20" icon="mdi-close" />
                       </IconBtn>

@@ -1,34 +1,33 @@
 <script lang="ts" setup>
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { useNotificationsStore } from "@/stores/notifications/useNotificationsStore";
 import type { Notification } from "@layouts/types";
 
+const router = useRouter();
 const store: any = useAuthStore();
+const notificationsStore: any = useNotificationsStore();
 const notifications = computed(() => store.user.notifications);
 
 const removeNotification = (notificationId: number) => {
   notifications.value.forEach((item: any, index: any) => {
     if (notificationId === item.id) notifications.value.splice(index, 1);
   });
+
+  notificationsStore.destroy(notificationId);
 };
 
-const markRead = (notificationId: number[]) => {
-  notifications.value.forEach((item: any) => {
-    notificationId.forEach((id) => {
-      if (id === item.id) item.read_at != null;
-    });
-  });
+const markAllAsRead = async () => {
+  await notificationsStore.markAllAsRead();
+  await store.fetchUser();
 };
 
-const markUnRead = (notificationId: number[]) => {
-  notifications.value.forEach((item: any) => {
-    notificationId.forEach((id) => {
-      if (id === item.id) item.read_at = null;
-    });
-  });
-};
+const handleNotificationClick = async (notification: Notification) => {
+  if (notification?.data?.redirect_link) {
+    router.push(notification.data.redirect_link);
+  }
 
-const handleNotificationClick = (notification: Notification) => {
-  if (!notification.read_at) markRead([notification.id]);
+  await notificationsStore.markSingleAsRead(notification.id);
+  await store.fetchUser();
 };
 </script>
 
@@ -36,8 +35,7 @@ const handleNotificationClick = (notification: Notification) => {
   <Notifications
     :notifications="notifications"
     @remove="removeNotification"
-    @read="markRead"
-    @unread="markUnRead"
+    @markAllAsRead="markAllAsRead"
     @click:notification="handleNotificationClick"
   />
 </template>

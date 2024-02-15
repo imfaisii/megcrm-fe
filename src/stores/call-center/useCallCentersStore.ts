@@ -66,7 +66,7 @@ export const useCallCentersStore = defineStore('call-centers', () => {
         data: payload,
         ...options,
       })
-      await auth.fetchUser()
+      setTimeout(async () => await auth.fetchUser(), 10000)
       EventBus.$emit('hide-dialog')
       EventBus.$emit('refresh-lead-data')
       $toast.success(`${entity} was saved successfully.`)
