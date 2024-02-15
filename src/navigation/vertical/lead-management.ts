@@ -29,6 +29,7 @@ export default [
       },
       {
         title: 'All Boilers', to: 'boilers',
+        permissions: ['auth.*']
       }
     ]
   },
