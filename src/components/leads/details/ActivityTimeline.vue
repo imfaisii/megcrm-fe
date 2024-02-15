@@ -43,7 +43,9 @@ const getTimeLineColor = (i: any): string => {
 };
 
 const getLogMessage = (i: any) => {
-  return `${i?.description} by ${i?.causer?.name ?? "System"}`;
+  return `${i?.description} by ${
+    i?.causer?.name ?? "System"
+  } ( ${i.subject_type.replace("App\\Models\\", "")} )`;
 };
 
 const getChanges = (i: any): any => {
@@ -77,14 +79,18 @@ const getChanges = (i: any): any => {
     });
   }
 
-  if (!isCreateLog(i) && i?.properties?.attributes) {
+  if (isCreateLog(i) && i.subject_type !== "App\\Models\\Lead") {
     for (const [key, value] of Object.entries(i.properties.attributes) as any) {
-      if (!fieldsToIgnoreInTimeline.includes(key)) {
-        fieldsUpdated.push({
-          field: key.toUpperCase().replaceAll("_", " ").replace(" ID", ""),
-          old: i?.properties?.old[key] ?? "NULL",
-          new: value,
-        });
+      if (!fieldsToIgnoreInTimeline.includes(key) && value && value !== "") {
+        const v = key.toUpperCase().replaceAll("_", " ").replace(" ID", "");
+
+        if (!["LEAD", "CREATED BY"].includes(v)) {
+          fieldsUpdated.push({
+            field: v,
+            old: "NULL",
+            new: value,
+          });
+        }
       }
     }
   }

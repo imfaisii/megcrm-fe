@@ -1,3 +1,3 @@
 export * from "./customerDetails"
 
-export const fieldsToIgnoreInTimeline = ["created_at", "updated_at"]
+export const fieldsToIgnoreInTimeline = ["id", "created_at", "updated_at"]

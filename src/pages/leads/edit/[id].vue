@@ -15,6 +15,11 @@ const tabs = [
     icon: "mdi-account-outline",
     tab: "customer-details",
   },
+  {
+    title: "Book Survey",
+    icon: "mdi-home-plus-outline",
+    tab: "book-survey",
+  },
   { title: "Communications", icon: "mdi-phone-outline", tab: "communications" },
   { title: "History", icon: "mdi-clock-outline", tab: "history" },
   {
@@ -32,6 +37,7 @@ const includes = [
   "benefits",
   "callCenters.callCenterStatus",
   "callCenters.createdBy",
+  "surveyBooking",
 ];
 const appends = ["leads_logs"];
 
@@ -203,6 +209,10 @@ onUnmounted(() => {
       <VWindow v-model="activeTab" class="mt-6" :touch="true">
         <VWindowItem :transition="false">
           <CustomerDetailsForm />
+        </VWindowItem>
+
+        <VWindowItem :transition="false">
+          <BookSurvey />
         </VWindowItem>
 
         <VWindowItem :transition="false">

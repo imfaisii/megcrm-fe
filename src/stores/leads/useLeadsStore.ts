@@ -132,6 +132,16 @@ export const useLeadsStore = defineStore('leads', () => {
       isLoading.value = true
       const { data } = await useApiFetch(`${endPoint}/${leadId}?${setQueryParams(options)}`)
       selectedLead.value = data.lead
+
+      if (selectedLead.value.survey_booking === null) {
+        selectedLead.value.survey_booking = {
+          surveyor_id: null,
+          survey_at: null,
+          preffered_time: null,
+          comments: null,
+        }
+      }
+
       selectedLead.value.benefits = data.lead?.benefits.map((i: any) => i.id)
     } catch (error) {
       $toast.error(getExceptionMessage(error))

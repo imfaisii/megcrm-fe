@@ -34,10 +34,7 @@ const epcLink = computed(() => {
 
   <VCol cols="4">
     <VAlert border="start" color="info" variant="tonal">
-      <a
-        href="https://www.ncm-pcdb.org.uk/sap/pcdbsearch.jsp?pid=26"
-        target="_blank"
-      >
+      <a href="/boilers" target="_blank">
         Click here to check boiler efficiency
       </a>
     </VAlert>

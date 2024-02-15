@@ -28,7 +28,7 @@ onMounted(async () => {
   <VCard>
     <VCardItem>
       <template #prepend>
-        <VIcon icon="mdi-account-edit-outline" class="text-disabled" />
+        <VIcon icon="mdi-account-edit" class="text-disabled" />
       </template>
 
       <VCardTitle>Customer Details</VCardTitle>
