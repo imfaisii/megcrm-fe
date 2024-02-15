@@ -27,6 +27,9 @@ export default [
         title: 'Upload Leads', to: 'leads-upload',
         permissions: [modules.LEADS + '.file-upload'],
       },
+      {
+        title: 'All Boilers', to: 'boilers',
+      }
     ]
   },
 ] as VerticalNavItems

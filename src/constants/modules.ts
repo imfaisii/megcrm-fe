@@ -14,5 +14,6 @@ export const modules = {
   SURVEYORS: 'surveyors',
   USERS: 'users',
   CALL_CENTER: 'call-center',
-  LEAD_JOBS: 'lead-jobs'
+  LEAD_JOBS: 'lead-jobs',
+  BOILERS: 'boilers',
 }

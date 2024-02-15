@@ -27,6 +27,7 @@ declare module '@vue/runtime-core' {
     AppStepper: typeof import('./src/@core/components/AppStepper.vue')['default']
     AssignLeadGeneratorDialog: typeof import('./src/components/leads/assignments/AssignLeadGeneratorDialog.vue')['default']
     BenefitTypesTable: typeof import('./src/components/benefit-types/BenefitTypesTable.vue')['default']
+    BoilersTable: typeof import('./src/components/boilers/BoilersTable.vue')['default']
     CallCenterTab: typeof import('./src/components/leads/details/CallCenterTab.vue')['default']
     CardCongratulations: typeof import('./src/components/dashboard/CardCongratulations.vue')['default']
     CardMonthlyStatistics: typeof import('./src/components/dashboard/CardMonthlyStatistics.vue')['default']
