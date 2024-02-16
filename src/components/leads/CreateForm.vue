@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import env from "@/constants/env";
 import { titles } from "@/constants/leads/customerDetails";
 import { useToast } from "@/plugins/toastr";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
@@ -156,7 +157,7 @@ const getSuggestions = async () => {
     return;
   }
 
-  const token = "kiU5H3-znEqPYUqKzOA4JQ41583";
+  const token = env.VITE_APP_GET_ADDRESS_API;
   loading.value = true;
   suggestions.value = [];
 

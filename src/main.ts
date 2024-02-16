@@ -8,9 +8,11 @@ import router from '@/router'
 import '@core/scss/template/index.scss'
 import '@styles/styles.scss'
 import { createPinia } from 'pinia'
+import PrimeVue from 'primevue/config'
 import { createApp } from 'vue'
 import ToastPlugin from 'vue-toast-notification'
 // import './style.css'
+import 'primevue/resources/themes/aura-light-green/theme.css'
 
 loadFonts()
 
@@ -21,6 +23,7 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(vuetify)
 app.use(router)
+app.use(PrimeVue)
 app.use(layoutsPlugin)
 app.use(ToastPlugin)
 
