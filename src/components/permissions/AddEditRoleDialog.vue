@@ -79,13 +79,23 @@ onMounted(async () => await permissionsStore.getPermissions());
       <!-- Form -->
       <VForm ref="formRef" class="mt-3" @submit.prevent="handleSubmit">
         <!-- Role name -->
-        <VTextField
-          v-model="form.name"
-          :rules="[requiredValidator]"
-          label="Role Name"
-          placeholder="Enter Role Name"
-          required
-        />
+        <VTooltip>
+          <template #activator="{ props }">
+            <VTextField
+              v-bind="props"
+              v-model="form.name"
+              :rules="[requiredValidator]"
+              :readonly="
+                permissionsStore.isRoleSelected &&
+                permissionsStore.selectedRole.id <= 9
+              "
+              label="Role Name"
+              placeholder="Enter Role Name"
+              required
+            />
+          </template>
+          <span>Cannot update the role name created by system.</span>
+        </VTooltip>
 
         <VRow class="text-layout">
           <VCol cols="6" class="text-left">
