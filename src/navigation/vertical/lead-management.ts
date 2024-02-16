@@ -21,7 +21,7 @@ export default [
       },
       {
         title: 'Leads', to: 'leads',
-        permissions: [modules.LEADS + '.index'],
+        permissions: [modules.LEADS + '.index', modules.LEADS + '.assigned-leads'],
       },
       {
         title: 'Upload Leads', to: 'leads-upload',

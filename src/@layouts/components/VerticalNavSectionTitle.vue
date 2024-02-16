@@ -15,7 +15,10 @@ const shallRenderIcon = isVerticalNavMini(windowWidth);
 </script>
 
 <template>
-  <li v-if="store.can(item?.permissions ?? [])" class="nav-section-title">
+  <li
+    v-if="item?.permissions ? store.can(item.permissions) : true"
+    class="nav-section-title"
+  >
     <div class="title-wrapper">
       <Transition name="vertical-nav-section-title" mode="out-in">
         <!-- eslint-disable vue/no-v-text-v-html-on-component -->

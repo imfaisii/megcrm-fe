@@ -17,7 +17,7 @@ export default [
     children: [
       {
         title: 'All Jobs', to: 'jobs',
-        permissions: [modules.LEAD_JOBS + '.index'],
+        permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
       },
     ]
   },

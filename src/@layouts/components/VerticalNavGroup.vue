@@ -187,7 +187,7 @@ watch(isVerticalNavMini(windowWidth, isVerticalNavHovered), (val) => {
 
 <template>
   <li
-    v-if="store.can(item.permissions ?? [])"
+    v-if="item?.permissions ? store.can(item.permissions) : true"
     class="nav-group"
     :class="[
       {

@@ -50,7 +50,7 @@ watch(
       ? permissionsStore.selectedRole.name
       : "";
     form.permissions = permissionsStore.isRoleSelected
-      ? permissionsStore.selectedRole.permissions.map((p: any) => p.id)
+      ? permissionsStore.selectedRole?.permissions?.map((p: any) => p.id)
       : [];
   },
   { deep: true }
