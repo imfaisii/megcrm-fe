@@ -109,9 +109,7 @@ onMounted(() => {
   updateThemeClassInCalendar();
 });
 
-const emitModelValue = (val: string) => {
-  emit("update:modelValue", val);
-};
+const emitModelValue = (val: string) => emit("update:modelValue", val);
 </script>
 
 <template>

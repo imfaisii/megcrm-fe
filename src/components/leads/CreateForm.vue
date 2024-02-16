@@ -396,6 +396,7 @@ onMounted(async () => await store.getExtras());
                 v-model="personalInformationForm.dob"
                 :rules="[requiredValidator]"
                 :config="{
+                  maxDate: 'today',
                   wrap: true,
                   altInput: true,
                   altFormat: 'F j, Y',
