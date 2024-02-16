@@ -325,18 +325,6 @@ onMounted(async () => await store.getExtras());
           ref="refPersonalForm"
         >
           <VRow>
-            <VCol cols="12">
-              <VCombobox
-                v-model="personalInformationForm.title"
-                :items="titles"
-                :rules="[requiredValidator]"
-                label="Title"
-                placeholder="Select title"
-                clearable
-                required
-              />
-            </VCol>
-
             <VCol cols="12" lg="4">
               <VTextField
                 v-model="personalInformationForm.first_name"
@@ -369,6 +357,18 @@ onMounted(async () => await store.getExtras());
             </VCol>
 
             <VCol cols="12" lg="4">
+              <VCombobox
+                v-model="personalInformationForm.title"
+                :items="titles"
+                :rules="[requiredValidator]"
+                label="Title"
+                placeholder="Select title"
+                clearable
+                required
+              />
+            </VCol>
+
+            <VCol cols="12" lg="4">
               <VTextField
                 v-model="personalInformationForm.email"
                 :rules="[requiredValidator, emailValidator]"
@@ -391,7 +391,7 @@ onMounted(async () => await store.getExtras());
               />
             </VCol>
 
-            <VCol cols="12" lg="4">
+            <VCol cols="12" lg="6">
               <AppDateTimePicker
                 v-model="personalInformationForm.dob"
                 :rules="[requiredValidator]"
@@ -404,20 +404,6 @@ onMounted(async () => await store.getExtras());
                 label="Date of Birth"
                 placeholder="Select date"
                 required
-              />
-            </VCol>
-
-            <VCol cols="12" lg="6">
-              <VCombobox
-                v-model="additionalInformationForm.surveyor_id"
-                :items="store.surveyors"
-                :rules="[requiredValidator]"
-                label="Surveyor"
-                item-title="name"
-                item-value="id"
-                clearable
-                required
-                :return-object="false"
               />
             </VCol>
 

@@ -20,6 +20,11 @@ const tabs = [
     icon: "mdi-home-plus-outline",
     tab: "book-survey",
   },
+  {
+    title: "Survey Pictures",
+    icon: "mdi-image-marker-outline",
+    tab: "survey-pictures",
+  },
   { title: "Communications", icon: "mdi-phone-outline", tab: "communications" },
   { title: "History", icon: "mdi-clock-outline", tab: "history" },
   {
@@ -213,6 +218,10 @@ onUnmounted(() => {
 
         <VWindowItem :transition="false">
           <BookSurvey />
+        </VWindowItem>
+
+        <VWindowItem :transition="false">
+          <SurveyPictures />
         </VWindowItem>
 
         <VWindowItem :transition="false">

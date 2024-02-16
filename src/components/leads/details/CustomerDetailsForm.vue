@@ -185,6 +185,7 @@ onMounted(async () => {
             v-model="store.selectedLead.dob"
             :rules="[requiredValidator]"
             :config="{
+              maxDate: 'today',
               wrap: true,
               altInput: false,
               altFormat: 'F j, Y',
