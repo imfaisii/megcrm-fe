@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import UsersTable from "@/components/users/UsersTable.vue";
+import { useUsersStore } from "@/stores/users/useUsersStore";
 
+const store = useUsersStore();
 const isAddUserDialogVisible: any = ref(false);
 </script>
 <template>
@@ -33,6 +35,9 @@ const isAddUserDialogVisible: any = ref(false);
         </VCard>
       </VCol>
     </VRow>
-    <AddEditUserDialog v-model:is-dialog-visible="isAddUserDialogVisible" />
+    <AddEditUserDialog
+      v-model:is-dialog-visible="isAddUserDialogVisible"
+      :store="store"
+    />
   </section>
 </template>

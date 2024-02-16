@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
-import { useUsersStore } from "@/stores/users/useUsersStore";
 import { EventBus } from "@/utils/useEventBus";
 import { emailValidator, requiredValidator } from "@validators";
 import { VForm } from "vuetify/components/VForm";
@@ -12,29 +11,26 @@ interface Emit {
 const props = defineProps({
   isDialogVisible: {
     type: Boolean,
-    default: () => false,
-  },
-  roles: {
+    default: false,
     required: false,
-    default: () => [],
+  },
+  showRoles: {
+    type: Boolean,
+    default: true,
+    required: false,
+  },
+  store: {
+    type: Object,
+    required: true,
   },
 });
 
 const emit = defineEmits<Emit>();
 
-const store = useUsersStore();
-const permissionsStore = usePermissionsStore();
-const label = computed(() => (store.isUserSelected ? "Update" : "Create"));
+const permissionsStore: any = usePermissionsStore();
+const label = computed(() => (props.store.isSelected ? "Update" : "Create"));
 const isPasswordVisible = ref(false);
 const isConfirmPasswordVisible = ref(false);
-const form = reactive<any>({
-  name: "",
-  email: "",
-  password: "",
-  password_confirmation: "",
-  is_active: true,
-  roles: props.roles,
-});
 
 const statuses = [
   {
@@ -48,36 +44,18 @@ const statuses = [
 ];
 
 const handleSubmit = async () => {
-  if (store.isUserSelected) {
-    await store.updateUser(form);
+  if (props.store.isSelected) {
+    await props.store.update(props.store.selectedId, props.store.selected);
   } else {
-    await store.storeUser(form);
+    await props.store.store(props.store.selected);
   }
 };
 
 const closeDialog: any = () => {
   emit("update:isDialogVisible", false);
 
-  setTimeout(() => {
-    store.selectedUser = null;
-    store.errors = {};
-  }, 500);
+  setTimeout(() => props.store.reset(), 500);
 };
-
-watch(
-  props,
-  () => {
-    form.name = store.isUserSelected ? store.selectedUser.name : "";
-    form.email = store.isUserSelected ? store.selectedUser.email : "";
-    form.is_active = store.isUserSelected ? store.selectedUser.is_active : true;
-    form.roles = store.isUserSelected
-      ? store.selectedUser.roles.map((r: any) => r.id)
-      : [];
-    form.password = "";
-    form.password_confirmation = "";
-  },
-  { deep: true }
-);
 
 onMounted(async () => {
   await permissionsStore.getRoles();
@@ -112,7 +90,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
           <!-- Name -->
           <VCol cols="12" lg="6">
             <VTextField
-              v-model="form.name"
+              v-model="store.selected.name"
               :rules="[requiredValidator]"
               autofocus
               label="Name"
@@ -124,7 +102,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
           <!-- Email -->
           <VCol cols="12" lg="6">
             <VTextField
-              v-model="form.email"
+              v-model="store.selected.email"
               :rules="[requiredValidator, emailValidator]"
               label="Email"
               type="email"
@@ -136,8 +114,8 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
           <!-- Password -->
           <VCol cols="12" lg="6">
             <VTextField
-              v-model="form.password"
-              :rules="[!store.isUserSelected && requiredValidator]"
+              v-model="store.selected.password"
+              :rules="[!store.isSelected && requiredValidator]"
               label="New Password"
               placeholder="············"
               :type="isPasswordVisible ? 'text' : 'password'"
@@ -152,8 +130,8 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
           <!-- Password Confirmation -->
           <VCol cols="12" lg="6">
             <VTextField
-              v-model="form.password_confirmation"
-              :rules="[!store.isUserSelected && requiredValidator]"
+              v-model="store.selected.password_confirmation"
+              :rules="[!store.isSelected && requiredValidator]"
               label="Confirm Password"
               placeholder="············"
               :type="isConfirmPasswordVisible ? 'text' : 'password'"
@@ -171,7 +149,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
           <!-- Status -->
           <VCol cols="12">
             <VSelect
-              v-model="form.is_active"
+              v-model="store.selected.is_active"
               label="Status"
               :items="statuses"
               item-value="key"
@@ -181,7 +159,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
           </VCol>
 
           <!-- Roles -->
-          <VCol cols="12">
+          <VCol v-if="showRoles" cols="12">
             <VLabel class="mb-2"><strong>Roles</strong></VLabel>
             <VRow>
               <VCol
@@ -191,7 +169,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
                 :key="`role-${role.id}`"
               >
                 <VCheckbox
-                  v-model="form.roles"
+                  v-model="store.selected.roles"
                   :label="role.formatted_name"
                   :value="role.id"
                   dense

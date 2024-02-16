@@ -14,19 +14,31 @@ type UserData = {
   status: string
 }
 
+export const defaultModel = {
+  id: null,
+  name: null,
+  email: null,
+  password: null,
+  password_confirmation: null,
+  is_active: true,
+  roles: [],
+}
+
 export const useUsersStore = defineStore('users', () => {
   const endPoint = '/users'
+  const entity = 'User'
   const users = ref<any>([])
-  const selectedUser = ref<any>(null)
+  const selected = ref<any>(defaultModel)
   const selectedId = ref<any>(null)
   const errors = ref<any>({})
   const isLoading = ref<any>(false)
   const meta = ref<any>(defaultPagination)
   const $toast: any = useToast()
+  const includes = ["createdBy"]
 
-  const isUserSelected = computed(() => !!selectedUser.value)
+  const isSelected = computed(() => !!selected.value.id)
 
-  const fetchUsers = async (options = {}) => {
+  const index = async (options = {}) => {
     isLoading.value = true
     const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPoint, meta.value, options))
     users.value = data.users
@@ -34,16 +46,17 @@ export const useUsersStore = defineStore('users', () => {
     isLoading.value = false
   }
 
-  const fetchUser = async (userId: Number) => {
+  const get = async (userId: Number) => {
     isLoading.value = true
     selectedId.value = userId
     const { data } = await useApiFetch(`${endPoint}/${userId}`)
-    selectedUser.value = data.user
+    selected.value = data.user
+    selected.value.roles = data.user.roles.map((i: any) => i.id)
     isLoading.value = false
     EventBus.$emit('toggle-users-dialog', true)
   }
 
-  const storeUser = async (userData: UserData, options: any = { method: 'POST' }) => {
+  const store = async (userData: UserData, options: any = { method: 'POST' }) => {
     try {
       isLoading.value = true
       await useApiFetch('/users', {
@@ -53,7 +66,7 @@ export const useUsersStore = defineStore('users', () => {
       $toast.success('User was saved successfully.')
       errors.value = {}
       EventBus.$emit('toggle-users-dialog', false)
-      await fetchUsers()
+      await index()
     } catch (error) {
       handleError(error, errors)
     } finally {
@@ -61,13 +74,13 @@ export const useUsersStore = defineStore('users', () => {
     }
   }
 
-  const deleteUser = async (userId: number, options = { method: 'DELETE' }) => {
+  const destroy = async (id: number, options = { method: 'DELETE' }) => {
     try {
       isLoading.value = true
-      selectedId.value = userId
-      await useApiFetch(`${endPoint}/${userId}`, options)
-      $toast.success('User was deleted successfully.')
-      await fetchUsers()
+      selectedId.value = id
+      await useApiFetch(`${endPoint}/${id}`, options)
+      $toast.success(`${entity} was deleted successfully.`)
+      await index()
     } catch (error) {
       handleError(error, errors)
     } finally {
@@ -75,37 +88,64 @@ export const useUsersStore = defineStore('users', () => {
     }
   }
 
-  const updateUser = async (userData: UserData, options: any = { method: 'PUT' }) => {
+  const update = async (id: number | string, payload: any, options = { method: 'PUT' }) => {
     try {
       isLoading.value = true
-      await useApiFetch(`/users/${selectedId.value}`, {
-        data: userData,
-        ...options,
+      await useApiFetch(`${endPoint}/${id}`, {
+        data: payload,
+        ...options
       })
-      $toast.success('User was updated successfully.')
+      $toast.success(`${entity} was updated successfully.`)
       errors.value = {}
       EventBus.$emit('toggle-users-dialog', false)
-      await fetchUsers()
+      await index()
     } catch (error) {
       handleError(error, errors)
     } finally {
       isLoading.value = false
     }
   }
+
+  const reset = () => {
+    selected.value = defaultModel
+    errors.value = {}
+  }
+
+  const resolveUserRoleVariant = (role: string) => {
+    const roleLowerCase = role.toLowerCase();
+
+    if (roleLowerCase === "super admin")
+      return { color: "warning", icon: "tabler-device-laptop" };
+
+    return { color: "primary", icon: "tabler-user" };
+  };
+
+  const resolveUserStatusVariant = (stat: string) => {
+    if (stat) {
+      return "success";
+    }
+
+    return "error";
+  };
+
 
   return {
     users,
     selectedId,
     isLoading,
-    isUserSelected,
-    selectedUser,
+    isSelected,
+    selected,
     meta,
     errors,
+    includes,
 
-    fetchUsers,
-    fetchUser,
-    storeUser,
-    deleteUser,
-    updateUser
+    resolveUserStatusVariant,
+    resolveUserRoleVariant,
+    reset,
+    index,
+    get,
+    store,
+    destroy,
+    update
   }
 })

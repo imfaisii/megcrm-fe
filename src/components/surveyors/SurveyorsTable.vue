@@ -1,84 +1,46 @@
 <script lang="ts" setup>
 import useDataTable from "@/composables/useDatatable";
-import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { useSurveyorsStore } from "@/stores/surveyors/useSurveyorsStore";
-import { removeEmptyAndNull } from "../../utils/useHelper";
-
-const store: any = useSurveyorsStore();
-const rolesStore: any = usePermissionsStore();
 
 // Headers
 const headers = [
-  { title: "Name", key: "name" },
-  { title: "Email", key: "email", searchable: true },
-  { title: "Status", key: "status", sortable: false, searchable: true },
-  { title: "Role", key: "role", sortable: false },
+  { title: "Name", key: "user.name" },
+  { title: "Email", key: "user.email" },
+  { title: "Status", key: "user.status", sortable: false },
+  { title: "Role", key: "user.role", sortable: false },
   { title: "Actions", key: "actions", sortable: false },
 ];
 
-const filters = ref<any>({
-  name: "",
-  email: "",
-  roles: [],
+const filters = ref({
+  user: {
+    name: "",
+    email: "",
+    roles: [],
+  },
 });
-
-const includes = ["createdBy"];
-
-const resolveUserRoleVariant = (role: string) => {
-  const roleLowerCase = role.toLowerCase();
-
-  if (roleLowerCase === "super admin")
-    return { color: "warning", icon: "tabler-device-laptop" };
-
-  return { color: "primary", icon: "tabler-user" };
-};
-
-const resolveUserStatusVariant = (stat: string) => {
-  if (stat) {
-    return "success";
-  }
-
-  return "error";
-};
 
 // composables
+const store: any = useSurveyorsStore();
 const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
-  store.fetchAll({ include: includes.join(",") })
+  store.index({ include: store.includes.join(",") })
 );
 
-const handleDestroy = async (id: any) => {
-  await store.destroy(id);
-  await store.fetchAll({
-    include: includes.join(","),
-    filters: removeEmptyAndNull(filters.value),
-  });
-};
-
-onMounted(async () => {
-  await rolesStore.getRoles();
-
-  const surveyorRecord: any = rolesStore.roles.find(
-    (i: any) => i.name === "surveyor"
-  );
-
-  if (surveyorRecord) {
-    filters.value.roles.push(surveyorRecord.id);
-  }
-});
+onMounted(async () => await store.index({ include: store.includes.join(",") }));
 </script>
 
 <template>
   <!-- Filters -->
   <VRow class="pa-4">
     <VCol cols="12" lg="6">
-      <VTextField v-model="filters.name" label="Name" clearable />
+      <VTextField v-model="filters.user.name" label="Name" clearable />
     </VCol>
 
     <VCol cols="12" lg="6">
-      <VTextField v-model="filters.email" label="Email" clearable />
+      <VTextField v-model="filters.user.email" label="Email" clearable />
     </VCol>
   </VRow>
 
+  <!-- Table-->
   <DataTable
     :store="store"
     :items="store.entries"
@@ -89,54 +51,60 @@ onMounted(async () => {
     @update:on-sort-change="onSortChange"
   >
     <!-- Name -->
-    <template #item.name="{ item }">
+    <template #item.user.name="{ item }">
       <div class="d-flex align-center">
         <div class="d-flex flex-column">
           <h6 class="text-base">
-            {{ item.raw.name }}
+            {{ item.raw.user.name }}
           </h6>
         </div>
       </div>
     </template>
 
     <!-- Email -->
-    <template #item.email="{ item }">
+    <template #item.user.email="{ item }">
       <div class="d-flex align-center">
         <div class="d-flex flex-column">
-          <span class="text-sm text-medium-emphasis">{{ item.raw.email }}</span>
+          <span class="text-sm text-medium-emphasis">{{
+            item.raw.user.email
+          }}</span>
         </div>
       </div>
     </template>
 
     <!-- Status -->
-    <template #item.status="{ item }">
+    <template #item.user.status="{ item }">
       <VChip
         label
         size="small"
         class="text-capitalize"
-        :color="resolveUserStatusVariant(item.raw.is_active)"
+        :color="store.resolveUserStatusVariant(item.raw.user.is_active)"
       >
-        {{ item.raw.is_active ? "Active" : "Inactive" }}
+        {{ item.raw.user.is_active ? "Active" : "Inactive" }}
       </VChip>
     </template>
 
     <!-- Role -->
-    <template #item.role="{ item }">
+    <template #item.user.role="{ item }">
       <div class="d-flex align-center gap-4">
         <VAvatar
           :size="30"
-          :color="resolveUserRoleVariant(item.raw.top_role).color"
+          :color="store.resolveUserRoleVariant(item.raw.user.top_role).color"
           variant="tonal"
         >
           <VIcon
             :size="20"
-            :icon="resolveUserRoleVariant(item.raw.top_role).icon"
+            :icon="store.resolveUserRoleVariant(item.raw.user.top_role).icon"
           />
         </VAvatar>
         <span class="text-capitalize">
-          {{ item.raw.top_role == "" ? "No role" : item.raw.top_role }}
           {{
-            item.raw.roles.length > 1 ? `( +${item.raw.roles.length - 1} )` : ""
+            item.raw.user.top_role == "" ? "No role" : item.raw.user.top_role
+          }}
+          {{
+            item.raw.user.roles.length > 1
+              ? `( +${item.raw.user.roles.length - 1} )`
+              : ""
           }}
         </span>
       </div>
@@ -144,9 +112,9 @@ onMounted(async () => {
 
     <!-- Actions -->
     <template #item.actions="{ item }">
-      <IconBtn @click="store.fetch(item.raw.id)">
+      <IconBtn @click="store.get(item.raw.user.id)">
         <VProgressCircular
-          v-if="store.isLoading && store.selectedId === item.raw.id"
+          v-if="store.isLoading && store.selectedId === item.raw.user.id"
           size="24"
           color="info"
           indeterminate
@@ -155,13 +123,13 @@ onMounted(async () => {
       </IconBtn>
       <VTooltip location="bottom">
         <template #activator="{ props }">
-          <IconBtn
-            v-if="item.raw.id !== 1"
-            @click="handleDestroy(item.raw.id)"
-            v-bind="props"
-          >
+          <IconBtn v-bind="props" @click="store.destroy(item.raw.user.id)">
             <VProgressCircular
-              v-if="store.isLoading && store.selectedId === item.raw.id"
+              v-if="
+                store.isLoading &&
+                store.selected?.id &&
+                store.selected.id === item.raw.user.id
+              "
               size="24"
               color="info"
               indeterminate
@@ -169,7 +137,7 @@ onMounted(async () => {
             <VIcon v-else color="error" icon="tabler-trash" />
           </IconBtn>
         </template>
-        <span>Are you sure you want to delete this user?</span>
+        <span>Are you sure you want to delete this surveyor?</span>
       </VTooltip>
     </template>
   </DataTable>

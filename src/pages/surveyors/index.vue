@@ -1,5 +1,9 @@
 <script lang="ts" setup>
+import { useSurveyorsStore } from "@/stores/surveyors/useSurveyorsStore";
+
 const isAddUserDialogVisible: any = ref(false);
+
+const store = useSurveyorsStore();
 </script>
 
 <template>
@@ -34,6 +38,9 @@ const isAddUserDialogVisible: any = ref(false);
     </VRow>
   </section>
 
-  <AddEditUserDialog v-model:is-dialog-visible="isAddUserDialogVisible"
-  roles="store." />
+  <AddEditUserDialog
+    v-model:is-dialog-visible="isAddUserDialogVisible"
+    :show-roles="false"
+    :store="store"
+  />
 </template>

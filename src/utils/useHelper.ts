@@ -70,20 +70,25 @@ export const setQueryParams = (options: {}) => {
   return new URLSearchParams(options).toString();
 }
 
-export const returnFilterString = (filters: any): string => {
-  const query = new URLSearchParams()
+export const returnFilterString = (filters: any, parentKey: string = ''): string => {
+  const queryParts: string[] = [];
 
   for (const [filterKey, filterValue] of Object.entries(filters)) {
-    if (Array.isArray(filterValue) && filterValue.length > 0) {
-      query.append(`filter[${filterKey}]`, filterValue as any);
-    }
+    const key = parentKey ? `filter[${parentKey}.${filterKey}]` : `filter[${filterKey}]`;
 
-    if (!Array.isArray(filterValue)) {
-      query.append(`filter[${filterKey}]`, filterValue as any);
+    if (Array.isArray(filterValue) && filterValue.length > 0) {
+      queryParts.push(`${key}=${filterValue.join(',')}`);
+    } else if (typeof filterValue === 'object' && filterValue !== null) {
+      const nestedFilters = returnFilterString(filterValue, filterKey);
+      if (nestedFilters) {
+        queryParts.push(nestedFilters);
+      }
+    } else {
+      queryParts.push(`${key}=${filterValue}`);
     }
   }
 
-  return query.toString();
+  return queryParts.join('&');
 }
 
 export const focusFirstErrorDiv = (fullPage = false) => {

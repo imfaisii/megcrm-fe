@@ -205,7 +205,7 @@ onMounted(async () => {
             :rules="[requiredValidator]"
             placeholder="Enter postcode to search addresses"
             required
-            disabled
+            readonly=""
           />
         </VCol>
 
@@ -218,9 +218,8 @@ onMounted(async () => {
             label="Address"
             placeholder="Enter postcode to search addresses"
             type="text"
-            clearable
             required
-            disabled
+            readonly=""
           />
         </VCol>
 

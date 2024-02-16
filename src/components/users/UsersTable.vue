@@ -3,7 +3,7 @@ import useDataTable from "@/composables/useDatatable";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { useUsersStore } from "@/stores/users/useUsersStore";
 
-const usersStore: any = useUsersStore();
+const store: any = useUsersStore();
 const rolesStore: any = usePermissionsStore();
 
 // Headers
@@ -21,35 +21,12 @@ const filters = ref({
   roles: [],
 });
 
-const includes = ["createdBy"];
-
-const resolveUserRoleVariant = (role: string) => {
-  const roleLowerCase = role.toLowerCase();
-
-  if (roleLowerCase === "super admin")
-    return { color: "warning", icon: "tabler-device-laptop" };
-
-  return { color: "primary", icon: "tabler-user" };
-};
-
-const resolveUserStatusVariant = (stat: string) => {
-  if (stat) {
-    return "success";
-  }
-
-  return "error";
-};
-
 // composables
-const { onSortChange, onPaginationChange } = useDataTable(
-  usersStore,
-  filters,
-  () => usersStore.fetchUsers({ include: includes.join(",") })
+const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
+  store.index({ include: store.includes.join(",") })
 );
 
-onMounted(
-  async () => await usersStore.fetchUsers({ include: includes.join(",") })
-);
+onMounted(async () => await store.index({ include: store.includes.join(",") }));
 </script>
 
 <template>
@@ -79,8 +56,8 @@ onMounted(
   </VRow>
 
   <DataTable
-    :store="usersStore"
-    :items="usersStore.users"
+    :store="store"
+    :items="store.users"
     :headers="headers"
     class="text-no-wrap"
     show-select
@@ -113,7 +90,7 @@ onMounted(
         label
         size="small"
         class="text-capitalize"
-        :color="resolveUserStatusVariant(item.raw.is_active)"
+        :color="store.resolveUserStatusVariant(item.raw.is_active)"
       >
         {{ item.raw.is_active ? "Active" : "Inactive" }}
       </VChip>
@@ -124,12 +101,12 @@ onMounted(
       <div class="d-flex align-center gap-4">
         <VAvatar
           :size="30"
-          :color="resolveUserRoleVariant(item.raw.top_role).color"
+          :color="store.resolveUserRoleVariant(item.raw.top_role).color"
           variant="tonal"
         >
           <VIcon
             :size="20"
-            :icon="resolveUserRoleVariant(item.raw.top_role).icon"
+            :icon="store.resolveUserRoleVariant(item.raw.top_role).icon"
           />
         </VAvatar>
         <span class="text-capitalize">
@@ -143,9 +120,9 @@ onMounted(
 
     <!-- Actions -->
     <template #item.actions="{ item }">
-      <IconBtn @click="usersStore.fetchUser(item.raw.id)">
+      <IconBtn @click="store.get(item.raw.id)">
         <VProgressCircular
-          v-if="usersStore.isLoading && usersStore.selectedId === item.raw.id"
+          v-if="store.isLoading && store.selectedId === item.raw.id"
           size="24"
           color="info"
           indeterminate
@@ -156,13 +133,11 @@ onMounted(
         <template #activator="{ props }">
           <IconBtn
             v-if="item.raw.id !== 1"
-            @click="usersStore.deleteUser(item.raw.id)"
+            @click="store.destroy(item.raw.id)"
             v-bind="props"
           >
             <VProgressCircular
-              v-if="
-                usersStore.isLoading && usersStore.selectedId === item.raw.id
-              "
+              v-if="store.isLoading && store.selectedId === item.raw.id"
               size="24"
               color="info"
               indeterminate
