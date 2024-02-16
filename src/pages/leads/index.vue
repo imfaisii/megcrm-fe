@@ -21,7 +21,7 @@ const store = usePermissionsStore();
                 <h6 class="text-h5">Leads Table</h6>
               </VCol>
               <VCol
-                v-if="store.can([modules.LEADS + '.create'])"
+                v-if="store.can([modules.LEADS + '.store'])"
                 cols="12"
                 lg="6"
                 :class="$vuetify.display.lgAndUp ? 'text-right' : 'text-center'"
