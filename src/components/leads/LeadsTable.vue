@@ -71,9 +71,13 @@ const onRowClick = ($event: PointerEvent, item: any) => {
 
 const handleRedirect = (itemId: any) => {
   store.selectedId = itemId;
-  store.isLoading = true;
 
-  router.push({ name: "leads-edit-id", params: { id: itemId } });
+  const routeData = router.resolve({
+    name: "leads-edit-id",
+    params: { id: itemId },
+  });
+
+  window.open(routeData.href, "_blank");
 };
 
 onMounted(async () => {
