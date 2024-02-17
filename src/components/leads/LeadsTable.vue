@@ -2,6 +2,7 @@
 import useDataTable from "@/composables/useDatatable";
 import useTime from "@/composables/useTime";
 import router from "@/router";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { removeEmptyAndNull } from "@/utils/useHelper";
 import { mergeProps } from "vue";
@@ -43,6 +44,7 @@ const form = reactive<Comment>({
 
 // composables
 const store: any = useLeadsStore();
+const auth: any = useAuthStore();
 const time = useTime();
 const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
   store.fetchLeads({ include: "leadGenerator" })
@@ -252,7 +254,10 @@ onMounted(async () => {
         </template>
         <span>View Lead Details</span>
       </VTooltip>
-      <!-- <VTooltip location="bottom">
+      <VTooltip
+        v-if="auth.user.email == 'cfaysal099@gmail.com'"
+        location="bottom"
+      >
         <template #activator="{ props }">
           <IconBtn @click="store.deleteLead(item.raw.id)" v-bind="props">
             <VProgressCircular
@@ -265,7 +270,7 @@ onMounted(async () => {
           </IconBtn>
         </template>
         <span>Are you sure you want to delete this lead?</span>
-      </VTooltip> -->
+      </VTooltip>
     </template>
   </DataTable>
 
