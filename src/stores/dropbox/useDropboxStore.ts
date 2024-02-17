@@ -1,11 +1,14 @@
-import env from '@/constants/env'
 import { useToast } from '@/plugins/toastr'
+import { useAuthStore } from '@/stores/auth/useAuthStore'
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
 export const useDropboxStore = defineStore('dropbox', () => {
 
   const $toast = useToast()
+  const loading = ref(false)
+
+  const auth: any = useAuthStore();
 
   const baseUrl = 'https://api.dropboxapi.com/2/files'
   const baseDirectory = '/001 Umar Riaz Ashton/~~~~##########ECO 4 SURVEY'
@@ -19,7 +22,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
 
   const headers = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${env.VITE_APP_DROPBOX_TOKEN}`
+    'Authorization': `Bearer ${auth.user.dropbox.data}`
   }
 
   const index = async (folderName: string) => {
@@ -46,6 +49,8 @@ export const useDropboxStore = defineStore('dropbox', () => {
 
   const create = async (newFolderName: string) => {
     try {
+      loading.value = true;
+
       await axios.post(`${newFolderEndpoint}`, {
         autorename: false,
         path: `${baseDirectory}/${newFolderName}`
@@ -57,26 +62,32 @@ export const useDropboxStore = defineStore('dropbox', () => {
 
     } catch (e: any) {
       console.log("DROPBOX:create => ", e.message);
+    } finally {
+      loading.value = false;
     }
   }
 
   const store = async (address: string, file: any) => {
-    const headers = {
-      "Content-Type": "application/octet-stream",
-      "Dropbox-API-Arg": JSON.stringify({
-        autorename: true,
-        mode: "add",
-        mute: false,
-        path: `${baseDirectory}/${address}/${file.name}`,
-        strict_conflict: false,
-      }),
-      Authorization: `Bearer ${env.VITE_APP_DROPBOX_TOKEN}`,
-    };
-
     try {
+      loading.value = true;
+
+      const headers = {
+        "Content-Type": "application/octet-stream",
+        "Dropbox-API-Arg": JSON.stringify({
+          autorename: true,
+          mode: "add",
+          mute: false,
+          path: `${baseDirectory}/${address}/${file.name}`,
+          strict_conflict: true,
+        }),
+        Authorization: `Bearer ${auth.user.dropbox.data}`,
+      };
+
       await axios.post(fileUploadEndpoint, file, { headers });
     } catch (e: any) {
       console.log("DROPBOX:store => ", e.message);
+    } finally {
+      loading.value = false;
     }
   }
 
@@ -99,6 +110,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
 
 
   return {
+    loading,
     folderImages,
 
     create,

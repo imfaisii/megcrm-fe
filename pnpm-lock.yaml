@@ -95,6 +95,9 @@ dependencies:
   vue-chartjs:
     specifier: 5.2.0
     version: 5.2.0(chart.js@4.3.0)(vue@3.4.10)
+  vue-easy-lightbox:
+    specifier: ^1.17.0
+    version: 1.17.0(vue@3.4.10)
   vue-flatpickr-component:
     specifier: 11.0.3
     version: 11.0.3(vue@3.4.10)
@@ -5095,6 +5098,15 @@ packages:
         optional: true
     dependencies:
       vue: 3.4.10(typescript@5.0.4)
+
+  /vue-easy-lightbox@1.17.0(vue@3.4.10):
+    resolution: {integrity: sha512-dPkfNzcXQmiG7neNjJ9pDoWXWncOriVn9I/R7E8reEuRJ2GGScEcGB/fEtoqFnbcFzWYYPlcPGLc7q556nhHGQ==}
+    engines: {node: '>=14.18.3'}
+    peerDependencies:
+      vue: ^3.0.0
+    dependencies:
+      vue: 3.4.10(typescript@5.0.4)
+    dev: false
 
   /vue-flatpickr-component@11.0.3(vue@3.4.10):
     resolution: {integrity: sha512-SYNW/lqK1q9gzr5kQpNDwnlgUIDnXJpG1AmoDxVyOYVtUD7mLaDU1w+MJLFI644NYtwh9NrCt5LpojlsjtbvqA==}

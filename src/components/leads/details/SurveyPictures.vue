@@ -8,8 +8,19 @@ import Skeleton from "primevue/skeleton";
 const store = useLeadsStore();
 const dbStore = useDropboxStore();
 
+const visible = ref(false);
+const imgs = ref();
+const indexRef = ref(0);
+
+const show = (url: string) => {
+  imgs.value = url;
+  visible.value = true;
+};
+
 const saveFiles = async (files: any) => {
-  await dbStore.store(store.selectedLead.address, files[0]);
+  for await (const file of files) {
+    await dbStore.store(store.selectedLead.address, file);
+  }
 
   await dbStore.index(store.selectedLead.address);
 };
@@ -25,50 +36,98 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VCard>
-    <VCardItem>
-      <template #prepend>
-        <VIcon icon="mdi-image-marker" class="text-disabled" />
-      </template>
+  <div class="pa-2">
+    <VCard>
+      <VCardItem class="py-2 px-4">
+        <template #prepend>
+          <VIcon icon="mdi-image-marker" class="text-disabled" />
+        </template>
 
-      <VCardTitle>Survey Pictures</VCardTitle>
-    </VCardItem>
-
-    <VDivider />
-
-    <VCardText>
-      <VRow>
-        <VCol cols="12" class="mb-3">
-          <div v-bind="getRootProps()">
-            <input v-bind="getInputProps()" />
-            <VBtn color="primary"> Upload files </VBtn>
-          </div>
-        </VCol>
-        <VCol
-          v-for="image in (dbStore.folderImages as any)"
-          :key="image.id"
-          cols="12"
-          sm="6"
-          md="4"
+        <VCardTitle
+          >Survey Pictures ( {{ dbStore.folderImages.length }} )</VCardTitle
         >
-          <div v-if="image.link === undefined">
-            <Skeleton height="2rem" class="mb-2" borderRadius="16px" />
 
-            <VCardText class="position-relative">
-              <VCardTitle>
-                <Skeleton width="5rem" borderRadius="16px" class="mb-2" />
-              </VCardTitle>
-            </VCardText>
+        <template #append>
+          <div class="me-n3 mt-n2">
+            <VCol cols="12">
+              <div v-bind="getRootProps()">
+                <input v-bind="getInputProps()" />
+                <VTooltip>
+                  <template #activator="{ props }">
+                    <VBtn
+                      :loading="dbStore.loading"
+                      :disabled="dbStore.loading"
+                      v-bind="props"
+                      color="primary"
+                      icon="mdi-upload-outline"
+                    />
+                  </template>
+
+                  <span>Upload files</span>
+                </VTooltip>
+              </div>
+            </VCol>
           </div>
-          <VCard v-else>
-            <VImg :src="image.link" height="201" cover />
+        </template>
+      </VCardItem>
+    </VCard>
 
-            <VCardText class="position-relative">
-              <VCardTitle>{{ image.name }}</VCardTitle>
-            </VCardText>
-          </VCard>
-        </VCol>
-      </VRow>
-    </VCardText>
-  </VCard>
+    <VRow class="pa-2 mt-4">
+      <VCol
+        v-for="image in (dbStore.folderImages as any)"
+        :key="image.id"
+        class="image-card"
+        cols="12"
+        sm="6"
+        md="3"
+      >
+        <div v-if="image.link === undefined">
+          <Skeleton height="2rem" class="mb-2" borderRadius="16px" />
+
+          <VCardText class="position-relative">
+            <VCardTitle>
+              <Skeleton width="5rem" borderRadius="16px" class="mb-2" />
+            </VCardTitle>
+          </VCardText>
+        </div>
+        <VCard @click="show(image.link)" v-else>
+          <VTooltip>
+            <template #activator="{ props }">
+              <div v-bind="props">
+                <VImg :src="image.link" height="170" cover />
+
+                <VCardTitle>{{ image.name }}</VCardTitle>
+              </div>
+            </template>
+            <span>Click to preview</span>
+          </VTooltip>
+        </VCard>
+      </VCol>
+
+      <VCol v-if="dbStore.loading" cols="12" sm="6" md="3">
+        <Skeleton height="2rem" class="mb-2" borderRadius="16px" />
+
+        <VCardText class="position-relative">
+          <VCardTitle>
+            <Skeleton width="5rem" borderRadius="16px" class="mb-2" />
+          </VCardTitle>
+        </VCardText>
+      </VCol>
+    </VRow>
+
+    <VueEasyLightbox
+      :visible="visible"
+      :imgs="imgs"
+      :index="indexRef"
+      @hide="visible = false"
+    />
+  </div>
 </template>
+
+<style lang="scss" scoped>
+.image-card {
+  :hover {
+    cursor: pointer;
+  }
+}
+</style>

@@ -10,9 +10,13 @@ import '@styles/styles.scss'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
 import { createApp } from 'vue'
+import VueEasyLightbox from 'vue-easy-lightbox'
 import ToastPlugin from 'vue-toast-notification'
+
 // import './style.css'
 import 'primevue/resources/themes/aura-light-green/theme.css'
+import 'vue-easy-lightbox/dist/external-css/vue-easy-lightbox.css'
+
 
 loadFonts()
 
@@ -25,6 +29,7 @@ app.use(vuetify)
 app.use(router)
 app.use(PrimeVue)
 app.use(layoutsPlugin)
+app.use(VueEasyLightbox)
 app.use(ToastPlugin)
 
 // Mount vue app
