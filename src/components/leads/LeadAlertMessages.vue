@@ -23,7 +23,7 @@ const epcLink = computed(() => {
 </script>
 
 <template>
-  <VCol cols="4">
+  <VCol cols="12" lg="4">
     <VAlert border="start" color="info" variant="tonal">
       <a :href="epcLink" target="_blank">
         View EPCs of
@@ -32,7 +32,7 @@ const epcLink = computed(() => {
     </VAlert>
   </VCol>
 
-  <VCol cols="4">
+  <VCol cols="12" lg="4">
     <VAlert border="start" color="info" variant="tonal">
       <a href="/boilers" target="_blank">
         Click here to check boiler efficiency
@@ -40,7 +40,7 @@ const epcLink = computed(() => {
     </VAlert>
   </VCol>
 
-  <VCol cols="4">
+  <VCol cols="12" lg="4">
     <VAlert border="start" color="info" variant="tonal">
       <a
         href="https://www.gassaferegister.co.uk/gas-safety/gas-safety-certificates-records/building-regulations-certificate/order-replacement-building-regulations-certificate/"
