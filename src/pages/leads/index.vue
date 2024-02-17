@@ -29,11 +29,7 @@ const isAddLeadDialogVisible: any = ref(false);
             </VRow>
           </VCardTitle>
 
-          <LeadsTable
-            :filters="{
-              is_marked_as_job: false,
-            }"
-          />
+          <LeadsTable />
         </VCard>
       </VCol>
     </VRow>

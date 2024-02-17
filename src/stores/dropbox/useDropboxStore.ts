@@ -34,7 +34,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
         "include_mounted_folders": true,
         "include_non_downloadable_files": true,
         "limit": 2000,
-        "path": `${baseDirectory}/${folderName}`,
+        "path": `${baseDirectory}/${folderName}/Survey`,
         "recursive": false
       }, {
         headers
@@ -77,7 +77,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
           autorename: true,
           mode: "add",
           mute: false,
-          path: `${baseDirectory}/${address}/${file.name}`,
+          path: `${baseDirectory}/${address}/Survey/${file.name}`,
           strict_conflict: true,
         }),
         Authorization: `Bearer ${auth.user.dropbox.data}`,

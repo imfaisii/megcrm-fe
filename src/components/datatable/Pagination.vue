@@ -9,7 +9,7 @@ defineProps({
 
 const emit = defineEmits(["update:perPage", "update:currentPage"]);
 
-const pagination = ref({ perPage: 10, currentPage: 1 });
+const pagination = ref({ perPage: 50, currentPage: 1 });
 
 const handlePerPageChange = ($event: any) => {
   emit("update:perPage", $event);
@@ -30,7 +30,7 @@ const handlePageChange = ($event: any) => {
           label="Per Page"
           placeholder="Select per page"
           type="text"
-          :items="[10, 20, 30]"
+          :items="[10, 20, 30, 40, 50, 100]"
           @update:model-value="handlePerPageChange"
         />
       </div>

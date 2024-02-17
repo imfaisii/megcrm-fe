@@ -126,7 +126,7 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .image-card {
-  padding-inline: 4px 0;
+  padding-inline: 4px 4px;
 
   :hover {
     cursor: pointer;

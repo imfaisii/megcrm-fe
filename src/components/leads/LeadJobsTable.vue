@@ -32,7 +32,6 @@ const filters = ref({
   statuses: [],
   lead_generator_id: [],
   timestamp: "",
-  is_marked_as_job: true,
 });
 
 const isCommentsDialogVisible = ref(false);
