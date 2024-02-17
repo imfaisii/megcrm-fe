@@ -225,7 +225,7 @@ onMounted(async () => {
         </VCol>
 
         <!-- Benefit Type -->
-        <VCol cols="12" lg="6">
+        <VCol cols="12" lg="4">
           <VCombobox
             v-model="store.selectedLead.benefits"
             :items="store.benefitTypes"
@@ -239,8 +239,21 @@ onMounted(async () => {
           />
         </VCol>
 
+        <!-- Lead Generator -->
+        <VCol cols="12" lg="4">
+          <VCombobox
+            v-model="store.selectedLead.lead_generator_id"
+            :items="store.leadGenerators"
+            label="Lead Generator"
+            item-title="name"
+            item-value="id"
+            clearable
+            :return-object="false"
+          />
+        </VCol>
+
         <!-- Lead Source -->
-        <VCol cols="12" lg="6">
+        <VCol cols="12" lg="4">
           <VCombobox
             v-model="store.selectedLead.lead_source_id"
             :items="store.leadSources"
