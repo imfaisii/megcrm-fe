@@ -9,9 +9,11 @@ import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue";
 import UserProfile from "@/layouts/components/UserProfile.vue";
 
 // @layouts plugin
-import env from "@/constants/env";
+import useTime from "@/composables/useTime";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { VerticalNavLayout } from "@layouts";
+import axios from "axios";
 
 const {
   appRouteTransition,
@@ -21,6 +23,8 @@ const {
 } = useThemeConfig();
 const { width: windowWidth } = useWindowSize();
 const store: any = usePermissionsStore();
+const auth: any = useAuthStore();
+const time = useTime();
 
 // ℹ️ Provide animation name for vertical nav collapse icon.
 const verticalNavHeaderActionAnimationName = ref<
@@ -28,9 +32,25 @@ const verticalNavHeaderActionAnimationName = ref<
 >(null);
 
 const handleFileDownload = async () => {
-  const url = `${env.VITE_APP_API_URL}/leads-datamatch-download`;
+  const token = auth.accessToken || localStorage.getItem("access_token");
 
-  window.location.href = url;
+  axios("http://megcrm-be.test/api/V1/leads-datamatch-download", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    responseType: "blob",
+  }).then((response: any) => {
+    const link = document.createElement("a");
+
+    link.href = window.URL.createObjectURL(new Blob([response.data]));
+    link.setAttribute(
+      "download",
+      `datamatch-${time.currentTime("DD-MM-YYYY-hh:mm:ss")}.xlsx`
+    );
+    document.body.appendChild(link);
+
+    link.click();
+  });
 };
 
 watch(
