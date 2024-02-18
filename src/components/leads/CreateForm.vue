@@ -6,9 +6,9 @@ import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { getExceptionMessage } from "@/utils/useHelper";
 import avatar3 from "@images/avatars/avatar-3.png";
 import {
-  emailValidator,
-  integerValidator,
-  requiredValidator,
+emailValidator,
+integerValidator,
+requiredValidator,
 } from "@validators";
 import axios from "axios";
 import moment from "moment";
@@ -254,7 +254,7 @@ onMounted(async () => await store.getExtras());
                 @keydown.enter.prevent="getSuggestions"
               >
                 <!-- Prepend -->
-                <template #prepend>
+                <template #prepend-inner>
                   <VTooltip location="bottom">
                     <template #activator="{ props }">
                       <VIcon v-bind="props" icon="mdi-help-circle-outline" />

@@ -47,7 +47,8 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       const { data } = await useApiFetch(reshapeParams(endPoint, {}, {
-        include: 'notifications'
+        include: 'notifications',
+        append: 'users_logs'
       }))
 
       await setUser(data.user)

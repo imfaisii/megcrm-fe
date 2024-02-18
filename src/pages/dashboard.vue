@@ -46,7 +46,8 @@ const statisticsVertical = [
             <VCol
               v-for="statistics in statisticsVertical"
               :key="statistics.title"
-              cols="3"
+              cols="12"
+              lg="3"
             >
               <CardStatistics v-bind="statistics" />
             </VCol>

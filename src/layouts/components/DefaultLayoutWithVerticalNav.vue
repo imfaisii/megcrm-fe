@@ -4,11 +4,13 @@ import { useThemeConfig } from "@core/composable/useThemeConfig";
 
 // Components
 import Footer from "@/layouts/components/Footer.vue";
+import NavBarNotifications from "@/layouts/components/NavBarNotifications.vue";
 import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue";
-import NavBarNotifications from '@/layouts/components/NavBarNotifications.vue'
 import UserProfile from "@/layouts/components/UserProfile.vue";
 
 // @layouts plugin
+import env from "@/constants/env";
+import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { VerticalNavLayout } from "@layouts";
 
 const {
@@ -18,11 +20,18 @@ const {
   isAppRtl,
 } = useThemeConfig();
 const { width: windowWidth } = useWindowSize();
+const store: any = usePermissionsStore();
 
 // ℹ️ Provide animation name for vertical nav collapse icon.
 const verticalNavHeaderActionAnimationName = ref<
   null | "rotate-180" | "rotate-back-180"
 >(null);
+
+const handleFileDownload = async () => {
+  const url = `${env.VITE_APP_API_URL}/leads-datamatch-download`;
+
+  window.location.href = url;
+};
 
 watch(
   [isVerticalNavCollapsed, isAppRtl],
@@ -55,6 +64,19 @@ watch(
         </IconBtn>
 
         <NavbarThemeSwitcher />
+        <!-- <VTooltip v-if="store.can(['leads.download-datamatch'])"> -->
+        <VTooltip>
+          <template #activator="{ props }">
+            <IconBtn
+              @click="handleFileDownload"
+              class="blink-animate"
+              v-bind="props"
+            >
+              <VIcon icon="mdi-download" />
+            </IconBtn>
+          </template>
+          <span>Click to download Datamatch file.</span>
+        </VTooltip>
 
         <VSpacer />
 

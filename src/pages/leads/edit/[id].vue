@@ -147,7 +147,7 @@ onUnmounted(() => {
                     :return-object="false"
                   >
                     <!-- Prepend -->
-                    <template #prepend>
+                    <template #prepend-inner>
                       <VTooltip location="bottom">
                         <template #activator="{ props }">
                           <VIcon

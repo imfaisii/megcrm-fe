@@ -26,6 +26,9 @@ dependencies:
   '@types/cheerio':
     specifier: ^0.22.35
     version: 0.22.35
+  '@types/file-saver':
+    specifier: ^2.0.7
+    version: 2.0.7
   '@vueuse/core':
     specifier: 10.1.2
     version: 10.1.2(vue@3.4.10)
@@ -47,6 +50,9 @@ dependencies:
   chart.js:
     specifier: 4.3.0
     version: 4.3.0
+  file-saver:
+    specifier: ^2.0.5
+    version: 2.0.5
   flatpickr:
     specifier: ^4.6.13
     version: 4.6.13
@@ -1110,6 +1116,10 @@ packages:
 
   /@types/estree@1.0.5:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
+
+  /@types/file-saver@2.0.7:
+    resolution: {integrity: sha512-dNKVfHd/jk0SkR/exKGj2ggkB45MAkzvWCaqLUUgkyjITkGNzH8H+yUwr+BLJUBjZOe9w8X3wgmXhZDRg1ED6A==}
+    dev: false
 
   /@types/minimist@1.2.5:
     resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
@@ -2515,6 +2525,10 @@ packages:
     dependencies:
       flat-cache: 3.2.0
     dev: true
+
+  /file-saver@2.0.5:
+    resolution: {integrity: sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==}
+    dev: false
 
   /file-selector@0.2.4:
     resolution: {integrity: sha512-ZDsQNbrv6qRi1YTDOEWzf5J2KjZ9KMI1Q2SGeTkCJmNNW25Jg4TW4UMcmoqcg4WrAyKRcpBXdbWRxkfrOzVRbA==}

@@ -10,6 +10,7 @@ const loading = ref(false);
 const isSuccess = ref(false);
 const isError = ref(false);
 const $toast: any = useToast();
+const errorMessage: Ref<String> = ref("");
 
 const handleFileUpload = async () => {
   uploadLeadForm.value?.validate().then(async (valid: any) => {
@@ -33,8 +34,9 @@ const handleFileUpload = async () => {
         $toast.success("File was uploaded successfully.");
         isSuccess.value = true;
         isError.value = false;
-      } catch (e) {
-        $toast.error(getExceptionMessage(e));
+      } catch (e: any) {
+        errorMessage.value = getExceptionMessage(e);
+        $toast.error(errorMessage.value);
         isSuccess.value = false;
         isError.value = true;
       } finally {
@@ -67,7 +69,7 @@ watch(file, () => {
         </VAlert>
 
         <VAlert v-if="isError" type="error">
-          There was an error in uploading the file, please try again.
+          {{ errorMessage }}
         </VAlert>
       </VCol>
 
@@ -76,15 +78,23 @@ watch(file, () => {
           v-model="file"
           :loading="loading"
           :rules="[requiredValidator]"
+          prepend-icon=""
+          prepend-inner-icon="mdi-paperclip"
           color="primary"
           accept=".xlsx"
           label="Select an excel file..."
         />
       </VCol>
 
-      <VCol cols="2">
-        <VBtn block type="submit" :loading="loading" :disabled="loading">
-          Submit
+      <VCol cols="12">
+        <VBtn
+          type="submit"
+          :loading="loading"
+          :disabled="loading"
+          color="primary"
+        >
+          Upload
+          <VIcon end icon="mdi-cloud-upload-outline" />
         </VBtn>
       </VCol>
     </VRow>

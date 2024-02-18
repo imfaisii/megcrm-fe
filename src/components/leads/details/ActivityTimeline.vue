@@ -10,11 +10,11 @@ interface LogStatus {
 
 const props = defineProps({
   statuses: {
-    required: true,
+    required: false,
     default: () => [],
   },
   logs: {
-    required: true,
+    required: false,
     default: () => [],
   },
 });
@@ -79,6 +79,18 @@ const getChanges = (i: any): any => {
     });
   }
 
+  if (!isCreateLog(i) && i?.properties?.attributes) {
+    for (const [key, value] of Object.entries(i.properties.attributes) as any) {
+      if (!fieldsToIgnoreInTimeline.includes(key)) {
+        fieldsUpdated.push({
+          field: key.toUpperCase().replaceAll("_", " ").replace(" ID", ""),
+          old: i?.properties?.old[key] ?? "NULL",
+          new: value,
+        });
+      }
+    }
+  }
+
   if (isCreateLog(i) && i.subject_type !== "App\\Models\\Lead") {
     for (const [key, value] of Object.entries(i.properties.attributes) as any) {
       if (!fieldsToIgnoreInTimeline.includes(key) && value && value !== "") {
@@ -110,7 +122,7 @@ const getChanges = (i: any): any => {
         <VIcon icon="mdi-format-list-bulleted" class="text-disabled" />
       </template>
 
-      <VCardTitle>Lead Timeline</VCardTitle>
+      <VCardTitle>Timeline</VCardTitle>
     </VCardItem>
 
     <VDivider />
@@ -189,9 +201,11 @@ const getChanges = (i: any): any => {
 
           <p v-for="fieldUpdated in getChanges(item).fieldsUpdated">
             <template v-if="fieldUpdated?.field">
-              {{ fieldUpdated.field }} was changed from
-              {{ fieldUpdated.old }} to
-              {{ fieldUpdated.new }}
+              {{ fieldUpdated.field }} was changed
+              <span v-if="fieldUpdated.field !== 'PASSWORD'">
+                from {{ fieldUpdated.old }} to
+                {{ fieldUpdated.new }}
+              </span>
             </template>
           </p>
         </VTimelineItem>

@@ -39,7 +39,7 @@ export const reshapeParams = (url: string, meta: any = {}, options: any) => {
   const query = new URLSearchParams()
 
   for (const [key, value] of Object.entries(mergedParams) as any) {
-    if (value !== null && value !== undefined && value !== '' && value !== 'undefined' && ['page', 'per_page', 'sort', 'include', 'all'].includes(key)) {
+    if (value !== null && value !== undefined && value !== '' && value !== 'undefined' && ['page', 'per_page', 'sort', 'include', 'all', 'append'].includes(key)) {
       query.append(key, value)
     }
   }

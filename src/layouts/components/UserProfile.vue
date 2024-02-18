@@ -2,14 +2,33 @@
 import useApiFetch from "@/composables/useApiFetch";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import avatar1 from "@images/avatars/avatar-1.png";
+import { PerfectScrollbar } from "vue3-perfect-scrollbar";
 
-const store = useAuthStore();
+const store: any = useAuthStore();
 
 const logOut = async () => {
   await useApiFetch("/logout", { method: "POST" });
 
   store.logout();
 };
+
+const userProfileList: any = [
+  { type: "divider" },
+  {
+    type: "navItem",
+    icon: "mdi-account-outline",
+    title: "Profile",
+    to: { name: "profile" },
+  },
+  {
+    type: "navItem",
+    icon: "mdi-cog-outline",
+    title: "Settings",
+    to: { name: "profile-settings" },
+  },
+  { type: "divider" },
+  { type: "navItem", icon: "mdi-logout", title: "Logout", onClick: logOut },
+];
 </script>
 
 <template>
@@ -51,17 +70,27 @@ const logOut = async () => {
             <VListItemSubtitle>{{ store.user.top_role }}</VListItemSubtitle>
           </VListItem>
 
-          <!-- Divider -->
-          <VDivider class="my-2" />
+          <PerfectScrollbar :options="{ wheelPropagation: false }">
+            <template v-for="item in userProfileList" :key="item.title">
+              <VListItem
+                v-if="item.type === 'navItem'"
+                :to="item.to"
+                @click="item.onClick && item.onClick()"
+              >
+                <template #prepend>
+                  <VIcon class="me-2" :icon="item.icon" size="22" />
+                </template>
 
-          <!-- 👉 Logout -->
-          <VListItem @click="logOut">
-            <template #prepend>
-              <VIcon class="me-2" icon="tabler-logout" size="22" />
+                <VListItemTitle>{{ item.title }}</VListItemTitle>
+
+                <template v-if="item.badgeProps" #append>
+                  <VBadge v-bind="item.badgeProps" />
+                </template>
+              </VListItem>
+
+              <VDivider v-else class="my-2" />
             </template>
-
-            <VListItemTitle>Logout</VListItemTitle>
-          </VListItem>
+          </PerfectScrollbar>
         </VList>
       </VMenu>
       <!-- !SECTION -->
