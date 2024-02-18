@@ -9,6 +9,8 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AccountSecurity: typeof import('./src/components/profile/AccountSecurity.vue')['default']
+    AccountSettings: typeof import('./src/components/profile/AccountSettings.vue')['default']
     ActivityTimeline: typeof import('./src/components/leads/details/ActivityTimeline.vue')['default']
     AddCallRecordDialog: typeof import('./src/components/call-center/AddCallRecordDialog.vue')['default']
     AddEditLeadDialog: typeof import('./src/components/leads/AddEditLeadDialog.vue')['default']
@@ -38,6 +40,7 @@ declare module '@vue/runtime-core' {
     CardStatisticsVertical: typeof import('./src/@core/components/cards/CardStatisticsVertical.vue')['default']
     CardStatisticsWithImages: typeof import('./src/@core/components/cards/CardStatisticsWithImages.vue')['default']
     CommentsDialog: typeof import('./src/components/CommentsDialog.vue')['default']
+    ConfirmDialog: typeof import('./src/components/ConfirmDialog.vue')['default']
     CreateForm: typeof import('./src/components/leads/CreateForm.vue')['default']
     CreateLeadStatusForm: typeof import('./src/components/leads/CreateLeadStatusForm.vue')['default']
     CustomCheckboxes: typeof import('./src/@core/components/app-form-elements/CustomCheckboxes.vue')['default']

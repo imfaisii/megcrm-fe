@@ -18,6 +18,7 @@ export const defaultModel = {
   id: null,
   name: null,
   email: null,
+  current_password: null,
   password: null,
   password_confirmation: null,
   is_active: true,
@@ -106,6 +107,23 @@ export const useUsersStore = defineStore('users', () => {
     }
   }
 
+  const updateProfile = async (id: number | string, payload: any, options = { method: 'PUT' }) => {
+    try {
+      errors.value = {}
+      isLoading.value = true
+      await useApiFetch(`${endPoint}/${id}/profile`, {
+        data: payload,
+        ...options
+      })
+      $toast.success(`Profile was updated successfully.`)
+      errors.value = {}
+    } catch (error) {
+      handleError(error, errors)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const reset = () => {
     selected.value = defaultModel
     errors.value = {}
@@ -146,6 +164,7 @@ export const useUsersStore = defineStore('users', () => {
     get,
     store,
     destroy,
-    update
+    update,
+    updateProfile
   }
 })

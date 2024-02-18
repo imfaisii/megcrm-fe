@@ -24,7 +24,7 @@ const userProfileList: any = [
     type: "navItem",
     icon: "mdi-cog-outline",
     title: "Settings",
-    to: { name: "profile-settings" },
+    to: { name: "profile-tab", params: { tab: "account" } },
   },
   { type: "divider" },
   { type: "navItem", icon: "mdi-logout", title: "Logout", onClick: logOut },

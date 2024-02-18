@@ -11,4 +11,9 @@ export default [
     badgeContent: '1',
     badgeClass: 'bg-primary',
   },
+  {
+    title: 'Profile',
+    to: { name: 'profile' },
+    icon: { icon: 'mdi-account-outline' },
+  },
 ] as VerticalNavItems

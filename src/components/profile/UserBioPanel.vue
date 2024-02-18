@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { avatarText, kFormatter } from "@core/utils/formatters";
-import avatar5 from "@images/avatars/avatar-5.png";
 import { useUsersStore } from "@/stores/users/useUsersStore";
+import avatar5 from "@images/avatars/avatar-5.png";
 
 defineProps({
   user: {
@@ -70,7 +69,14 @@ const usersStore: any = useUsersStore();
         </VCardText>
 
         <VCardText class="d-flex justify-center">
-          <VBtn to="/profile/settings" variant="elevated" class="me-4">
+          <VBtn
+            :to="{
+              name: 'profile-tab',
+              params: { tab: 'account' },
+            }"
+            variant="elevated"
+            class="me-4"
+          >
             Edit
             <VIcon end icon="mdi-account-edit-outline" />
           </VBtn>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SearchHeader, SearchItem } from "@/@fake-db/types";
-import axios from "axios";
 import { useThemeConfig } from "@core/composable/useThemeConfig";
+import axios from "axios";
 
 interface Suggestion {
   icon: string;
@@ -67,11 +67,6 @@ const suggestionGroups: SuggestionGroup[] = [
         title: "Pricing",
         url: { name: "pages-pricing" },
       },
-      {
-        icon: "mdi-account-cog-outline",
-        title: "Account Settings",
-        url: { name: "pages-account-settings-tab", params: { tab: "account" } },
-      },
     ],
   },
   {
@@ -132,7 +127,7 @@ const noDataSuggestions: Suggestion[] = [
   {
     title: "Account Settings",
     icon: "mdi-account-outline",
-    url: { name: "pages-account-settings-tab", params: { tab: "account" } },
+    url: { name: "profile" },
   },
   {
     title: "Pricing Page",

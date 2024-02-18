@@ -11,6 +11,8 @@ export const handleError = (error: any, errors: any) => {
   }
 
   $toast.error(getExceptionMessage(error))
+
+  throw Error(error)
 }
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
