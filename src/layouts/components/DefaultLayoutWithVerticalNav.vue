@@ -64,8 +64,7 @@ watch(
         </IconBtn>
 
         <NavbarThemeSwitcher />
-        <!-- <VTooltip v-if="store.can(['leads.download-datamatch'])"> -->
-        <VTooltip>
+        <VTooltip v-if="store.can(['leads.download-datamatch'])">
           <template #activator="{ props }">
             <IconBtn
               @click="handleFileDownload"
