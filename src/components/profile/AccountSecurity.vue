@@ -18,7 +18,7 @@ const passwordRequirements = [
 const headers = [
   { title: "BROWSER", key: "browser" },
   { title: "DEVICE", key: "platform" },
-  { title: "LOCATION", key: "country" },
+  { title: "COUNTRY", key: "country" },
   { title: "IP ADDRESS", key: "ip" },
   { title: "LOGIN AT", key: "login_at" },
 ];
@@ -155,7 +155,7 @@ const handleSubmit = async () => {
               <VIcon
                 start
                 :icon="
-                  item.raw.is_mobile ? 'mdi-laptop' : 'mdi-cellphone-android'
+                  item.raw.is_mobile ? 'mdi-cellphone-android' : 'mdi-laptop'
                 "
                 :color="colors[Math.floor(Math.random() * colors.length)]"
                 size="20"
