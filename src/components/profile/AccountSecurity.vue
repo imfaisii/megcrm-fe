@@ -1,16 +1,13 @@
 <script lang="ts" setup>
-import { useToast } from "@/plugins/toastr";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useUsersStore } from "@/stores/users/useUsersStore";
 import { VDataTable } from "vuetify/labs/VDataTable";
 
 const auth: any = useAuthStore();
 const usersStore: any = useUsersStore();
-const $toast = useToast();
 const isCurrentPasswordVisible = ref(false);
 const isNewPasswordVisible = ref(false);
 const isConfirmPasswordVisible = ref(false);
-const isOneTimePasswordDialogVisible = ref(false);
 
 const passwordRequirements = [
   "Minimum 8 characters long - the more, the better",
@@ -18,57 +15,15 @@ const passwordRequirements = [
   "At least one number, symbol, or whitespace character",
 ];
 
-const recentDevicesHeaders = [
+const headers = [
   { title: "BROWSER", key: "browser" },
-  { title: "DEVICE", key: "device" },
-  { title: "LOCATION", key: "location" },
-  { title: "RECENT ACTIVITY", key: "recentActivity" },
+  { title: "DEVICE", key: "platform" },
+  { title: "LOCATION", key: "country" },
+  { title: "IP ADDRESS", key: "ip" },
+  { title: "LOGIN AT", key: "login_at" },
 ];
 
-const recentDevices = [
-  {
-    browser: "Chrome on Windows",
-    device: "Dell XPS 15",
-    location: "New York, NY",
-    recentActivity: "28 Apr 2022, 18:20",
-    deviceIcon: { icon: "mdi-laptop", color: "warning" },
-  },
-  {
-    browser: "Chrome on Android",
-    device: "Google Pixel 3a",
-    location: "Los Angeles, CA",
-    recentActivity: "20 Apr 2022, 10:20",
-    deviceIcon: { icon: "mdi-android", color: "success" },
-  },
-  {
-    browser: "Chrome on iPhone",
-    device: "iPhone 12x",
-    location: "San Francisco, CA",
-    recentActivity: "16 Apr 2022, 04:20",
-    deviceIcon: { icon: "mdi-cellphone", color: "error" },
-  },
-  {
-    browser: "Chrome on MacOS",
-    device: "Apple iMac",
-    location: "New York, NY",
-    recentActivity: "28 Apr 2022, 18:20",
-    deviceIcon: { icon: "mdi-monitor", color: "info" },
-  },
-  {
-    browser: "Chrome on MacOs",
-    device: "Macbook Pro",
-    location: "Los Angeles, CA",
-    recentActivity: "20 Apr 2022, 10:20",
-    deviceIcon: { icon: "mdi-laptop", color: "warning" },
-  },
-  {
-    browser: "Chrome on Android",
-    device: "Oneplus 9 Pro",
-    location: "San Francisco, CA",
-    recentActivity: "16 Apr 2022, 04:20",
-    deviceIcon: { icon: "mdi-android", color: "success" },
-  },
-];
+const colors = ["primary", "secondary", "success", "warning", "error"];
 
 const handleSubmit = async () => {
   try {
@@ -188,11 +143,10 @@ const handleSubmit = async () => {
 
     <!-- SECTION Recent Devices -->
     <VCol cols="12">
-      <!-- 👉 Table -->
       <VCard title="Recent Devices">
         <VDataTable
-          :headers="recentDevicesHeaders"
-          :items="recentDevices"
+          :headers="headers"
+          :items="auth?.user?.userAgents ?? []"
           hide-default-footer
           class="text-no-wrap rounded-0 text-sm"
         >
@@ -200,8 +154,10 @@ const handleSubmit = async () => {
             <div class="d-flex align-center">
               <VIcon
                 start
-                :icon="item.raw.deviceIcon.icon"
-                :color="item.raw.deviceIcon.color"
+                :icon="
+                  item.raw.is_mobile ? 'mdi-laptop' : 'mdi-cellphone-android'
+                "
+                :color="colors[Math.floor(Math.random() * colors.length)]"
                 size="20"
               />
               <span class="text-base text-high-emphasis">
@@ -209,6 +165,7 @@ const handleSubmit = async () => {
               </span>
             </div>
           </template>
+
           <!-- TODO Refactor this after vuetify provides proper solution for removing default footer -->
           <template #bottom />
         </VDataTable>

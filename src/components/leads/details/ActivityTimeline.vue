@@ -136,6 +136,7 @@ const getChanges = (i: any): any => {
         class="v-timeline-density-compact"
       >
         <VTimelineItem
+          v-if="sortedArray.length > 0"
           v-for="item in sortedArray"
           :key="item.created_at"
           :dot-color="getTimeLineColor(item)"
@@ -208,6 +209,9 @@ const getChanges = (i: any): any => {
               </span>
             </template>
           </p>
+        </VTimelineItem>
+        <VTimelineItem v-else>
+          <p class="text-center">No records found.</p>
         </VTimelineItem>
       </VTimeline>
     </VCardText>
