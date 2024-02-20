@@ -31,7 +31,10 @@ export const useBenefitTypesStore = defineStore('benefit-types', () => {
     isLoading.value = true
     const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPoint, meta.value, options))
     entries.value = data.benefit_types
-    meta.value = serverMeta
+    meta.value = {
+      filters: meta.value?.filters ?? {},
+      ...serverMeta
+    }
     isLoading.value = false
   }
 

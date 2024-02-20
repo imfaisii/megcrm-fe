@@ -26,7 +26,10 @@ export const useSurveyorsStore = defineStore('surveyors', () => {
     isLoading.value = true
     const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPoint, meta.value, options))
     entries.value = data.users
-    meta.value = serverMeta
+    meta.value = {
+      filters: meta.value?.filters ?? {},
+      ...serverMeta
+    }
     isLoading.value = false
   }
 

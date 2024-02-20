@@ -14,9 +14,6 @@ export const useCalendarStore = defineStore('calendar', () => {
   const isLoading = ref(false)
   const meta = ref(defaultPagination)
   const endPointCalendar = '/calendars'
-  const endPointCalendarEvent = '/calendar-events'
-  const entityCalendars = 'Calendars'
-  const entityCalendarEvents = 'Calendar Event'
   const availableCalendars = ref([]);
   const selectedCalendars: any = ref([])
 
@@ -26,7 +23,10 @@ export const useCalendarStore = defineStore('calendar', () => {
     isLoading.value = true
     const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPointCalendar, meta.value, options))
     availableCalendars.value = data.calendars
-    meta.value = serverMeta
+    meta.value = {
+      filters: meta.value?.filters ?? {},
+      ...serverMeta
+    }
     isLoading.value = false
   }
 

@@ -25,7 +25,10 @@ export const useLeadStatusesStore = defineStore('leads-statuses', () => {
     isLoading.value = true
     const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPoint, meta.value, options))
     leadStatuses.value = data.lead_statuses
-    meta.value = serverMeta
+    meta.value = {
+      filters: meta.value?.filters ?? {},
+      ...serverMeta
+    }
     isLoading.value = false
   }
 

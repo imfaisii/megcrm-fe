@@ -31,7 +31,10 @@ export const useMeasuresStore = defineStore('measures', () => {
     isLoading.value = true
     const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPoint, meta.value, options))
     entries.value = data.measures
-    meta.value = serverMeta
+    meta.value = {
+      filters: meta.value?.filters ?? {},
+      ...serverMeta
+    }
     isLoading.value = false
   }
 

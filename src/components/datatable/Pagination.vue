@@ -9,8 +9,6 @@ defineProps({
 
 const emit = defineEmits(["update:perPage", "update:currentPage"]);
 
-const pagination = ref({ perPage: 50, currentPage: 1 });
-
 const handlePerPageChange = ($event: any) => {
   emit("update:perPage", $event);
 };
@@ -25,7 +23,7 @@ const handlePageChange = ($event: any) => {
     <VRow class="d-flex justify-space-between" :style="{ padding: '10px' }">
       <div class="d-flex gap-2">
         <VSelect
-          v-model="pagination.perPage"
+          v-model="store.meta.per_page"
           class="w-25"
           label="Per Page"
           placeholder="Select per page"
@@ -47,7 +45,7 @@ const handlePageChange = ($event: any) => {
       <div class="d-flex mt-4">
         <VPagination
           v-if="store.meta.total > 0"
-          v-model="pagination.currentPage"
+          v-model="store.meta.current_page"
           :total-visible="$vuetify.display.smAndDown ? 3 : 5"
           :length="Math.ceil(store.meta.total / store.meta.per_page)"
           @update:model-value="handlePageChange"

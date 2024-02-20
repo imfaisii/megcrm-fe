@@ -10,13 +10,7 @@ type PiniaStore<T extends (...args: any) => any> = Omit<
 
 export default function useDataTable(store: PiniaStore<any>, filters: any, fetch: any) {
 
-  const onPaginationChange = async ($event: any) => {
-    store.meta.per_page = $event.pagination.per_page;
-    store.meta.current_page = $event.pagination.current_page;
-    store.meta.sort = $event.sort;
-
-    await fetch();
-  };
+  const onPaginationChange = async () => await fetch();
 
   const onSortChange = async ($event: any) => {
     store.meta.sort = $event.sort;
@@ -30,6 +24,7 @@ export default function useDataTable(store: PiniaStore<any>, filters: any, fetch
     filters,
     async (n) => {
       store.meta.filters = removeEmptyAndNull(n);
+      store.meta.current_page = 1;
 
       await update();
     },

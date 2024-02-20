@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { VDataTableServer } from "vuetify/labs/VDataTable";
 
-defineProps({
+const props: any = defineProps({
   store: {
     required: true,
   },
@@ -14,7 +14,7 @@ defineProps({
 
 const emit = defineEmits(["update:onPaginationChange", "update:onSortChange"]);
 
-const pagination = ref({ current_page: 1, per_page: 10 });
+const pagination = ref({ current_page: 1, per_page: 50 });
 
 declare type SortItem = {
   key: string;
@@ -34,13 +34,11 @@ const handlePageChange = (page: number) => {
   });
 };
 
-const handlePerPageChange = (items: number) => {
-  pagination.value.per_page = items;
-  pagination.value.current_page = 1;
+const handlePerPageChange = (page: number) => {
+  props.store.meta.per_page = page;
+  props.store.meta.current_page = 1;
 
-  emit("update:onPaginationChange", {
-    pagination: pagination.value,
-  });
+  emit("update:onPaginationChange");
 };
 
 const sortable = (sortItem: SortItem[]) => {

@@ -40,7 +40,10 @@ export const useLeadGeneratorAssignmentStore = defineStore('lead-generator-assig
     isLoading.value = true
     const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPoint, meta.value, options))
     entries.value = data.lead_assignments
-    meta.value = serverMeta
+    meta.value = {
+      filters: meta.value?.filters ?? {},
+      ...serverMeta
+    }
     isLoading.value = false
   }
 
@@ -48,7 +51,10 @@ export const useLeadGeneratorAssignmentStore = defineStore('lead-generator-assig
     isLoading.value = true
     const { data, meta: serverMeta } = await useApiFetch(reshapeParams(usersEndPoint, meta.value, options))
     entries.value = data.users
-    meta.value = serverMeta
+    meta.value = {
+      filters: meta.value?.filters ?? {},
+      ...serverMeta
+    }
     isLoading.value = false
   }
 
