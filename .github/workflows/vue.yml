@@ -27,6 +27,7 @@ jobs:
         script_stop: true
         script: |
           cd /data/www/megcrm.co.uk/megcrm-fe
+          git stash
           git pull
           pnpm i
           npm run build
