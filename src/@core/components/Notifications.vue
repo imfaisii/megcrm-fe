@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import useTime from "@/composables/useTime";
 import { avatarText } from "@core/utils/formatters";
+import avatar4 from "@images/avatars/avatar-4.png";
 import avatar3 from "@images/avatars/lead.png";
-import avatar4 from "@images/avatars/avatar4.png";
 import type { Notification } from "@layouts/types";
 import { PerfectScrollbar } from "vue3-perfect-scrollbar";
 
@@ -112,7 +112,9 @@ const markAllReadOrUnread = () => {
                           ? notification.color
                           : undefined
                       "
-                      :image="notification.module === 'leads' ? avatar3 : avatar4"
+                      :image="
+                        notification.module === 'leads' ? avatar3 : avatar4
+                      "
                       :icon="notification.icon || undefined"
                       :variant="notification.img ? undefined : 'tonal'"
                     >
