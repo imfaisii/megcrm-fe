@@ -29,7 +29,7 @@ onMounted(async () => {
             :items="store.surveyors"
             :rules="[requiredValidator]"
             label="Surveyor"
-            item-title="name"
+            item-title="user.name"
             item-value="id"
             clearable
             required

@@ -5,6 +5,7 @@ import { useToast } from '@/plugins/toastr'
 import { LeadStatus } from '@/stores/leads/useLeadStatusesStore'
 import { EventBus } from '@/utils/useEventBus'
 import { getExceptionMessage, handleError, reshapeParams, setQueryParams } from '@/utils/useHelper'
+import { omit } from 'lodash'
 import { defineStore } from 'pinia'
 
 type BenefitType = {
@@ -169,7 +170,9 @@ export const useLeadsStore = defineStore('leads', () => {
     try {
       isLoading.value = true
       await useApiFetch(`/leads/${selectedLead.value.id}`, {
-        data: selectedLead.value,
+        data: omit(selectedLead.value, [
+          'logs', 'status_details', 'statuses', 'lead_generator', 'call_centers'
+        ]),
         ...options
       })
       $toast.success('Lead was updated successfully.')
