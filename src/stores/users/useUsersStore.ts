@@ -125,7 +125,7 @@ export const useUsersStore = defineStore('users', () => {
   }
 
   const reset = () => {
-    selected.value = defaultModel
+    selected.value = { ...defaultModel }
     errors.value = {}
   }
 

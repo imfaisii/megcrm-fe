@@ -89,7 +89,7 @@ export const useSurveyorsStore = defineStore('surveyors', () => {
   }
 
   const reset = () => {
-    selected.value = defaultModel
+    selected.value = { ...defaultModel }
     errors.value = {}
   }
 
