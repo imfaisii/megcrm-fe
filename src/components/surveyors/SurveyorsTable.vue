@@ -4,19 +4,17 @@ import { useSurveyorsStore } from "@/stores/surveyors/useSurveyorsStore";
 
 // Headers
 const headers = [
-  { title: "Name", key: "user.name" },
-  { title: "Email", key: "user.email" },
-  { title: "Status", key: "user.status", sortable: false },
-  { title: "Role", key: "user.role", sortable: false },
+  { title: "Name", key: "name" },
+  { title: "Email", key: "email" },
+  { title: "Status", key: "status", sortable: false },
+  { title: "Role", key: "role", sortable: false },
   { title: "Actions", key: "actions", sortable: false },
 ];
 
 const filters = ref({
-  user: {
-    name: "",
-    email: "",
-    roles: [],
-  },
+  name: "",
+  email: "",
+  roles: [],
 });
 
 // composables
@@ -32,11 +30,11 @@ onMounted(async () => await store.index({ include: store.includes.join(",") }));
   <!-- Filters -->
   <VRow class="pa-4">
     <VCol cols="12" lg="6">
-      <VTextField v-model="filters.user.name" label="Name" clearable />
+      <VTextField v-model="filters.name" label="Name" clearable />
     </VCol>
 
     <VCol cols="12" lg="6">
-      <VTextField v-model="filters.user.email" label="Email" clearable />
+      <VTextField v-model="filters.email" label="Email" clearable />
     </VCol>
   </VRow>
 
@@ -51,60 +49,54 @@ onMounted(async () => await store.index({ include: store.includes.join(",") }));
     @update:on-sort-change="onSortChange"
   >
     <!-- Name -->
-    <template #item.user.name="{ item }">
+    <template #item.name="{ item }">
       <div class="d-flex align-center">
         <div class="d-flex flex-column">
           <h6 class="text-base">
-            {{ item.raw.user.name }}
+            {{ item.raw.name }}
           </h6>
         </div>
       </div>
     </template>
 
     <!-- Email -->
-    <template #item.user.email="{ item }">
+    <template #item.email="{ item }">
       <div class="d-flex align-center">
         <div class="d-flex flex-column">
-          <span class="text-sm text-medium-emphasis">{{
-            item.raw.user.email
-          }}</span>
+          <span class="text-sm text-medium-emphasis">{{ item.raw.email }}</span>
         </div>
       </div>
     </template>
 
     <!-- Status -->
-    <template #item.user.status="{ item }">
+    <template #item.status="{ item }">
       <VChip
         label
         size="small"
         class="text-capitalize"
-        :color="store.resolveUserStatusVariant(item.raw.user.is_active)"
+        :color="store.resolveUserStatusVariant(item.raw.is_active)"
       >
-        {{ item.raw.user.is_active ? "Active" : "Inactive" }}
+        {{ item.raw.is_active ? "Active" : "Inactive" }}
       </VChip>
     </template>
 
     <!-- Role -->
-    <template #item.user.role="{ item }">
+    <template #item.role="{ item }">
       <div class="d-flex align-center gap-4">
         <VAvatar
           :size="30"
-          :color="store.resolveUserRoleVariant(item.raw.user.top_role).color"
+          :color="store.resolveUserRoleVariant(item.raw.top_role).color"
           variant="tonal"
         >
           <VIcon
             :size="20"
-            :icon="store.resolveUserRoleVariant(item.raw.user.top_role).icon"
+            :icon="store.resolveUserRoleVariant(item.raw.top_role).icon"
           />
         </VAvatar>
         <span class="text-capitalize">
+          {{ item.raw.top_role == "" ? "No role" : item.raw.top_role }}
           {{
-            item.raw.user.top_role == "" ? "No role" : item.raw.user.top_role
-          }}
-          {{
-            item.raw.user.roles.length > 1
-              ? `( +${item.raw.user.roles.length - 1} )`
-              : ""
+            item.raw.roles.length > 1 ? `( +${item.raw.roles.length - 1} )` : ""
           }}
         </span>
       </div>
@@ -112,9 +104,9 @@ onMounted(async () => await store.index({ include: store.includes.join(",") }));
 
     <!-- Actions -->
     <template #item.actions="{ item }">
-      <IconBtn @click="store.get(item.raw.user.id)">
+      <IconBtn @click="store.get(item.raw.id)">
         <VProgressCircular
-          v-if="store.isLoading && store.selectedId === item.raw.user.id"
+          v-if="store.isLoading && store.selectedId === item.raw.id"
           size="24"
           color="info"
           indeterminate
@@ -123,12 +115,12 @@ onMounted(async () => await store.index({ include: store.includes.join(",") }));
       </IconBtn>
       <VTooltip location="bottom">
         <template #activator="{ props }">
-          <IconBtn v-bind="props" @click="store.destroy(item.raw.user.id)">
+          <IconBtn v-bind="props" @click="store.destroy(item.raw.id)">
             <VProgressCircular
               v-if="
                 store.isLoading &&
                 store.selected?.id &&
-                store.selected.id === item.raw.user.id
+                store.selected.id === item.raw.id
               "
               size="24"
               color="info"
