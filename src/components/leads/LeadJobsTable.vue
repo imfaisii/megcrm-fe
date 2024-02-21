@@ -52,6 +52,13 @@ const form = reactive<Comment>({
   comments: "",
 });
 
+const getLeads = async () => {
+  await leadJobStore.fetchLeads({
+    include: "leadGenerator",
+    filters: removeEmptyAndNull({ ...props.filters }),
+  });
+};
+
 // composables
 const store: any = useLeadsStore();
 const auth: any = useAuthStore();
@@ -60,7 +67,11 @@ const time = useTime();
 const { onSortChange, onPaginationChange } = useDataTable(
   leadJobStore,
   filters,
-  () => leadJobStore.fetchLeads({ include: "leadGenerator" })
+  () =>
+    leadJobStore.fetchLeads({
+      include: "leadGenerator",
+      filters: removeEmptyAndNull({ ...props.filters }),
+    })
 );
 
 const handleCommentsSubmit = async (comments: String) => {
@@ -68,7 +79,7 @@ const handleCommentsSubmit = async (comments: String) => {
   await store.updateStatus(form);
   await leadJobStore.fetchLeads({
     include: "leadGenerator",
-    filters: removeEmptyAndNull(filters.value),
+    filters: removeEmptyAndNull({ ...props.filters }),
   });
 };
 
@@ -96,8 +107,6 @@ const handleRedirect = (itemId: any) => {
 
 onMounted(async () => {
   await store.getExtras();
-
-  console.log("[rp]", props.filters, "asd", filters.value);
   await leadJobStore.fetchLeads({
     include: "leadGenerator",
     filters: removeEmptyAndNull({ ...props.filters }),

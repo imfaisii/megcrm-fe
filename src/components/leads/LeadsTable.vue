@@ -47,7 +47,10 @@ const store: any = useLeadsStore();
 const auth: any = useAuthStore();
 const time = useTime();
 const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
-  store.fetchLeads({ include: "leadGenerator" })
+  store.fetchLeads({
+    include: "leadGenerator",
+    filters: removeEmptyAndNull(filters.value),
+  })
 );
 
 const handleCommentsSubmit = async (comments: String) => {
@@ -181,7 +184,7 @@ onMounted(async () => {
         </template>
         <span>{{ item.raw.address }}</span>
       </VTooltip>
-  </template>
+    </template>
 
     <!-- Lead Generator -->
     <template #item.lead_generator_id="{ item }">

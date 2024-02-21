@@ -20,15 +20,15 @@ export default [
         permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
       },
       {
-        title: 'Survey Booked', to: { name: 'jobs-survey-booked', params: { status: 'survey-booked' } },
+        title: 'Survey Booked', to: 'jobs-survey-booked',
         permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
       },
       {
-        title: 'Survey Pending (Resch)', to: { name: 'jobs-survey-pending', params: { status: 'survey-pending' } },
+        title: 'Survey Pending (Resch)', to: 'jobs-survey-pending',
         permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
       },
       {
-        title: 'Survey Done', to: { name: 'jobs-survey-done', params: { status: 'survey-done' } },
+        title: 'Survey Done', to: 'jobs-survey-done',
         permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
       },
     ]

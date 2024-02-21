@@ -25,6 +25,11 @@ const tabs = [
     icon: "mdi-image-marker-outline",
     tab: "survey-pictures",
   },
+  {
+    title: "Pre Checking",
+    icon: "mdi-image-check-outline",
+    tab: "pre-checking",
+  },
   { title: "Communications", icon: "mdi-phone-outline", tab: "communications" },
   { title: "History", icon: "mdi-clock-outline", tab: "history" },
   {
@@ -237,6 +242,10 @@ onUnmounted(() => {
 
         <VWindowItem :transition="false">
           <SurveyPictures />
+        </VWindowItem>
+
+        <VWindowItem :transition="false">
+          <PreCheckingTab />
         </VWindowItem>
 
         <VWindowItem :transition="false">
