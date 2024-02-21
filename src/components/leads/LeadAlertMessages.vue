@@ -23,31 +23,57 @@ const epcLink = computed(() => {
 </script>
 
 <template>
-  <VCol cols="12" lg="4">
-    <VAlert border="start" color="info" variant="tonal">
-      <a :href="epcLink" target="_blank">
-        View EPCs of
-        {{ postCode.toUpperCase() }}
-      </a>
-    </VAlert>
-  </VCol>
+  <VCol class="d-flex flex-wrap">
+    <VTooltip>
+      <template #activator="{ props }">
+        <VChip
+          v-bind="props"
+          label
+          size="small"
+          class="text-capitalize"
+          color="info"
+        >
+          <a :href="epcLink" target="_blank">
+            EPC Link ({{ postCode.toUpperCase() }})
+          </a>
+        </VChip>
+      </template>
+      <span>View EPCs of {{ postCode.toUpperCase() }}</span>
+    </VTooltip>
 
-  <VCol cols="12" lg="4">
-    <VAlert border="start" color="info" variant="tonal">
-      <a href="/boilers" target="_blank">
-        Click here to check boiler efficiency
-      </a>
-    </VAlert>
-  </VCol>
+    <VTooltip>
+      <template #activator="{ props }">
+        <VChip
+          v-bind="props"
+          label
+          size="small"
+          class="text-capitalize"
+          color="info"
+        >
+          <a href="/boilers" target="_blank"> Boiler Efficiency </a>
+        </VChip>
+      </template>
+      <span>Click here to check boiler efficiency</span>
+    </VTooltip>
 
-  <VCol cols="12" lg="4">
-    <VAlert border="start" color="info" variant="tonal">
-      <a
-        href="https://www.gassaferegister.co.uk/gas-safety/gas-safety-certificates-records/building-regulations-certificate/order-replacement-building-regulations-certificate/"
-        target="_blank"
-      >
-        Click here to check gas safe register
-      </a>
-    </VAlert>
+    <VTooltip>
+      <template #activator="{ props }">
+        <VChip
+          v-bind="props"
+          label
+          size="small"
+          class="text-capitalize"
+          color="info"
+        >
+          <a
+            href="https://www.gassaferegister.co.uk/gas-safety/gas-safety-certificates-records/building-regulations-certificate/order-replacement-building-regulations-certificate/"
+            target="_blank"
+          >
+            Gas safe register
+          </a>
+        </VChip>
+      </template>
+      <span>Click to check gas safe register</span>
+    </VTooltip>
   </VCol>
 </template>

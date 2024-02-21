@@ -91,10 +91,11 @@ onUnmounted(() => {
         <VCol cols="12">
           <VCard class="mb-6">
             <VCardTitle>
-              <div class="d-flex justify-space-between">
-                <div class="pa-5">
+              <div class="d-flex flex-wrap-reverse justify-space-between pa-2">
+                <div>
                   <p>Lead Details</p>
-                  <VCardSubtitle class="d-flex pl-0">
+
+                  <VCardSubtitle class="d-flex flex-wrap pl-0">
                     <VTooltip>
                       <template #activator="{ props }">
                         <VChip
@@ -125,6 +126,7 @@ onUnmounted(() => {
                     </VTooltip>
                   </VCardSubtitle>
                 </div>
+
                 <div class="d-flex justify-center">
                   <VTooltip location="top">
                     <template #activator="{ props }">
@@ -147,6 +149,14 @@ onUnmounted(() => {
             </VCardTitle>
 
             <VCardText>
+              <VRow class="d-flex mb-3">
+                <LeadAlertMessages
+                  v-if="store.selectedLead.post_code"
+                  :postCode="store.selectedLead.post_code"
+                  :address="store.selectedLead.address"
+                />
+              </VRow>
+
               <VRow>
                 <VCol class="d-flex flex-wrap align-center" cols="12">
                   <VCombobox
@@ -196,15 +206,6 @@ onUnmounted(() => {
                     Save Status
                   </VBtn>
                 </VCol>
-              </VRow>
-
-              <VRow class="mb-3">
-                <LeadAlertMessages
-                  class="mt-4"
-                  v-if="store.selectedLead.post_code"
-                  :postCode="store.selectedLead.post_code"
-                  :address="store.selectedLead.address"
-                />
               </VRow>
             </VCardText>
           </VCard>
