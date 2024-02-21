@@ -11,7 +11,9 @@ const dbStore = useDropboxStore();
 const visible = ref(false);
 const imgs = ref();
 const indexRef = ref(0);
-const folder = `${store.selectedLead.post_code}-${store.selectedLead.address}`;
+const folder = `${store.selectedLead.post_code
+  .toUpperCase()
+  .replace(/ /g, "")} - ${store.selectedLead.address}`;
 
 const show = (url: string) => {
   imgs.value = url;

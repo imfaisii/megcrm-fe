@@ -63,6 +63,13 @@ handleSkinChanges();
   z-index: 9999999 !important;
 }
 
+.d-flex {
+  column-gap: 20px; /* sets only for columns */
+  gap: 10px;
+  gap: 10px 20px; /* row-gap column gap */
+  row-gap: 10px; /* sets only for rows */
+}
+
 .v-pagination__item--is-active {
   /* stylelint-disable-next-line liberty/use-logical-spec */
   margin-top: 2px !important;

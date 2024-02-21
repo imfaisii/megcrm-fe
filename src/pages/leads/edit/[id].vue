@@ -128,7 +128,7 @@ onUnmounted(() => {
 
             <VCardText>
               <VRow>
-                <VCol cols="12">
+                <VCol class="d-flex flex-wrap align-center" cols="12">
                   <VCombobox
                     v-model="store.selectedLead.status_details.name"
                     :items="
@@ -170,19 +170,11 @@ onUnmounted(() => {
                         />
                       </VFadeTransition>
                     </template>
-
-                    <!-- Append -->
-                    <template #append>
-                      <VBtn
-                        :size="$vuetify.display.smAndDown ? 'small' : 'large'"
-                        :class="$vuetify.display.smAndDown ? 'mt-n2' : 'mt-n3'"
-                        :icon="$vuetify.display.smAndDown"
-                        @click="isCommentsDialogVisible = true"
-                      >
-                        Save
-                      </VBtn>
-                    </template>
                   </VCombobox>
+
+                  <VBtn @click="isCommentsDialogVisible = true">
+                    Save Status
+                  </VBtn>
                 </VCol>
               </VRow>
 
