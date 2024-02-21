@@ -5,6 +5,9 @@ import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 
 const isAddLeadDialogVisible: any = ref(false);
 const store = usePermissionsStore();
+const router = useRouter();
+
+const handleCreateLead = () => router.push("/leads/create");
 </script>
 <template>
   <section>
@@ -26,7 +29,7 @@ const store = usePermissionsStore();
                 lg="6"
                 :class="$vuetify.display.lgAndUp ? 'text-right' : 'text-center'"
               >
-                <VBtn @click="isAddLeadDialogVisible = true" color="primary">
+                <VBtn @click="handleCreateLead" color="primary">
                   Create Lead
                 </VBtn>
               </VCol>
