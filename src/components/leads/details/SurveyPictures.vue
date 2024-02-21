@@ -97,9 +97,9 @@ onMounted(async () => {
           <VTooltip>
             <template #activator="{ props }">
               <div v-bind="props">
-                <VImg :src="image.link" height="170" cover />
+                <VImg :src="image.link" height="170" loading="lazy" cover />
 
-                <VCardTitle>{{ image.name }}</VCardTitle>
+                <VCardSubtitle class="pa-3">{{ image.name }}</VCardSubtitle>
               </div>
             </template>
             <span>Click to preview</span>

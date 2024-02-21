@@ -94,15 +94,35 @@ onUnmounted(() => {
               <div class="d-flex justify-space-between">
                 <div class="pa-5">
                   <p>Lead Details</p>
-                  <VCardSubtitle class="pl-0">
-                    <VChip
-                      label
-                      size="small"
-                      class="text-capitalize mb-2 blink-animate ml-0"
-                      color="warning"
-                    >
-                      {{ store.selectedLead.status_details.name }}
-                    </VChip>
+                  <VCardSubtitle class="d-flex pl-0">
+                    <VTooltip>
+                      <template #activator="{ props }">
+                        <VChip
+                          v-bind="props"
+                          label
+                          size="small"
+                          class="text-capitalize mb-2 ml-0"
+                          color="warning"
+                        >
+                          {{ store.selectedLead.address }}
+                        </VChip>
+                      </template>
+                      <span>Customer Address</span>
+                    </VTooltip>
+                    <VTooltip>
+                      <template #activator="{ props }">
+                        <VChip
+                          v-bind="props"
+                          label
+                          size="small"
+                          class="text-capitalize mb-2 blink-animate ml-0"
+                          color="warning"
+                        >
+                          {{ store.selectedLead.status_details.name }}
+                        </VChip>
+                      </template>
+                      <span>Current Lead Status</span>
+                    </VTooltip>
                   </VCardSubtitle>
                 </div>
                 <div class="d-flex justify-center">

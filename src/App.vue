@@ -103,6 +103,11 @@ handleSkinChanges();
   animation: blinker 2s linear infinite;
 }
 
+.custom-radio {
+  /* stylelint-disable-next-line liberty/use-logical-spec */
+  padding: 10px 20px 3px !important;
+}
+
 @keyframes blinker {
   50% {
     opacity: 0;
