@@ -20,19 +20,26 @@ export default function useDataTable(store: PiniaStore<any>, filters: any, fetch
 
   const update = debounce(() => fetch(), 500)
 
+  const fetchWithFilters = async (n: any) => {
+    store.meta.filters = removeEmptyAndNull(n);
+    store.meta.current_page = 1;
+
+    await update();
+  }
+
+  onMounted(async () => {
+    await fetchWithFilters(filters.value)
+  })
+
   watch(
     filters,
-    async (n) => {
-      store.meta.filters = removeEmptyAndNull(n);
-      store.meta.current_page = 1;
-
-      await update();
-    },
+    async (n) => await fetchWithFilters(n),
     { deep: true }
   );
 
   return {
     update,
+
     onSortChange,
     onPaginationChange
   }

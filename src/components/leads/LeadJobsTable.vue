@@ -5,7 +5,6 @@ import router from "@/router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useLeadJobsStore } from "@/stores/leads/useLeadJobsStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
-import { removeEmptyAndNull } from "@/utils/useHelper";
 import { mergeProps } from "vue";
 
 export type Comment = {
@@ -52,13 +51,6 @@ const form = reactive<Comment>({
   comments: "",
 });
 
-const getLeads = async () => {
-  await leadJobStore.fetchLeads({
-    include: "leadGenerator",
-    filters: removeEmptyAndNull({ ...props.filters }),
-  });
-};
-
 // composables
 const store: any = useLeadsStore();
 const auth: any = useAuthStore();
@@ -67,20 +59,14 @@ const time = useTime();
 const { onSortChange, onPaginationChange } = useDataTable(
   leadJobStore,
   filters,
-  () =>
-    leadJobStore.fetchLeads({
-      include: "leadGenerator",
-      filters: removeEmptyAndNull({ ...props.filters }),
-    })
+  () => leadJobStore.fetchLeads({ include: "leadGenerator" })
 );
 
 const handleCommentsSubmit = async (comments: String) => {
   form.comments = comments;
+
   await store.updateStatus(form);
-  await leadJobStore.fetchLeads({
-    include: "leadGenerator",
-    filters: removeEmptyAndNull({ ...props.filters }),
-  });
+  await leadJobStore.fetchLeads({ include: "leadGenerator" });
 };
 
 const onStatusSelect = (leadId: any, status: any) => {
@@ -107,10 +93,6 @@ const handleRedirect = (itemId: any) => {
 
 onMounted(async () => {
   await store.getExtras();
-  await leadJobStore.fetchLeads({
-    include: "leadGenerator",
-    filters: removeEmptyAndNull({ ...props.filters }),
-  });
 });
 </script>
 

@@ -67,7 +67,6 @@ declare module '@vue/runtime-core' {
     MoreBtn: typeof import('./src/@core/components/MoreBtn.vue')['default']
     Notifications: typeof import('./src/@core/components/Notifications.vue')['default']
     Pagination: typeof import('./src/components/datatable/Pagination.vue')['default']
-    PreChecking: typeof import('./src/components/leads/details/PreChecking.vue')['default']
     PreCheckingTab: typeof import('./src/components/leads/details/PreCheckingTab.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

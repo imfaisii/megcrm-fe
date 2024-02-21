@@ -4,7 +4,6 @@ import useTime from "@/composables/useTime";
 import router from "@/router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
-import { removeEmptyAndNull } from "@/utils/useHelper";
 import { mergeProps } from "vue";
 
 export type Comment = {
@@ -47,19 +46,14 @@ const store: any = useLeadsStore();
 const auth: any = useAuthStore();
 const time = useTime();
 const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
-  store.fetchLeads({
-    include: "leadGenerator",
-    filters: removeEmptyAndNull(filters.value),
-  })
+  store.fetchLeads({ include: "leadGenerator" })
 );
 
 const handleCommentsSubmit = async (comments: String) => {
   form.comments = comments;
+
   await store.updateStatus(form);
-  await store.fetchLeads({
-    include: "leadGenerator",
-    filters: removeEmptyAndNull(filters.value),
-  });
+  await store.fetchLeads({ include: "leadGenerator" });
 };
 
 const onStatusSelect = (leadId: any, status: any) => {
@@ -86,10 +80,7 @@ const handleRedirect = (itemId: any) => {
 
 onMounted(async () => {
   await store.getExtras();
-  await store.fetchLeads({
-    include: "leadGenerator",
-    filters: removeEmptyAndNull(filters.value),
-  });
+  await store.fetchLeads({ include: "leadGenerator" });
 });
 </script>
 
