@@ -173,19 +173,20 @@ onMounted(async () => {
       </a>
     </template>
 
+    <!-- Postcode -->
+    <template #item.post_code="{ item }">
+      <VTooltip>
+        <template #activator="{ props }">
+          <div v-bind="props">{{ item.raw.post_code }}</div>
+        </template>
+        <span>{{ item.raw.address }}</span>
+      </VTooltip>
+  </template>
+
     <!-- Lead Generator -->
     <template #item.lead_generator_id="{ item }">
-      <div class="pa-2">
-        <VBadge
-          :color="item.raw?.lead_generator?.name ? 'success' : 'info'"
-          inline
-        >
-          <template #badge>
-            <div class="pa-2">
-              {{ item.raw?.lead_generator?.name ?? "Not assigned" }}
-            </div>
-          </template>
-        </VBadge>
+      <div class="font-italic">
+        {{ item.raw?.lead_generator?.name ?? "No lead generator" }}
       </div>
     </template>
 

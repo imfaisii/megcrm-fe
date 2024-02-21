@@ -25,6 +25,14 @@ const headers = [
   { title: "Actions", key: "actions", sortable: false },
 ];
 
+const props = defineProps({
+  filters: {
+    required: false,
+    type: Object as any,
+    default: () => {},
+  },
+});
+
 // filters
 const filters = ref({
   name: "",
@@ -33,6 +41,7 @@ const filters = ref({
   statuses: [],
   lead_generator_id: [],
   timestamp: "",
+  ...props.filters,
 });
 
 const isCommentsDialogVisible = ref(false);
@@ -87,9 +96,11 @@ const handleRedirect = (itemId: any) => {
 
 onMounted(async () => {
   await store.getExtras();
+
+  console.log("[rp]", props.filters, "asd", filters.value);
   await leadJobStore.fetchLeads({
     include: "leadGenerator",
-    filters: removeEmptyAndNull(filters.value),
+    filters: removeEmptyAndNull({ ...props.filters }),
   });
 });
 </script>
@@ -177,19 +188,20 @@ onMounted(async () => {
       </a>
     </template>
 
+    <!-- Post code -->
+    <template #item.post_code="{ item }">
+      <VTooltip>
+        <template #activator="{ props }">
+          <div v-bind="props">{{ item.raw.post_code }}</div>
+        </template>
+        <span>{{ item.raw.address }}</span>
+      </VTooltip>
+    </template>
+
     <!-- Lead Generator -->
     <template #item.lead_generator_id="{ item }">
-      <div class="pa-2">
-        <VBadge
-          :color="item.raw?.lead_generator?.name ? 'success' : 'info'"
-          inline
-        >
-          <template #badge>
-            <div class="pa-2">
-              {{ item.raw?.lead_generator?.name ?? "Not assigned" }}
-            </div>
-          </template>
-        </VBadge>
+      <div class="font-italic">
+        {{ item.raw?.lead_generator?.name ?? "No lead generator" }}
       </div>
     </template>
 

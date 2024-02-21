@@ -91,41 +91,10 @@ onUnmounted(() => {
         <VCol cols="12">
           <VCard class="mb-6">
             <VCardTitle>
-              <div class="d-flex flex-wrap-reverse justify-space-between pa-2">
-                <div>
-                  <p>Lead Details</p>
-
-                  <VCardSubtitle class="d-flex flex-wrap pl-0">
-                    <VTooltip>
-                      <template #activator="{ props }">
-                        <VChip
-                          v-bind="props"
-                          label
-                          size="small"
-                          class="text-capitalize mb-2 ml-0"
-                          color="warning"
-                        >
-                          {{ store.selectedLead.address }}
-                        </VChip>
-                      </template>
-                      <span>Customer Address</span>
-                    </VTooltip>
-                    <VTooltip>
-                      <template #activator="{ props }">
-                        <VChip
-                          v-bind="props"
-                          label
-                          size="small"
-                          class="text-capitalize mb-2 blink-animate ml-0"
-                          color="warning"
-                        >
-                          {{ store.selectedLead.status_details.name }}
-                        </VChip>
-                      </template>
-                      <span>Current Lead Status</span>
-                    </VTooltip>
-                  </VCardSubtitle>
-                </div>
+              <div
+                class="d-flex align-center flex-wrap justify-space-between pa-2"
+              >
+                <p>Lead Details</p>
 
                 <div class="d-flex justify-center">
                   <VTooltip location="top">
@@ -149,6 +118,39 @@ onUnmounted(() => {
             </VCardTitle>
 
             <VCardText>
+              <VRow>
+                <VCol class="d-flex flex-wrap">
+                  <VTooltip>
+                    <template #activator="{ props }">
+                      <VChip
+                        v-bind="props"
+                        label
+                        size="small"
+                        class="text-capitalize mb-2 ml-0"
+                        color="warning"
+                      >
+                        {{ store.selectedLead.address }}
+                      </VChip>
+                    </template>
+                    <span>Customer Address</span>
+                  </VTooltip>
+                  <VTooltip>
+                    <template #activator="{ props }">
+                      <VChip
+                        v-bind="props"
+                        label
+                        size="small"
+                        class="text-capitalize mb-2 blink-animate ml-0"
+                        color="warning"
+                      >
+                        {{ store.selectedLead.status_details.name }}
+                      </VChip>
+                    </template>
+                    <span>Current Lead Status</span>
+                  </VTooltip>
+                </VCol>
+              </VRow>
+
               <VRow class="d-flex mb-3">
                 <LeadAlertMessages
                   v-if="store.selectedLead.post_code"

@@ -1,4 +1,4 @@
-import type { VerticalNavItems } from '@/@layouts/types'
+import { VerticalNavItems } from '@/@layouts/types'
 import { modules } from '@/constants/modules'
 
 const globalPermissions = [
@@ -17,6 +17,18 @@ export default [
     children: [
       {
         title: 'All Jobs', to: 'jobs',
+        permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
+      },
+      {
+        title: 'Survey Booked', to: { name: 'jobs-survey-booked', params: { status: 'survey-booked' } },
+        permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
+      },
+      {
+        title: 'Survey Pending (Resch)', to: { name: 'jobs-survey-pending', params: { status: 'survey-pending' } },
+        permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
+      },
+      {
+        title: 'Survey Done', to: { name: 'jobs-survey-done', params: { status: 'survey-done' } },
         permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
       },
     ]
