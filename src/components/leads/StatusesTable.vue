@@ -27,8 +27,6 @@ const handleLeadStatusView = (leadStatus: any) => {
 
   EventBus.$emit("lead-status-selected", leadStatus);
 };
-
-onMounted(async () => await store.fetchAll());
 </script>
 
 <template>

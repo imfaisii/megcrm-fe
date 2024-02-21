@@ -38,7 +38,6 @@ const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
 
 onMounted(async () => {
   await store.fetchManufacturers();
-  await store.fetchAll();
 });
 </script>
 

@@ -80,7 +80,6 @@ const handleRedirect = (itemId: any) => {
 
 onMounted(async () => {
   await store.getExtras();
-  await store.fetchLeads({ include: "leadGenerator" });
 });
 </script>
 

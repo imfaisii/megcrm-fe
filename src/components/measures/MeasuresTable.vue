@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import useDataTable from "@/composables/useDatatable";
-import { useMeasuresStore } from '@/stores/measures/useMeasuresStore';
+import { useMeasuresStore } from "@/stores/measures/useMeasuresStore";
 import { EventBus } from "@/utils/useEventBus";
 
 // Headers
@@ -27,8 +27,6 @@ const handleView = (item: any) => {
 
   EventBus.$emit("item-selected");
 };
-
-onMounted(async () => await store.fetchAll({ include: includes.join(",") }));
 </script>
 
 <template>

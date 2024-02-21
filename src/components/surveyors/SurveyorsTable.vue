@@ -22,8 +22,6 @@ const store: any = useSurveyorsStore();
 const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
   store.index({ include: store.includes.join(",") })
 );
-
-onMounted(async () => await store.index({ include: store.includes.join(",") }));
 </script>
 
 <template>
