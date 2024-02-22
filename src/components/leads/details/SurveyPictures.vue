@@ -1,19 +1,12 @@
 <script lang="ts" setup>
 import { useDropboxStore } from "@/stores/dropbox/useDropboxStore";
-import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { useDropzone } from "vue3-dropzone";
 
-import Skeleton from "primevue/skeleton";
-
-const store = useLeadsStore();
 const dbStore = useDropboxStore();
 
 const visible = ref(false);
 const imgs = ref();
 const indexRef = ref(0);
-const folder = `${store.selectedLead.post_code
-  .toUpperCase()
-  .replace(/ /g, "")} - ${store.selectedLead.address}`;
 
 const show = (url: string) => {
   imgs.value = url;
@@ -22,19 +15,22 @@ const show = (url: string) => {
 
 const saveFiles = async (files: any) => {
   for await (const file of files) {
-    await dbStore.store(folder, file);
+    await dbStore.store(dbStore.folder, "Survey", file);
   }
 
-  await dbStore.index(folder);
+  await dbStore.index(dbStore.folder);
 };
 
 const onDrop = (acceptFiles: any, rejectReasons: any) => saveFiles(acceptFiles);
 
-const { getRootProps, getInputProps, ...rest } = useDropzone({ onDrop });
+const { getRootProps, getInputProps, ...rest } = useDropzone({
+  onDrop,
+  accept: ["image/*"],
+});
 
 onMounted(async () => {
-  await dbStore.create(folder);
-  await dbStore.index(folder);
+  await dbStore.create(dbStore.folder);
+  await dbStore.index(dbStore.folder);
 });
 </script>
 

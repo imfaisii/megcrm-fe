@@ -58,6 +58,16 @@ export const useLeadsStore = defineStore('leads', () => {
   const leadTableStatuses: Ref<LeadStatus[]> = ref([])
   const leadJobTableStatuses: Ref<LeadStatus[]> = ref([])
   const errors = ref({})
+  const includes = [
+    "leadGenerator",
+    "statuses",
+    "leadCustomerAdditionalDetail",
+    "benefits",
+    "callCenters.callCenterStatus",
+    "callCenters.createdBy",
+    "surveyBooking",
+    "comments.commentator"
+  ];
   const router = useRouter()
 
   const isLeadSelected = computed(() => !!selectedLead.value?.id)
@@ -197,6 +207,21 @@ export const useLeadsStore = defineStore('leads', () => {
     return match && match[1].toUpperCase() === "SCOTLAND";
   }
 
+  const storeComments = async (leadId: number, options = {}) => {
+    try {
+      isLoading.value = true
+      await useApiFetch(`${endPoint}/${leadId}/comments`, {
+        method: 'POST',
+        ...options
+      })
+      $toast.success('Lead comments were saved successfully.')
+    } catch (error) {
+      handleError(error, errors)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
 
   return {
     leadTableStatuses,
@@ -216,7 +241,9 @@ export const useLeadsStore = defineStore('leads', () => {
     selectedId,
     errors,
     meta,
+    includes,
 
+    storeComments,
     checkIfCountryIsScotland,
     updateStatus,
     update,

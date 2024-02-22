@@ -138,3 +138,21 @@ export const getProgressColor = (percentage: number) => {
 
   return 'success'
 }
+
+export const getExtension = (fileName: string) => {
+  return fileName.substring(fileName.lastIndexOf('.') + 1, fileName.length) || fileName
+}
+
+export const renameFile = (file: File, newName: string) => {
+  return new File([file], `${newName}.${getExtension(file.name)}`, {
+    type: file.type,
+  });
+}
+
+export const isImageFileName = (fileName: string): boolean => {
+  const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg"]
+  const ext = fileName.slice(fileName.lastIndexOf(".")).toLowerCase();
+
+  return imageExtensions.includes(ext);
+}
+
