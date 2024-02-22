@@ -19,6 +19,7 @@ declare module '@vue/runtime-core' {
     AddEditRoleDialog: typeof import('./src/components/permissions/AddEditRoleDialog.vue')['default']
     AddEditUserDialog: typeof import('./src/components/users/AddEditUserDialog.vue')['default']
     AddNameOnlyDialog: typeof import('./src/components/dialogs/AddNameOnlyDialog.vue')['default']
+    AddOtherDocument: typeof import('./src/components/leads/details/AddOtherDocument.vue')['default']
     AppBarSearch: typeof import('./src/@core/components/AppBarSearch.vue')['default']
     AppCardActions: typeof import('./src/@core/components/cards/AppCardActions.vue')['default']
     AppCardCode: typeof import('./src/@core/components/cards/AppCardCode.vue')['default']
@@ -36,7 +37,6 @@ declare module '@vue/runtime-core' {
     CardMonthlyStatistics: typeof import('./src/components/dashboard/CardMonthlyStatistics.vue')['default']
     CardMostSalesInCountries: typeof import('./src/components/dashboard/CardMostSalesInCountries.vue')['default']
     CardStatistics: typeof import('./src/components/dashboard/CardStatistics.vue')['default']
-    CardStatisticsHorizontal: typeof import('./src/@core/components/cards/CardStatisticsHorizontal.vue')['default']
     CardStatisticsVertical: typeof import('./src/@core/components/cards/CardStatisticsVertical.vue')['default']
     CardStatisticsWithImages: typeof import('./src/@core/components/cards/CardStatisticsWithImages.vue')['default']
     CommentsDialog: typeof import('./src/components/CommentsDialog.vue')['default']
@@ -67,6 +67,7 @@ declare module '@vue/runtime-core' {
     MoreBtn: typeof import('./src/@core/components/MoreBtn.vue')['default']
     Notifications: typeof import('./src/@core/components/Notifications.vue')['default']
     Pagination: typeof import('./src/components/datatable/Pagination.vue')['default']
+    PreCheckingDocumentsCard: typeof import('./src/components/leads/details/PreCheckingDocumentsCard.vue')['default']
     PreCheckingTab: typeof import('./src/components/leads/details/PreCheckingTab.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
@@ -81,5 +82,8 @@ declare module '@vue/runtime-core' {
     UserActivityTimeline: typeof import('./src/components/profile/UserActivityTimeline.vue')['default']
     UserBioPanel: typeof import('./src/components/profile/UserBioPanel.vue')['default']
     UsersTable: typeof import('./src/components/users/UsersTable.vue')['default']
+    ViewLeadDocument: typeof import('./src/components/leads/details/ViewLeadDocument.vue')['default']
+    ViewLighBoxImages: typeof import('./src/components/ViewLighBoxImages.vue')['default']
+    ViewLightBoxImages: typeof import('./src/components/ViewLightBoxImages.vue')['default']
   }
 }

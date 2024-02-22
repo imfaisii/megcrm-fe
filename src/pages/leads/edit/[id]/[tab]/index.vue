@@ -7,8 +7,6 @@ import { requiredValidator } from "@validators";
 const store = useLeadsStore();
 const route = useRoute();
 
-console.log(route);
-
 const activeTab = ref(route.params.tab);
 
 const tabs = [
@@ -42,15 +40,6 @@ const tabs = [
 
 const isDialogVisible = computed(() => !store.isLeadSelected);
 const isCommentsDialogVisible = ref(false);
-const includes = [
-  "leadGenerator",
-  "statuses",
-  "leadCustomerAdditionalDetail",
-  "benefits",
-  "callCenters.callCenterStatus",
-  "callCenters.createdBy",
-  "surveyBooking",
-];
 const appends = ["leads_logs"];
 
 const handleCommentsSubmit = async (comments: string) => {
@@ -67,7 +56,7 @@ const getLead = async () => {
   store.selectedLead = null;
 
   await store.fetchLead(route.params.id as any, {
-    include: includes.join(","),
+    include: store.includes.join(","),
     append: appends.join(","),
   });
 };

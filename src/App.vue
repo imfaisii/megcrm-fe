@@ -28,6 +28,10 @@ handleSkinChanges();
       )}`"
     >
       <RouterView />
+
+      <ViewLightBoxImages />
+      <ViewLeadDocument />
+
       <ScrollToTop />
     </VApp>
   </VLocaleProvider>
