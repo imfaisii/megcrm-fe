@@ -7,7 +7,9 @@ import { requiredValidator } from "@validators";
 const store = useLeadsStore();
 const route = useRoute();
 
-const activeTab = ref("customer-details");
+console.log(route);
+
+const activeTab = ref(route.params.tab);
 
 const tabs = [
   {
@@ -219,10 +221,15 @@ onUnmounted(() => {
         </VCol>
       </VRow>
 
-      <VTabs v-model="activeTab">
+      <VTabs v-model="activeTab" class="v-tabs-pill">
         <VTab
           v-for="tab in tabs"
           :key="tab.icon"
+          :value="tab.tab"
+          :to="{
+            name: 'leads-edit-id-tab',
+            params: { id: route.params.id, tab: tab.tab },
+          }"
           :disabled="tab?.tab ? false : true"
         >
           <VIcon start :size="24" :icon="tab.icon" />
@@ -231,28 +238,32 @@ onUnmounted(() => {
       </VTabs>
       <VDivider />
 
-      <VWindow v-model="activeTab" class="mt-6" :touch="true">
-        <VWindowItem :transition="false">
+      <VWindow
+        v-model="activeTab"
+        class="mt-5 disable-tab-transition"
+        :touch="false"
+      >
+        <VWindowItem value="customer-details">
           <CustomerDetailsForm />
         </VWindowItem>
 
-        <VWindowItem :transition="false">
+        <VWindowItem value="book-survey">
           <BookSurvey />
         </VWindowItem>
 
-        <VWindowItem :transition="false">
+        <VWindowItem value="survey-pictures">
           <SurveyPictures />
         </VWindowItem>
 
-        <VWindowItem :transition="false">
+        <VWindowItem value="pre-checking">
           <PreCheckingTab />
         </VWindowItem>
 
-        <VWindowItem :transition="false">
+        <VWindowItem value="communications">
           <CallCenterTab />
         </VWindowItem>
 
-        <VWindowItem :transition="false">
+        <VWindowItem value="history">
           <ActivityTimeline
             :logs="store.selectedLead?.logs ?? []"
             :statuses="store.selectedLead?.statuses ?? []"

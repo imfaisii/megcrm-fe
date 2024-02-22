@@ -38,6 +38,7 @@ declare module '@vue/runtime-core' {
     CardStatistics: typeof import('./src/components/dashboard/CardStatistics.vue')['default']
     CardStatisticsHorizontal: typeof import('./src/@core/components/cards/CardStatisticsHorizontal.vue')['default']
     CardStatisticsVertical: typeof import('./src/@core/components/cards/CardStatisticsVertical.vue')['default']
+    CardStatisticsWeeklySales: typeof import('./src/components/leads/details/CardStatisticsWeeklySales.vue')['default']
     CardStatisticsWithImages: typeof import('./src/@core/components/cards/CardStatisticsWithImages.vue')['default']
     CommentsDialog: typeof import('./src/components/CommentsDialog.vue')['default']
     ConfirmDialog: typeof import('./src/components/ConfirmDialog.vue')['default']

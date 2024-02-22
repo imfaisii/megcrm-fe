@@ -13,7 +13,7 @@ onMounted(async () => await store.fetchCallCenterStatuses());
 </script>
 
 <template>
-  <VCard title="Calling Schedule" class="pa-5">
+  <VCard title="Calling Schedule">
     <template #append>
       <div class="me-n3 mt-n2">
         <VCol cols="12">
