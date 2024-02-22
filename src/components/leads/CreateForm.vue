@@ -6,9 +6,9 @@ import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { getExceptionMessage } from "@/utils/useHelper";
 import avatar3 from "@images/avatars/avatar-3.png";
 import {
-emailValidator,
-integerValidator,
-requiredValidator,
+  emailValidator,
+  integerValidator,
+  requiredValidator,
 } from "@validators";
 import axios from "axios";
 import moment from "moment";
@@ -238,11 +238,13 @@ onMounted(async () => await store.getExtras());
           ref="refAddressForm"
         >
           <VRow>
-            <LeadAlertMessages
-              v-if="addressInformationForm.post_code"
-              :postCode="addressInformationForm.post_code"
-              :address="addressInformationForm.address"
-            />
+            <VCol cols="12">
+              <LeadAlertMessages
+                v-if="addressInformationForm.post_code"
+                :postCode="addressInformationForm.post_code"
+                :address="addressInformationForm.address"
+              />
+            </VCol>
 
             <VCol cols="12" lg="5">
               <VTextField

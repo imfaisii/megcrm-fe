@@ -102,7 +102,7 @@ export const useLeadsStore = defineStore('leads', () => {
       await fetchLeads({ include: "leadGenerator" })
       $toast.success('Lead was saved successfully.')
       EventBus.$emit('hide-lead-dialog')
-      router.push({ name: "leads-edit-id", params: { id: data.lead.id } });
+      router.push({ name: "leads-edit-id-tab", params: { id: data.lead.id, tab: 'customer-details' } });
     } catch (error: any) {
       if (error?.response?.status === 422) {
         errors.value = error?.response?.data?.errors
