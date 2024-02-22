@@ -84,8 +84,8 @@ const handleRedirect = (itemId: any) => {
   store.selectedId = itemId;
 
   const routeData = router.resolve({
-    name: "leads-edit-id",
-    params: { id: itemId },
+    name: "leads-edit-id-tab",
+    params: { id: itemId, tab: "customer-details" },
   });
 
   window.open(routeData.href, "_blank");

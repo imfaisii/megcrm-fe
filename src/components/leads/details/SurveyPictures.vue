@@ -39,7 +39,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="pa-2">
+  <div>
     <VCard>
       <VCardItem class="py-2 px-4">
         <template #prepend>
