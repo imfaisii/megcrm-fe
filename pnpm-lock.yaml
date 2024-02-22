@@ -26,6 +26,12 @@ dependencies:
   '@types/cheerio':
     specifier: ^0.22.35
     version: 0.22.35
+  '@vuelidate/core':
+    specifier: ^2.0.3
+    version: 2.0.3(vue@3.4.10)
+  '@vuelidate/validators':
+    specifier: ^2.0.4
+    version: 2.0.4(vue@3.4.10)
   '@vueuse/core':
     specifier: 10.1.2
     version: 10.1.2(vue@3.4.10)
@@ -1432,6 +1438,32 @@ packages:
 
   /@vue/shared@3.4.19:
     resolution: {integrity: sha512-/KliRRHMF6LoiThEy+4c1Z4KB/gbPrGjWwJR+crg2otgrf/egKzRaCPvJ51S5oetgsgXLfc4Rm5ZgrKHZrtMSw==}
+
+  /@vuelidate/core@2.0.3(vue@3.4.10):
+    resolution: {integrity: sha512-AN6l7KF7+mEfyWG0doT96z+47ljwPpZfi9/JrNMkOGLFv27XVZvKzRLXlmDPQjPl/wOB1GNnHuc54jlCLRNqGA==}
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^2.0.0 || >=3.0.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      vue: 3.4.10(typescript@5.0.4)
+      vue-demi: 0.13.11(vue@3.4.10)
+    dev: false
+
+  /@vuelidate/validators@2.0.4(vue@3.4.10):
+    resolution: {integrity: sha512-odTxtUZ2JpwwiQ10t0QWYJkkYrfd0SyFYhdHH44QQ1jDatlZgTh/KRzrWVmn/ib9Gq7H4hFD4e8ahoo5YlUlDw==}
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^2.0.0 || >=3.0.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      vue: 3.4.10(typescript@5.0.4)
+      vue-demi: 0.13.11(vue@3.4.10)
+    dev: false
 
   /@vuetify/loader-shared@1.7.1(vue@3.4.10)(vuetify@3.2.1):
     resolution: {integrity: sha512-kLUvuAed6RCvkeeTNJzuy14pqnkur8lTuner7v7pNE/kVhPR97TuyXwBSBMR1cJeiLiOfu6SF5XlCYbXByEx1g==}
@@ -5119,6 +5151,21 @@ packages:
       vue: ^3.0.0-0 || ^2.7.0
     dependencies:
       chart.js: 4.3.0
+      vue: 3.4.10(typescript@5.0.4)
+    dev: false
+
+  /vue-demi@0.13.11(vue@3.4.10):
+    resolution: {integrity: sha512-IR8HoEEGM65YY3ZJYAjMlKygDQn25D5ajNFNoKh9RSDMQtlzCxtfQjdQgv9jjK+m3377SsJXY8ysq8kLCZL25A==}
+    engines: {node: '>=12'}
+    hasBin: true
+    requiresBuild: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
       vue: 3.4.10(typescript@5.0.4)
     dev: false
 

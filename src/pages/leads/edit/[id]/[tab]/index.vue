@@ -275,7 +275,7 @@ onUnmounted(() => {
           />
         </VWindowItem>
 
-        <VWindowItem :transition="false">
+        <VWindowItem value="call-history">
           <AirCallHistory />
         </VWindowItem>
       </VWindow>
