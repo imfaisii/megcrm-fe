@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
 const $toast = useToast();
 const isPdf = ref(false);
 const isImage = ref(false);
+const link = ref(null);
 const isOtherDocumentDialogVisible = ref(false);
 const selectedFile = ref("");
 const dbStore = useDropboxStore();
@@ -28,12 +29,7 @@ const { getRootProps, getInputProps, ...rest } = useDropzone({
   multiple: false,
 });
 
-const onButtonClick = (type: string) => {
-  if (type === "Others") {
-  } else {
-    selectedFile.value = type;
-  }
-};
+const onButtonClick = (type: string) => (selectedFile.value = type);
 
 const saveFiles = async (files: any) => {
   if (selectedFile.value !== "") {
@@ -48,7 +44,7 @@ const saveFiles = async (files: any) => {
   }
 };
 
-const fileObject: any = computed(() => {
+const fileObject = computed(() => {
   return dbStore.precheckingDocuments.find(
     (i: any) => i.name.split(".")[0] === props.title ?? null
   );
@@ -58,10 +54,14 @@ const handleView = () => {
   if (isPdf.value) {
     EventBus.$emit("view-pdf", fileObject.value.link);
   } else if (isImage.value) {
-    // visible.value = true;
+    EventBus.$emit("view-lightbox", fileObject.value.link);
   } else {
     $toast.error("View not supported for this file.");
   }
+};
+
+const showOtherDocumentsDialog = () => {
+  EventBus.$emit("view-other-documents-dialog");
 };
 
 watch(
@@ -72,9 +72,8 @@ watch(
         isPdf.value = true;
         isImage.value = false;
       } else if (isImageFileName(n.value.name)) {
-        // isPdf.value = false;
-        // isImage.value = true;
-        // imgs.value = n.value.link;
+        isPdf.value = false;
+        isImage.value = true;
       }
     }
   },
@@ -151,7 +150,7 @@ watch(
         <VTooltip v-else>
           <template #activator="{ props }">
             <VBtn
-              @click="isOtherDocumentDialogVisible = true"
+              @click="showOtherDocumentsDialog"
               v-bind="props"
               size="small"
               color="primary"

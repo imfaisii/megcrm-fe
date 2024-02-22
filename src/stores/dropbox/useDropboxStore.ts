@@ -128,6 +128,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
       await axios.post(fileUploadEndpoint, file, { headers });
     } catch (e: any) {
       console.log("DROPBOX:store => ", e.message);
+      throw Error(e?.message)
     } finally {
       loading.value = false;
     }

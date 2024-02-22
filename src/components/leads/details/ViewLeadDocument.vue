@@ -6,8 +6,6 @@ const localLink: any = ref(null);
 
 onMounted(() => {
   EventBus.$on("view-pdf", (link: string) => {
-    alert("sd");
-    alert(link);
     localLink.value = link;
     isDialogVisible.value = true;
   });

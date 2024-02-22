@@ -1,17 +1,11 @@
 <script lang="ts" setup>
 import { useDropboxStore } from "@/stores/dropbox/useDropboxStore";
+import { EventBus } from "@/utils/useEventBus";
 import { useDropzone } from "vue3-dropzone";
 
 const dbStore = useDropboxStore();
 
-const visible = ref(false);
-const imgs = ref();
-const indexRef = ref(0);
-
-const show = (url: string) => {
-  imgs.value = url;
-  visible.value = true;
-};
+const show = (url: string) => EventBus.$emit("view-lightbox", url);
 
 const saveFiles = async (files: any) => {
   for await (const file of files) {
@@ -29,7 +23,7 @@ const { getRootProps, getInputProps, ...rest } = useDropzone({
 });
 
 onMounted(async () => {
-  await dbStore.create(dbStore.folder);
+  await dbStore.create(`${dbStore.folder}/Survey`);
   await dbStore.index(dbStore.folder);
 });
 </script>
@@ -114,12 +108,6 @@ onMounted(async () => {
       </VCol>
     </VRow>
 
-    <VueEasyLightbox
-      :visible="visible"
-      :imgs="imgs"
-      :index="indexRef"
-      @hide="visible = false"
-    />
   </div>
 </template>
 

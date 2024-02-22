@@ -9,8 +9,6 @@ import personWithCup from "@images/cards/illustration-1.png";
 import { VIcon } from "vuetify/components";
 
 const time = useTime();
-const imgs = ref();
-const visible = ref(false);
 const dbStore = useDropboxStore();
 const store = useLeadsStore();
 const isCommentsDialogVisible = ref(false);
@@ -127,14 +125,9 @@ const handleCommentsSubmit = async (comments: String) => {
 };
 
 onMounted(async () => {
-  await dbStore.create(dbStore.folder);
+  await dbStore.create(`${dbStore.folder}/Pre Checking`);
   await dbStore.index(dbStore.folder, false);
   await dbStore.getPreCheckingFiles(dbStore.folder, true);
-
-  EventBus.$on("view-lightbox", (imgs: any) => {
-    imgs.value = imgs;
-    visible.value = true;
-  });
 });
 </script>
 
@@ -208,31 +201,31 @@ onMounted(async () => {
           :line-inset="12"
           class="v-timeline-density-compact"
         >
-          <VTimelineItem dot-color="primary" size="x-small">
-            <div class="d-flex align-center mt-3">
-              <VAvatar size="38" class="me-2" :image="avatar2" />
-              <div class="d-flex flex-column">
-                <span
-                  class="text-sm text-high-emphasis font-weight-medium mb-0"
-                >
-                  <span>
-                    {{ comment?.commentator?.name ?? "No Name" }}
-                    <VChip
-                      label
-                      color="info"
-                      size="small"
-                      class="text-capitalize ml-1"
-                    >
-                      {{ comment?.commentator?.top_role ?? "No role" }}
-                    </VChip>
-                  </span>
-                </span>
-
-                <p class="app-timeline-text font-italic mb-0">
-                  {{ comment.comment }}
-                </p>
-              </div>
+          <VTimelineItem size="x-small" dot-color="primary">
+            <div class="d-flex justify-space-between flex-wrap mb-3">
+              <h6 class="text-base font-weight-medium me-3">
+                {{ comment.comment }}
+              </h6>
+              <small class="text-xs text-disabled text-no-wrap my-1">
+                {{ time.diffForHumans(comment.created_at) }}
+              </small>
             </div>
+
+            <span class="d-flex align-bottom mt-2" :style="{ gap: '0.5rem' }">
+              <VAvatar size="24" class="me-2" :image="avatar2" />
+
+              <span class="text-sm font-weight-medium">
+                {{ comment?.commentator?.name ?? "No Name" }}
+                <VChip
+                  label
+                  color="info"
+                  size="small"
+                  class="text-capitalize ml-1"
+                >
+                  {{ comment?.commentator?.top_role ?? "No role" }}
+                </VChip>
+              </span>
+            </span>
           </VTimelineItem>
         </VTimeline>
       </VCardText>
@@ -276,13 +269,6 @@ onMounted(async () => {
       @on-comments-update="handleCommentsSubmit"
     />
 
-    <VueEasyLightbox :visible="visible" :imgs="imgs" @hide="visible = false" />
-
-    <ViewLeadDocument />
-
-    <!-- <AddOtherDocument
-      v-model:is-other-document-dialog-visible="isOtherDocumentDialogVisible"
-      @on-dialog-close="isOtherDocumentDialogVisible = false"
-    /> -->
+    <AddOtherDocument />
   </div>
 </template>

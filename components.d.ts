@@ -68,7 +68,6 @@ declare module '@vue/runtime-core' {
     Notifications: typeof import('./src/@core/components/Notifications.vue')['default']
     Pagination: typeof import('./src/components/datatable/Pagination.vue')['default']
     PreCheckingDocumentsCard: typeof import('./src/components/leads/details/PreCheckingDocumentsCard.vue')['default']
-    PreCheckingDocumentsCards: typeof import('./src/components/leads/details/PreCheckingDocumentsCards.vue')['default']
     PreCheckingTab: typeof import('./src/components/leads/details/PreCheckingTab.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
@@ -84,5 +83,7 @@ declare module '@vue/runtime-core' {
     UserBioPanel: typeof import('./src/components/profile/UserBioPanel.vue')['default']
     UsersTable: typeof import('./src/components/users/UsersTable.vue')['default']
     ViewLeadDocument: typeof import('./src/components/leads/details/ViewLeadDocument.vue')['default']
+    ViewLighBoxImages: typeof import('./src/components/ViewLighBoxImages.vue')['default']
+    ViewLightBoxImages: typeof import('./src/components/ViewLightBoxImages.vue')['default']
   }
 }
