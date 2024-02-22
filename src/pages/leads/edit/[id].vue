@@ -33,6 +33,11 @@ const tabs = [
   { title: "Communications", icon: "mdi-phone-outline", tab: "communications" },
   { title: "History", icon: "mdi-clock-outline", tab: "history" },
   {
+    title: "Call History",
+    icon: "openmoji:mobile-info",
+    tab: "call-history",
+  },
+  {
     title: "Coming soon...",
     icon: "mdi-clock-alert-outline",
   },
@@ -257,6 +262,10 @@ onUnmounted(() => {
             :logs="store.selectedLead?.logs ?? []"
             :statuses="store.selectedLead?.statuses ?? []"
           />
+        </VWindowItem>
+
+        <VWindowItem :transition="false">
+          <AirCallHistory />
         </VWindowItem>
       </VWindow>
     </div>

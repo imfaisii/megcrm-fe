@@ -19,6 +19,7 @@ declare module '@vue/runtime-core' {
     AddEditRoleDialog: typeof import('./src/components/permissions/AddEditRoleDialog.vue')['default']
     AddEditUserDialog: typeof import('./src/components/users/AddEditUserDialog.vue')['default']
     AddNameOnlyDialog: typeof import('./src/components/dialogs/AddNameOnlyDialog.vue')['default']
+    AirCallHistory: typeof import('./src/components/leads/details/AirCallHistory.vue')['default']
     AppBarSearch: typeof import('./src/@core/components/AppBarSearch.vue')['default']
     AppCardActions: typeof import('./src/@core/components/cards/AppCardActions.vue')['default']
     AppCardCode: typeof import('./src/@core/components/cards/AppCardCode.vue')['default']
