@@ -7,7 +7,15 @@ import { useDropzone } from "vue3-dropzone";
 const dbStore = useDropboxStore();
 const leadsStore = useLeadsStore();
 
-const show = (url: string) => EventBus.$emit("view-lightbox", url);
+const show = (url: string) => {
+  const toShow = dbStore.folderImages.map((i: any) => i.link);
+  const index = toShow.indexOf(url);
+
+  EventBus.$emit("view-lightbox", {
+    imgs: toShow,
+    index: index !== -1 ? index : 0,
+  });
+};
 
 const saveFiles = async (files: any) => {
   for await (const file of files) {
@@ -30,6 +38,13 @@ const { getRootProps, getInputProps, ...rest } = useDropzone({
   onDrop,
   accept: ["image/*"],
 });
+
+const showRenameDialog = (fileName: string, filePath: string) => {
+  EventBus.$emit("show-dropbox-rename-dialog", {
+    fileName,
+    filePath,
+  });
+};
 
 onMounted(async () => {
   await dbStore.create(`${dbStore.folder}/Survey`);
@@ -96,9 +111,42 @@ onMounted(async () => {
           <VTooltip>
             <template #activator="{ props }">
               <div v-bind="props">
-                <VImg :src="image.link" height="170" loading="lazy" cover />
+                <VRow>
+                  <VCol cols="12">
+                    <!-- Image -->
+                    <VImg :src="image.link" height="170" loading="lazy" cover />
+                  </VCol>
 
-                <VCardSubtitle class="pa-3">{{ image.name }}</VCardSubtitle>
+                  <VCol
+                    class="d-flex justify-space-between align-center pa-3 mb-2"
+                    cols="12"
+                  >
+                    <!-- Name -->
+                    <VCardSubtitle>{{ image.name }}</VCardSubtitle>
+
+                    <!-- Edit Button -->
+
+                    <IconBtn
+                      size="x-small"
+                      class="mr-2"
+                      @click.stop="
+                        showRenameDialog(image.name, image.path_display)
+                      "
+                    >
+                      <VTooltip>
+                        <template #activator="{ props }">
+                          <VIcon
+                            v-bind:="props"
+                            size="large"
+                            color="secondary"
+                            icon="mdi-pencil-outline"
+                          />
+                        </template>
+                        <span>Rename file</span>
+                      </VTooltip>
+                    </IconBtn>
+                  </VCol>
+                </VRow>
               </div>
             </template>
             <span>Click to preview</span>
@@ -117,6 +165,9 @@ onMounted(async () => {
       </VCol>
     </VRow>
   </div>
+
+  <!-- Dialogs-->
+  <RenameFileDialog />
 </template>
 
 <style lang="scss" scoped>

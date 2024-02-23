@@ -69,6 +69,8 @@ declare module '@vue/runtime-core' {
     Pagination: typeof import('./src/components/datatable/Pagination.vue')['default']
     PreCheckingDocumentsCard: typeof import('./src/components/leads/details/PreCheckingDocumentsCard.vue')['default']
     PreCheckingTab: typeof import('./src/components/leads/details/PreCheckingTab.vue')['default']
+    RenameFile: typeof import('./src/components/leads/dropbox/RenameFile.vue')['default']
+    RenameFileDialog: typeof import('./src/components/leads/dropbox/RenameFileDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ScrollToTop: typeof import('./src/@core/components/ScrollToTop.vue')['default']

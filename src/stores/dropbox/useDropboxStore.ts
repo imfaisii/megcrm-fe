@@ -21,6 +21,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
   const fileUploadEndpoint = "https://content.dropboxapi.com/2/files/upload";
   const newFolderEndpoint = `${baseUrl}/create_folder_v2`
   const folderFilesEndpoint = `${baseUrl}/list_folder`
+  const renameEndpoint = `${baseUrl}/move_v2`
   const getTemporaryLinkEndpoint = `${baseUrl}/get_temporary_link`
 
   const folderImages: any = ref([])
@@ -48,7 +49,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
         headers
       })
 
-      folderImages.value = data.entries
+      folderImages.value = data.entries.slice(0, 1)
 
       if (fetchLinks) {
         getTemporaryLinks(folderImages)
@@ -153,6 +154,34 @@ export const useDropboxStore = defineStore('dropbox', () => {
     }
   }
 
+  const renameFile = async (oldPath: string, newPath: string, newFileName: string) => {
+    try {
+      loading.value = true
+
+      await axios.post(`${renameEndpoint}`, {
+        "allow_ownership_transfer": false,
+        "allow_shared_folder": false,
+        "autorename": false,
+        "from_path": oldPath,
+        "to_path": newPath
+      }, {
+        headers
+      })
+
+      const entry = folderImages.value.find((i: any) => i.path_display = oldPath)
+
+      if (entry) {
+        entry.name = newFileName;
+        entry.path_display = newPath;
+      }
+    }
+    catch (e: any) {
+      $toast.error(e?.message ?? 'Failed to rename, please try again.')
+    } finally {
+      loading.value = false
+    }
+  }
+
 
   return {
     loading,
@@ -160,6 +189,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
     folder,
     precheckingDocuments,
 
+    renameFile,
     getPreCheckingFiles,
     create,
     index,
