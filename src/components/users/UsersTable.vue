@@ -39,7 +39,7 @@ const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
     </VCol>
 
     <VCol cols="12" lg="4">
-      <VCombobox
+      <VAutocomplete
         v-model="filters.roles"
         :items="rolesStore.roles"
         label="Roles"

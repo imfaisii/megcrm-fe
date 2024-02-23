@@ -48,7 +48,7 @@ onMounted(async () => {
       <VTextField v-model="filters.Model_data" label="Name" clearable />
     </VCol>
     <VCol cols="12" lg="4">
-      <VCombobox
+      <VAutocomplete
         v-model="filters.manufacturer"
         :items="store.manufactures"
         label="Manufacturer"
@@ -62,7 +62,7 @@ onMounted(async () => {
       />
     </VCol>
     <VCol cols="12" lg="4">
-      <VCombobox
+      <VAutocomplete
         v-model="filters.condensing"
         :items="condensingTypes"
         label="Type"

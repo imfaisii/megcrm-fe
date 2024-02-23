@@ -81,6 +81,11 @@ const documents: any = ref([
     color: "primary",
     icon: "mdi-document",
   },
+  {
+    title: "Datamatch Consent",
+    color: "primary",
+    icon: "mdi-document",
+  },
 ]);
 
 watch(

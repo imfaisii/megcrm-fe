@@ -75,7 +75,7 @@ watch(
         <VForm ref="mainForm" @submit.prevent="handleSubmit">
           <VRow>
             <VCol cols="12">
-              <VCombobox
+              <VAutocomplete
                 v-model="form.lead_generator_assignments"
                 :items="leadStore.leadGenerators"
                 :rules="[requiredValidator]"

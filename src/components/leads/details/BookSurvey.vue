@@ -24,7 +24,7 @@ onMounted(async () => {
     <VCardText>
       <VRow>
         <VCol cols="12" lg="4">
-          <VCombobox
+          <VAutocomplete
             v-model="store.selectedLead.survey_booking.surveyor_id"
             :items="store.surveyors"
             :rules="[requiredValidator]"
@@ -55,7 +55,7 @@ onMounted(async () => {
         </VCol>
 
         <VCol cols="12" lg="4">
-          <VSelect
+          <VAutocomplete
             v-model="store.selectedLead.survey_booking.preffered_time"
             :rules="[requiredValidator]"
             :items="['Morning', 'Afternoon', 'Evening']"

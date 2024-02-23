@@ -143,7 +143,7 @@ onMounted(async () => {
 
         <!-- Title -->
         <VCol cols="12" lg="4">
-          <VCombobox
+          <VAutocomplete
             v-model="store.selectedLead.title"
             :items="titles"
             :rules="[requiredValidator]"
@@ -241,7 +241,7 @@ onMounted(async () => {
 
         <!-- Lead Generator -->
         <VCol cols="12" lg="4">
-          <VCombobox
+          <VAutocomplete
             v-model="store.selectedLead.lead_generator_id"
             :items="store.leadGenerators"
             label="Lead Generator"
@@ -254,7 +254,7 @@ onMounted(async () => {
 
         <!-- Lead Source -->
         <VCol cols="12" lg="4">
-          <VCombobox
+          <VAutocomplete
             v-model="store.selectedLead.lead_source_id"
             :items="store.leadSources"
             label="Lead Source"
@@ -359,7 +359,7 @@ onMounted(async () => {
 
           <!-- Dataprogress Value -->
           <VCol cols="12" lg="6">
-            <VCombobox
+            <VAutocomplete
               v-model="
                 store.selectedLead.lead_customer_additional_detail
                   .datamatch_progress
@@ -376,7 +376,7 @@ onMounted(async () => {
 
           <!-- Dataprogress Date -->
           <VCol cols="12" lg="6">
-            <VCombobox
+            <VAutocomplete
               v-model="
                 store.selectedLead.lead_customer_additional_detail
                   .datamatch_progress_date

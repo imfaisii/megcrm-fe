@@ -148,7 +148,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
 
           <!-- Status -->
           <VCol cols="12">
-            <VSelect
+            <VAutocomplete
               v-model="store.selected.is_active"
               label="Status"
               :items="statuses"

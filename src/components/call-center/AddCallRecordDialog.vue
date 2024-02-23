@@ -105,7 +105,7 @@ onUnmounted(() => EventBus.$off("hide-dialog"));
         </VCol>
 
         <VCol cols="12">
-          <VCombobox
+          <VAutocomplete
             v-model="form.call_center_status_id"
             :items="store.callCenterStatuses"
             :rules="[requiredValidator]"
@@ -147,7 +147,7 @@ onUnmounted(() => EventBus.$off("hide-dialog"));
                 altFormat: 'F j, Y H:i',
                 dateFormat: 'Y-m-d H:i',
                 enableTime: true,
-            }"
+              }"
               label="Call Time"
               placeholder="Select date and time"
               required

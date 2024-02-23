@@ -99,7 +99,7 @@ onMounted(async () => {
     </VCol>
 
     <VCol cols="12" lg="4">
-      <VCombobox
+      <VAutocomplete
         v-model="filters.statuses"
         :items="store.leadTableStatuses"
         label="Status"
@@ -114,7 +114,7 @@ onMounted(async () => {
     </VCol>
 
     <VCol cols="12" lg="4">
-      <VCombobox
+      <VAutocomplete
         v-model="filters.lead_generator_id"
         :items="store.leadGenerators"
         label="Lead Generator"

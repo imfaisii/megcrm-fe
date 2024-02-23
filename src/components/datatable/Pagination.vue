@@ -22,7 +22,7 @@ const handlePageChange = ($event: any) => {
   <VCardText class="mt-4">
     <VRow class="d-flex justify-space-between" :style="{ padding: '10px' }">
       <div class="d-flex gap-2">
-        <VSelect
+        <VAutocomplete
           v-model="store.meta.per_page"
           class="w-25"
           label="Per Page"

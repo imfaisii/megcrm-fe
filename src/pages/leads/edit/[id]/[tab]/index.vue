@@ -157,7 +157,7 @@ onUnmounted(() => {
 
               <VRow>
                 <VCol class="d-flex flex-wrap align-center" cols="12">
-                  <VCombobox
+                  <VAutocomplete
                     v-model="store.selectedLead.status_details.name"
                     :items="
                       store.selectedLead.is_marked_as_job
@@ -198,7 +198,7 @@ onUnmounted(() => {
                         />
                       </VFadeTransition>
                     </template>
-                  </VCombobox>
+                  </VAutocomplete>
 
                   <VBtn @click="isCommentsDialogVisible = true">
                     Save Status
