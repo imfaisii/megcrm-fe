@@ -49,7 +49,11 @@ export const useDropboxStore = defineStore('dropbox', () => {
         headers
       })
 
-      folderImages.value = data.entries.slice(0, 1)
+      const filteredEntries = data.entries.filter((entry: any) => {
+        return !folderImages.value.some((image: any) => image.path_display === entry.path_display);
+      });
+
+      folderImages.value = [...folderImages.value, ...filteredEntries];
 
       if (fetchLinks) {
         getTemporaryLinks(folderImages)
