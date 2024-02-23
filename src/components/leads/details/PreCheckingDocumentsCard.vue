@@ -18,8 +18,6 @@ const props = withDefaults(defineProps<Props>(), {
 const $toast = useToast();
 const isPdf = ref(false);
 const isImage = ref(false);
-const link = ref(null);
-const isOtherDocumentDialogVisible = ref(false);
 const selectedFile = ref("");
 const dbStore = useDropboxStore();
 const onDrop = (acceptFiles: any, rejectReasons: any) => saveFiles(acceptFiles);
@@ -54,7 +52,9 @@ const handleView = () => {
   if (isPdf.value) {
     EventBus.$emit("view-pdf", fileObject.value.link);
   } else if (isImage.value) {
-    EventBus.$emit("view-lightbox", fileObject.value.link);
+    EventBus.$emit("view-lightbox", {
+      imgs: fileObject.value.link,
+    });
   } else {
     $toast.error("View not supported for this file.");
   }
