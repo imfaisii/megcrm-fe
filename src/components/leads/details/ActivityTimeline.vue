@@ -82,11 +82,34 @@ const getChanges = (i: any): any => {
   if (!isCreateLog(i) && i?.properties?.attributes) {
     for (const [key, value] of Object.entries(i.properties.attributes) as any) {
       if (!fieldsToIgnoreInTimeline.includes(key)) {
-        fieldsUpdated.push({
-          field: key.toUpperCase().replaceAll("_", " ").replace(" ID", ""),
-          old: i?.properties?.old[key] ?? "NULL",
-          new: value,
-        });
+        try {
+          let myV = JSON.parse(value);
+          let str: any = [];
+
+          if (Array.isArray(myV)) {
+            myV.forEach((e) => {
+              if (e.comment) {
+                str.push(e.comment);
+              }
+            });
+
+            str = `\n${str.join("\n")}`;
+          } else {
+            str = myV;
+          }
+
+          fieldsUpdated.push({
+            field: key.toUpperCase().replaceAll("_", " ").replace(" ID", ""),
+            old: i?.properties?.old[key] ?? "NULL",
+            new: str,
+          });
+        } catch (e: any) {
+          fieldsUpdated.push({
+            field: key.toUpperCase().replaceAll("_", " ").replace(" ID", ""),
+            old: i?.properties?.old[key] ?? "NULL",
+            new: value,
+          });
+        }
       }
     }
   }
@@ -97,11 +120,32 @@ const getChanges = (i: any): any => {
         const v = key.toUpperCase().replaceAll("_", " ").replace(" ID", "");
 
         if (!["LEAD", "CREATED BY"].includes(v)) {
-          fieldsUpdated.push({
-            field: v,
-            old: "NULL",
-            new: value,
-          });
+          try {
+            let myV = JSON.parse(value);
+            let str = "";
+
+            if (Array.isArray(myV)) {
+              myV.forEach((e: any) => {
+                if (e.comment) {
+                  str += e.comment;
+                }
+              });
+            } else {
+              str = myV;
+            }
+
+            fieldsUpdated.push({
+              field: v,
+              old: "NULL",
+              new: str,
+            });
+          } catch (e: any) {
+            fieldsUpdated.push({
+              field: v,
+              old: "NULL",
+              new: value,
+            });
+          }
         }
       }
     }

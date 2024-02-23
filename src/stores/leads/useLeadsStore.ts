@@ -43,6 +43,7 @@ export const useLeadsStore = defineStore('leads', () => {
     benefits: [],
     cell_centers: []
   })
+  const selectedLeadCopy = ref();
   const selectedId = ref<null | string | number>(null)
   const isLoading = ref(false)
   const meta = ref(defaultPagination)
@@ -66,7 +67,8 @@ export const useLeadsStore = defineStore('leads', () => {
     "callCenters.callCenterStatus",
     "callCenters.createdBy",
     "surveyBooking",
-    "comments.commentator"
+    "comments.commentator",
+    "leadAdditional"
   ];
   const router = useRouter()
 
@@ -156,7 +158,17 @@ export const useLeadsStore = defineStore('leads', () => {
         }
       }
 
+      if (selectedLead.value.lead_additional === null) {
+        selectedLead.value.lead_additional = {
+          datamatch_confirmed: false,
+          land_registry_confirmed: false,
+          proof_of_address_confirmed: false,
+          epr_report_confirmed: false,
+        }
+      }
+
       selectedLead.value.benefits = data.lead?.benefits.map((i: any) => i.id)
+      selectedLeadCopy.value = JSON.parse(JSON.stringify(selectedLead.value))
     } catch (error) {
       $toast.error(getExceptionMessage(error))
     } finally {
@@ -222,6 +234,10 @@ export const useLeadsStore = defineStore('leads', () => {
     }
   }
 
+  const showEditButton = computed(() => {
+    return JSON.stringify(selectedLeadCopy.value) !== JSON.stringify(selectedLead.value)
+  })
+
 
   return {
     leadTableStatuses,
@@ -242,6 +258,7 @@ export const useLeadsStore = defineStore('leads', () => {
     errors,
     meta,
     includes,
+    showEditButton,
 
     storeComments,
     checkIfCountryIsScotland,

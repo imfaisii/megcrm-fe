@@ -302,7 +302,7 @@ onUnmounted(() => {
                 />
 
                 <VBtn
-                  v-else
+                  v-else-if="store.showEditButton"
                   @click="handleLeadUpdate"
                   v-bind="props"
                   icon="mdi-content-save-edit-outline"
