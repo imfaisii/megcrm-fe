@@ -6,7 +6,6 @@ export const PROTECTED_URLS = ['/dashboard']
 export const ADDITIONAL = {
   LEADS: {
     SURVEY_IMAGE_LABELS: [
-      "Please Select Label",
       "Do not use photo",
       "BED1 PIC",
       "Bathroom1",
