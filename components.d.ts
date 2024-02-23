@@ -83,7 +83,6 @@ declare module '@vue/runtime-core' {
     UserBioPanel: typeof import('./src/components/profile/UserBioPanel.vue')['default']
     UsersTable: typeof import('./src/components/users/UsersTable.vue')['default']
     ViewLeadDocument: typeof import('./src/components/leads/details/ViewLeadDocument.vue')['default']
-    ViewLighBoxImages: typeof import('./src/components/ViewLighBoxImages.vue')['default']
     ViewLightBoxImages: typeof import('./src/components/ViewLightBoxImages.vue')['default']
   }
 }

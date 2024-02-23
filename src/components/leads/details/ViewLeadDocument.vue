@@ -4,7 +4,7 @@ import { EventBus } from "@/utils/useEventBus";
 const isDialogVisible = ref(false);
 const localLink: any = ref(null);
 
-onMounted(() => {
+  onMounted(() => {
   EventBus.$on("view-pdf", (link: string) => {
     localLink.value = link;
     isDialogVisible.value = true;

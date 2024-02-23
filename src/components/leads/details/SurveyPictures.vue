@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { useDropboxStore } from "@/stores/dropbox/useDropboxStore";
+import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
 import { useDropzone } from "vue3-dropzone";
 
 const dbStore = useDropboxStore();
+const leadsStore = useLeadsStore();
 
 const show = (url: string) => EventBus.$emit("view-lightbox", url);
 
@@ -12,7 +14,14 @@ const saveFiles = async (files: any) => {
     await dbStore.store(dbStore.folder, "Survey", file);
   }
 
-  await dbStore.index(dbStore.folder);
+  await leadsStore.updateStatus({
+    leadId: leadsStore.selectedLead.id,
+    status: "Survey Done",
+    comments: "All files were uploaded to dropbox.",
+  });
+
+  dbStore.index(dbStore.folder);
+  EventBus.$emit("refresh-lead-data");
 };
 
 const onDrop = (acceptFiles: any, rejectReasons: any) => saveFiles(acceptFiles);
@@ -107,7 +116,6 @@ onMounted(async () => {
         </VCardText>
       </VCol>
     </VRow>
-
   </div>
 </template>
 
