@@ -48,7 +48,7 @@ const showRenameDialog = (fileName: string, filePath: string) => {
 
 onMounted(async () => {
   await dbStore.create(`${dbStore.folder}/Survey`);
-  await dbStore.index(dbStore.folder);
+  dbStore.index(dbStore.folder);
 });
 </script>
 

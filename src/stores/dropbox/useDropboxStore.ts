@@ -1,8 +1,9 @@
 import { useToast } from '@/plugins/toastr'
 import { useAuthStore } from '@/stores/auth/useAuthStore'
+import { useLeadsStore } from '@/stores/leads/useLeadsStore'
+import { sleep } from '@/utils/useHelper'
 import axios from 'axios'
 import { defineStore } from 'pinia'
-import { useLeadsStore } from '../leads/useLeadsStore'
 
 export const useDropboxStore = defineStore('dropbox', () => {
 
@@ -139,19 +140,32 @@ export const useDropboxStore = defineStore('dropbox', () => {
     }
   }
 
+  const getTemporaryLink = (e: any) => {
+    axios.post(`${getTemporaryLinkEndpoint}`, {
+      path: `${e.path_display}`
+    }, {
+      headers
+    }).then((r) => {
+      e.link = r.data.link
+
+    })
+
+  }
+
+
   const getTemporaryLinks = async (ref: Ref) => {
     try {
-      ref.value.forEach(async (e: any) => {
-        if (!e.link) {
-          const { data } = await axios.post(`${getTemporaryLinkEndpoint}`, {
-            path: `${e.path_display}`
-          }, {
-            headers
-          })
+      for (let i = 0; i < ref.value.length; i += 10) {
+        const chunk = ref.value.slice(i, i + 10);
 
-          e.link = data.link
+        for (const e of chunk) {
+          if (!e.link) {
+            getTemporaryLink(e);
+          }
         }
-      });
+
+        await sleep(1000);
+      }
 
     } catch (e: any) {
       console.log("DROPBOX:create => ", e.message);
