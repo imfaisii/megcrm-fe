@@ -3,13 +3,15 @@ import useApiFetch from "@/composables/useApiFetch";
 import { useToast } from "@/plugins/toastr";
 import { getExceptionMessage } from "@/utils/useHelper";
 import { requiredValidator } from "@validators";
-
+const emit = defineEmits(["file-upload-response"]);
 const file = ref() as any;
 const uploadLeadForm = ref();
 const loading = ref(false);
 const isSuccess = ref(false);
 const isError = ref(false);
 const $toast: any = useToast();
+const uploadedRecord: number = ref(0);
+
 const errorMessage: Ref<String> = ref("");
 
 const handleFileUpload = async () => {
@@ -23,15 +25,16 @@ const handleFileUpload = async () => {
         loading.value = true;
         isError.value = false;
         isSuccess.value = false;
-        await useApiFetch("/leads/upload", {
+        let { data: fileResponse } = await useApiFetch("/leads/upload", {
           method: "POST",
           headers: {
             "Content-Type": "multipart/form-data",
           },
           data: formData,
         });
-
+        uploadedRecord.value = fileResponse.totalUploadedRows;
         $toast.success("File was uploaded successfully.");
+        emit("file-upload-response", fileResponse);
         isSuccess.value = true;
         isError.value = false;
       } catch (e: any) {
@@ -63,7 +66,8 @@ watch(file, () => {
         </VAlert>
 
         <VAlert v-if="isSuccess" type="success">
-          Your file was uploaded successfully. Please visit
+          Your file was uploaded successfully with insertion of
+          {{ uploadedRecord }} new Records. Please visit
           <router-link :to="{ name: 'leads' }">Leads</router-link> to view new
           leads.
         </VAlert>
