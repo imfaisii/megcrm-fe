@@ -2,19 +2,25 @@
 import { useDropboxStore } from "@/stores/dropbox/useDropboxStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
+import { isImageFileName } from "@/utils/useHelper";
+import errorimage from "@images/custom/404.jpg";
 import { useDropzone } from "vue3-dropzone";
 
 const dbStore = useDropboxStore();
 const leadsStore = useLeadsStore();
 
-const show = (url: string) => {
-  const toShow = dbStore.folderImages.map((i: any) => i.link);
-  const index = toShow.indexOf(url);
+const show = (image: any) => {
+  if (isImageFileName(image.name)) {
+    const toShow = dbStore.folderImages.map((i: any) => i.link);
+    const index = toShow.indexOf(image.link);
 
-  EventBus.$emit("view-lightbox", {
-    imgs: toShow,
-    index: index !== -1 ? index : 0,
-  });
+    EventBus.$emit("view-lightbox", {
+      imgs: toShow,
+      index: index !== -1 ? index : 0,
+    });
+  } else {
+    window.open(image.url, "_blank");
+  }
 };
 
 const saveFiles = async (files: any) => {
@@ -36,7 +42,7 @@ const onDrop = (acceptFiles: any, rejectReasons: any) => saveFiles(acceptFiles);
 
 const { getRootProps, getInputProps, ...rest } = useDropzone({
   onDrop,
-  accept: ["image/*"],
+  accept: ["image/*", "video/*", "application/pdf"],
 });
 
 const showRenameDialog = (fileName: string, filePath: string) => {
@@ -107,14 +113,20 @@ onMounted(async () => {
             </VCardTitle>
           </VCardText>
         </div>
-        <VCard @click="show(image.link)" v-else>
+        <VCard @click="show(image)" v-else>
           <VTooltip>
             <template #activator="{ props }">
               <div v-bind="props">
                 <VRow>
                   <VCol cols="12">
                     <!-- Image -->
-                    <VImg :src="image.link" height="170" loading="lazy" cover />
+                    <VImg
+                      :src="`${
+                        isImageFileName(image.name) ? image.link : errorimage
+                      }`"
+                      height="170"
+                      loading="lazy"
+                    />
                   </VCol>
 
                   <VCol

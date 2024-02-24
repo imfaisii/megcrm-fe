@@ -101,7 +101,7 @@ const addressInformationForm = ref({
 });
 
 const additionalInformationForm = ref({
-  comments: null,
+  notes: null,
   measures: [],
   job_type_id: null,
   fuel_type_id: null,
@@ -374,11 +374,10 @@ onMounted(async () => await store.getExtras());
             <VCol cols="12" lg="4">
               <VTextField
                 v-model="personalInformationForm.email"
-                :rules="[requiredValidator, emailValidator]"
+                :rules="[emailValidator]"
                 label="Email"
                 placeholder="johndoe@example.com"
                 clearable
-                required
               />
             </VCol>
 
@@ -516,7 +515,7 @@ onMounted(async () => await store.getExtras());
 
             <VCol cols="12">
               <VTextarea
-                v-model="additionalInformationForm.comments"
+                v-model="additionalInformationForm.notes"
                 label="Comments"
                 placeholder="Some comments..."
                 auto-grow
