@@ -20,6 +20,10 @@ export default [
         permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
       },
       {
+        title: 'Survey Done', to: 'jobs-survey-done',
+        permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
+      },
+      {
         title: 'Survey Booked', to: 'jobs-survey-booked',
         permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
       },
