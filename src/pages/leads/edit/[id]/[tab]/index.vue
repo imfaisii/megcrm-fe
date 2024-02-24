@@ -6,8 +6,10 @@ import { requiredValidator } from "@validators";
 
 const store = useLeadsStore();
 const route = useRoute();
-
+// const tooltip = ref(true);
 const activeTab = ref(route.params.tab);
+
+const showTooltip = computed(() => store.showEditButton);
 
 const tabs = [
   {
@@ -300,7 +302,7 @@ onUnmounted(() => {
         size="88"
       >
         <div class="ma-4">
-          <VTooltip position="top">
+          <VTooltip position="top" v-model="showTooltip">
             <template #activator="{ props }">
               <VFadeTransition leave-absolute>
                 <VProgressCircular
@@ -314,11 +316,13 @@ onUnmounted(() => {
                   v-else-if="store.showEditButton"
                   @click="handleLeadUpdate"
                   v-bind="props"
-                  icon="mdi-content-save-edit-outline"
-                  size="large"
+                  size="x-large"
                   color="warning"
                   elevation="8"
-                />
+                >
+                  <VIcon start icon="mdi-content-save-edit-outline" />
+                  Save
+                </VBtn>
               </VFadeTransition>
             </template>
             Click to update lead details.

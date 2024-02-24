@@ -158,11 +158,10 @@ onMounted(async () => {
         <VCol cols="12" lg="4">
           <VTextField
             v-model="store.selectedLead.email"
-            :rules="[requiredValidator, emailValidator]"
+            :rules="[emailValidator]"
             label="Email"
             placeholder="johndoe@example.com"
             clearable
-            required
           />
         </VCol>
 
@@ -265,10 +264,10 @@ onMounted(async () => {
           />
         </VCol>
 
-        <!-- Comments -->
+        <!-- Notes -->
         <VCol cols="12">
           <VTextarea
-            v-model="store.selectedLead.comments"
+            v-model="store.selectedLead.notes"
             label="Comments"
             placeholder="Some comments..."
             auto-grow
