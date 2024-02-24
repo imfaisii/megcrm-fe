@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+import useApiFetch from "@/composables/useApiFetch";
 import useDataTable from "@/composables/useDatatable";
 import useTime from "@/composables/useTime";
+import { useToast } from "@/plugins/toastr";
 import router from "@/router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
@@ -81,6 +83,30 @@ const handleRedirect = (itemId: any) => {
 onMounted(async () => {
   await store.getExtras();
 });
+
+const airCallLoader = ref(false);
+const toast = useToast();
+const fixNumber = (str: string): string => str.replace(/\D/g, "").slice(-10);
+
+const handleAirCall = async (lead: any) => {
+  try {
+    store.selectedId = lead.id;
+    airCallLoader.value = true;
+
+    const { data, message } = await useApiFetch("/aircall/dial-call", {
+      data: {
+        phone_number: "+44" + fixNumber(lead?.phone_no ?? ""),
+      },
+      method: "POST",
+    });
+    toast.success("AirCall Success");
+  } catch (err: any) {
+    toast.error(err.response?.data?.message ?? "Something Went Wrong!");
+  } finally {
+    airCallLoader.value = false;
+    store.selectedId = null;
+  }
+};
 </script>
 
 <template>
@@ -265,6 +291,20 @@ onMounted(async () => {
           </IconBtn>
         </template>
         <span>Are you sure you want to delete this lead?</span>
+      </VTooltip>
+      <VTooltip location="bottom">
+        <template #activator="{ props }">
+          <IconBtn @click.stop="handleAirCall(item.raw)" v-bind="props">
+            <VProgressCircular
+              v-if="airCallLoader && store.selectedId === item.raw.id"
+              size="24"
+              color="info"
+              indeterminate
+            />
+            <VIcon v-else color="info" icon="mdi-phone-dial-outline" />
+          </IconBtn>
+        </template>
+        <span>Open The Aircall App And Put this Number on Dial Pad</span>
       </VTooltip>
     </template>
   </DataTable>
