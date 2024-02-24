@@ -145,6 +145,16 @@ export const usePermissionsStore = defineStore('permissions', () => {
     }
   }
 
+  const getRoleNameFromId = (id: number) => {
+    return roles.value.find((i: any) => i.id === id);
+  }
+
+  const hasRole = (rolesArray: any = [], name: string) => {
+    const localRole: any = roles.value.find((i: any) => i.name === name);
+
+    return rolesArray.includes(localRole.id)
+  }
+
   const $reset = () => {
     roles.value = []
     permissions.value = []
@@ -164,6 +174,8 @@ export const usePermissionsStore = defineStore('permissions', () => {
     userPermissions,
     isSuperAdmin,
 
+    hasRole,
+    getRoleNameFromId,
     is,
     can,
     storeRole,

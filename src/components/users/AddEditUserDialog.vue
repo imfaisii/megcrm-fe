@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { EventBus } from "@/utils/useEventBus";
-import { emailValidator, requiredValidator } from "@validators";
+import {
+  emailValidator,
+  integerValidator,
+  requiredValidator,
+} from "@validators";
 import { VForm } from "vuetify/components/VForm";
 
 interface Emit {
@@ -27,6 +31,8 @@ const props = defineProps({
 
 const emit = defineEmits<Emit>();
 
+const showAircallEmailField = ref(false);
+const formRef = ref();
 const permissionsStore: any = usePermissionsStore();
 const label = computed(() => (props.store.isSelected ? "Update" : "Create"));
 const isPasswordVisible = ref(false);
@@ -44,11 +50,15 @@ const statuses = [
 ];
 
 const handleSubmit = async () => {
-  if (props.store.isSelected) {
-    await props.store.update(props.store.selectedId, props.store.selected);
-  } else {
-    await props.store.store(props.store.selected);
-  }
+  formRef.value.validate().then(async (v: any) => {
+    // if (v.valid) {
+    if (props.store.isSelected) {
+      await props.store.update(props.store.selectedId, props.store.selected);
+    } else {
+      await props.store.store(props.store.selected);
+    }
+    // }
+  });
 };
 
 const closeDialog: any = () => {
@@ -56,6 +66,14 @@ const closeDialog: any = () => {
 
   setTimeout(() => props.store.reset(), 500);
 };
+
+watch(
+  () => props.store.selected.roles,
+  (n) => {
+    showAircallEmailField.value = permissionsStore.hasRole(n, "csr");
+  },
+  { deep: true }
+);
 
 onMounted(async () => {
   await permissionsStore.getRoles();
@@ -85,14 +103,13 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
       </VCardItem>
 
       <!-- Form -->
-      <VForm class="mt-3" @submit.prevent="handleSubmit">
+      <VForm ref="formRef" class="mt-3" @submit.prevent="handleSubmit">
         <VRow>
           <!-- Name -->
-          <VCol cols="12" lg="6">
+          <VCol cols="12" md="6">
             <VTextField
               v-model="store.selected.name"
               :rules="[requiredValidator]"
-              autofocus
               label="Name"
               placeholder="John Doe"
               :error-messages="store?.errors?.name?.[0]"
@@ -100,7 +117,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
           </VCol>
 
           <!-- Email -->
-          <VCol cols="12" lg="6">
+          <VCol cols="12" md="6">
             <VTextField
               v-model="store.selected.email"
               :rules="[requiredValidator, emailValidator]"
@@ -112,7 +129,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
           </VCol>
 
           <!-- Password -->
-          <VCol cols="12" lg="6">
+          <VCol cols="12" md="6">
             <VTextField
               v-model="store.selected.password"
               :rules="[!store.isSelected && requiredValidator]"
@@ -128,7 +145,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
           </VCol>
 
           <!-- Password Confirmation -->
-          <VCol cols="12" lg="6">
+          <VCol cols="12" md="6">
             <VTextField
               v-model="store.selected.password_confirmation"
               :rules="[!store.isSelected && requiredValidator]"
@@ -147,7 +164,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
           </VCol>
 
           <!-- Status -->
-          <VCol cols="12">
+          <VCol cols="12" md="6">
             <VAutocomplete
               v-model="store.selected.is_active"
               label="Status"
@@ -158,13 +175,60 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
             />
           </VCol>
 
+          <!-- Gender -->
+          <VCol cols="12" lg="6">
+            <VSelect
+              v-model="store.selected.additional.gender"
+              :rules="[requiredValidator]"
+              :items="store.GENDERS"
+              label="Gender"
+              placeholder="Male"
+              :error-messages="store?.errors?.gender?.[0]"
+            />
+          </VCol>
+
+          <!-- DOB -->
+          <VCol cols="12" md="6">
+            <VTextField
+              v-model="store.selected.additional.dob"
+              type="date"
+              label="Date of birth"
+              placeholder="01/01/1998"
+              :error-messages="store?.errors?.dob?.[0]"
+            />
+          </VCol>
+
+          <!-- Phone -->
+          <VCol cols="12" lg="6">
+            <VTextField
+              v-model="store.selected.additional.phone_no"
+              :rules="[integerValidator]"
+              label="Phone"
+              placeholder="XXX-XXXXXXX"
+              type="number"
+              clearable
+            />
+          </VCol>
+
+          <!-- Address -->
+          <VCol cols="12">
+            <VTextarea
+              v-model="store.selected.additional.address"
+              label="Address"
+              placeholder="103 House Example Street..."
+              auto-grow
+              clearable
+              counter
+            />
+          </VCol>
+
           <!-- Roles -->
           <VCol v-if="showRoles" cols="12">
             <VLabel class="mb-2"><strong>Roles</strong></VLabel>
             <VRow>
               <VCol
                 cols="12"
-                lg="4"
+                md="4"
                 v-for="role in permissionsStore.roles"
                 :key="`role-${role.id}`"
               >
@@ -177,6 +241,17 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
                 </VCheckbox>
               </VCol>
             </VRow>
+          </VCol>
+
+          <VCol cols="12" v-if="showAircallEmailField">
+            <VTextField
+              v-model="store.selected.aircall_email_address"
+              :rules="[emailValidator]"
+              label="Aircall Email Address"
+              type="email"
+              placeholder="johndoe@email.com"
+              :error-messages="store?.errors?.aircall_email_address?.[0]"
+            />
           </VCol>
 
           <!-- Actions button -->
