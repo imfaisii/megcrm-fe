@@ -7,6 +7,7 @@ import router from "@/router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { mergeProps } from "vue";
+import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 
 export type Comment = {
   leadId: Number | String;
@@ -32,6 +33,7 @@ const filters = ref({
   post_code: "",
   statuses: [],
   lead_generator_id: [],
+  surveyor_id: [],
   timestamp: "",
 });
 
@@ -46,6 +48,7 @@ const form = reactive<Comment>({
 // composables
 const store: any = useLeadsStore();
 const auth: any = useAuthStore();
+const permStore: any = usePermissionsStore();
 const time = useTime();
 const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
   store.fetchLeads({ include: "leadGenerator" })
@@ -124,7 +127,7 @@ const handleAirCall = async (lead: any) => {
       <VTextField v-model="filters.post_code" label="Post code" clearable />
     </VCol>
 
-    <VCol cols="12" lg="4">
+    <VCol cols="12" lg="6">
       <VAutocomplete
         v-model="filters.statuses"
         :items="store.leadTableStatuses"
@@ -139,7 +142,22 @@ const handleAirCall = async (lead: any) => {
       />
     </VCol>
 
-    <VCol cols="12" lg="4">
+    <VCol cols="12" lg="6">
+      <AppDateTimePicker
+        v-model="filters.timestamp"
+        :config="{
+          mode: 'range',
+          wrap: true,
+          altInput: true,
+          altFormat: 'F j, Y',
+          dateFormat: 'Y-m-d',
+        }"
+        label="Dated"
+        placeholder="Select date"
+      />
+    </VCol>
+
+    <VCol cols="12" lg="6">
       <VAutocomplete
         v-model="filters.lead_generator_id"
         :items="store.leadGenerators"
@@ -153,18 +171,20 @@ const handleAirCall = async (lead: any) => {
         :return-object="false"
       />
     </VCol>
-    <VCol cols="12" lg="4">
-      <AppDateTimePicker
-        v-model="filters.timestamp"
-        :config="{
-          mode: 'range',
-          wrap: true,
-          altInput: true,
-          altFormat: 'F j, Y',
-          dateFormat: 'Y-m-d',
-        }"
-        label="Dated"
-        placeholder="Select date"
+
+    <VCol cols="12" lg="6">
+      <VAutocomplete
+        v-model="filters.surveyor_id"
+        :items="store.surveyors"
+        label="Surveyor"
+        placeholder="Select surveyor"
+        item-title="name"
+        item-value="id"
+        chips
+        multiple
+        clearable
+        :return-object="false"
+        :disabled="permStore.isSurveyorOnly"
       />
     </VCol>
   </VRow>
