@@ -146,7 +146,7 @@ const handleSubmit = async () => {
       <VCard title="Recent Devices">
         <VDataTable
           :headers="headers"
-          :items="auth?.user?.userAgents ?? []"
+          :items="auth?.user?.user_agents ?? []"
           hide-default-footer
           class="text-no-wrap rounded-0 text-sm"
         >
