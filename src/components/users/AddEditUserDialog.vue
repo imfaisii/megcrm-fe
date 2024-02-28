@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { EventBus } from "@/utils/useEventBus";
 import {
@@ -31,7 +32,9 @@ const props = defineProps({
 
 const emit = defineEmits<Emit>();
 
+const leadsStore = useLeadsStore();
 const showAircallEmailField = ref(false);
+const showInstallationTypesField = ref(false);
 const formRef = ref();
 const permissionsStore: any = usePermissionsStore();
 const label = computed(() => (props.store.isSelected ? "Update" : "Create"));
@@ -71,12 +74,14 @@ watch(
   () => props.store.selected.roles,
   (n) => {
     showAircallEmailField.value = permissionsStore.hasRole(n, "csr");
+    showInstallationTypesField.value = permissionsStore.hasRole(n, "installer");
   },
   { deep: true }
 );
 
 onMounted(async () => {
   await permissionsStore.getRoles();
+  await leadsStore.getExtras();
 
   EventBus.$on("toggle-users-dialog", (type: any) => {
     emit("update:isDialogVisible", type);
@@ -88,7 +93,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
 
 <template>
   <VDialog
-    :width="$vuetify.display.smAndDown ? 'auto' : 900"
+    :width="$vuetify.display.smAndDown ? 'auto' : 1100"
     :model-value="isDialogVisible"
     @update:model-value="closeDialog"
     persistent
@@ -241,6 +246,20 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
                 </VCheckbox>
               </VCol>
             </VRow>
+          </VCol>
+
+          <VCol cols="12" v-if="showInstallationTypesField">
+            <VSelect
+              v-model="store.selected.installation_types"
+              :items="leadsStore.installation_types"
+              item-title="name"
+              item-value="id"
+              label="Installation Type"
+              placeholder="Loft Insulation"
+              multiple
+              chips
+              :error-messages="store?.errors?.installation_types?.[0]"
+            />
           </VCol>
 
           <VCol cols="12" v-if="showAircallEmailField">

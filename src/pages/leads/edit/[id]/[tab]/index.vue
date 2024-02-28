@@ -6,7 +6,6 @@ import { requiredValidator } from "@validators";
 
 const store = useLeadsStore();
 const route = useRoute();
-// const tooltip = ref(true);
 const activeTab = ref(route.params.tab);
 
 const showTooltip = computed(() => store.showEditButton);
@@ -26,6 +25,11 @@ const tabs = [
     title: "Survey Pictures",
     icon: "mdi-image-marker-outline",
     tab: "survey-pictures",
+  },
+  {
+    title: "Book Installation",
+    icon: "mdi-tools",
+    tab: "book-installation",
   },
   {
     title: "Pre Checking",
@@ -249,6 +253,10 @@ onUnmounted(() => {
 
         <VWindowItem value="survey-pictures">
           <SurveyPictures />
+        </VWindowItem>
+
+        <VWindowItem value="book-installation">
+          <BookInstallationTab />
         </VWindowItem>
 
         <VWindowItem value="pre-checking">

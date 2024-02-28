@@ -36,6 +36,14 @@ type Surveyor = {
   name: string
 }
 
+type Installer = {
+  name: string
+}
+
+type InstallationType = {
+  name: string
+}
+
 export const useLeadsStore = defineStore('leads', () => {
   const endPoint = '/leads'
   const leads = ref([])
@@ -58,6 +66,8 @@ export const useLeadsStore = defineStore('leads', () => {
   const leadStatuses: Ref<LeadStatus[]> = ref([])
   const leadTableStatuses: Ref<LeadStatus[]> = ref([])
   const leadJobTableStatuses: Ref<LeadStatus[]> = ref([])
+  const installers: Ref<Installer[]> = ref([])
+  const installation_types: Ref<InstallationType[]> = ref([])
   const errors = ref({})
   const includes = [
     "leadGenerator",
@@ -67,6 +77,7 @@ export const useLeadsStore = defineStore('leads', () => {
     "callCenters.callCenterStatus",
     "callCenters.createdBy",
     "surveyBooking",
+    "installationBooking",
     "comments.commentator",
     "leadAdditional"
   ];
@@ -99,6 +110,8 @@ export const useLeadsStore = defineStore('leads', () => {
       leadStatuses.value = data?.lead_statuses ?? []
       leadTableStatuses.value = data?.lead_table_filters ?? []
       leadJobTableStatuses.value = data?.lead_jobs_filters ?? []
+      installers.value = data?.installers ?? []
+      installation_types.value = data?.installation_types ?? []
       isLoading.value = false
     }
   }
@@ -154,6 +167,14 @@ export const useLeadsStore = defineStore('leads', () => {
           surveyor_id: null,
           survey_at: null,
           preffered_time: null,
+          comments: null,
+        }
+      }
+
+      if (selectedLead.value.installation_booking === null) {
+        selectedLead.value.installation_booking = {
+          installer_id: null,
+          installation_at: null,
           comments: null,
         }
       }
@@ -240,6 +261,8 @@ export const useLeadsStore = defineStore('leads', () => {
 
 
   return {
+    installation_types,
+    installers,
     leadTableStatuses,
     leadStatuses,
     leadJobTableStatuses,
