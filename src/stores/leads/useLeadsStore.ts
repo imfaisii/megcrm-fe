@@ -74,10 +74,11 @@ export const useLeadsStore = defineStore('leads', () => {
     "statuses",
     "leadCustomerAdditionalDetail",
     "benefits",
+    "measures",
     "callCenters.callCenterStatus",
     "callCenters.createdBy",
     "surveyBooking",
-    "installationBooking",
+    "installationBookings",
     "comments.commentator",
     "leadAdditional"
   ];
@@ -162,19 +163,27 @@ export const useLeadsStore = defineStore('leads', () => {
       const { data } = await useApiFetch(`${endPoint}/${leadId}?${setQueryParams(options)}`)
       selectedLead.value = data.lead
 
+      let installations: any = [];
+
+      data.lead.measures.forEach((measure: any) => {
+        const entry = data.lead.installation_bookings.find((installationBooking: any) => installationBooking.measure_id === measure.id)
+
+        installations.push({
+          installer_id: entry?.installer_id ?? null,
+          installation_at: entry?.installation_at ?? null,
+          measure_id: entry?.measure_id ?? measure.id,
+          name: entry?.name ?? measure.name,
+          comments: entry?.comments ?? null,
+        })
+      })
+
+      selectedLead.value.installation_bookings = installations
+
       if (selectedLead.value.survey_booking === null) {
         selectedLead.value.survey_booking = {
           surveyor_id: null,
           survey_at: null,
           preffered_time: null,
-          comments: null,
-        }
-      }
-
-      if (selectedLead.value.installation_booking === null) {
-        selectedLead.value.installation_booking = {
-          installer_id: null,
-          installation_at: null,
           comments: null,
         }
       }
@@ -189,6 +198,7 @@ export const useLeadsStore = defineStore('leads', () => {
       }
 
       selectedLead.value.benefits = data.lead?.benefits.map((i: any) => i.id)
+      selectedLead.value.measures = data.lead?.measures.map((i: any) => i.id)
       selectedLeadCopy.value = JSON.parse(JSON.stringify(selectedLead.value))
     } catch (error) {
       $toast.error(getExceptionMessage(error))

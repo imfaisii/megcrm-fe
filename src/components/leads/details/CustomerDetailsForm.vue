@@ -224,7 +224,7 @@ onMounted(async () => {
         </VCol>
 
         <!-- Benefit Type -->
-        <VCol cols="12" lg="4">
+        <VCol cols="12" lg="6">
           <VCombobox
             v-model="store.selectedLead.benefits"
             :items="store.benefitTypes"
@@ -239,7 +239,7 @@ onMounted(async () => {
         </VCol>
 
         <!-- Lead Generator -->
-        <VCol cols="12" lg="4">
+        <VCol cols="12" lg="6">
           <VAutocomplete
             v-model="store.selectedLead.lead_generator_id"
             :items="store.leadGenerators"
@@ -252,7 +252,7 @@ onMounted(async () => {
         </VCol>
 
         <!-- Lead Source -->
-        <VCol cols="12" lg="4">
+        <VCol cols="12" lg="6">
           <VAutocomplete
             v-model="store.selectedLead.lead_source_id"
             :items="store.leadSources"
@@ -260,6 +260,23 @@ onMounted(async () => {
             item-title="name"
             item-value="id"
             clearable
+            :return-object="false"
+          />
+        </VCol>
+
+        <!-- Lead Measures -->
+        <VCol cols="12" lg="6">
+          <VCombobox
+            v-model="store.selectedLead.measures"
+            :items="store.measures"
+            item-title="name"
+            item-value="id"
+            label="Measures"
+            placeholder="Loft Insulation"
+            clearable
+            required
+            multiple
+            chips
             :return-object="false"
           />
         </VCol>
