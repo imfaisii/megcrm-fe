@@ -1,7 +1,7 @@
 import useApiFetch from '@/composables/useApiFetch'
 import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
-import { defaultModel, useUsersStore } from '@/stores/users/useUsersStore'
+import { useUsersStore } from '@/stores/users/useUsersStore'
 import { EventBus } from '@/utils/useEventBus'
 import { handleError, reshapeParams } from '@/utils/useHelper'
 import { defineStore } from 'pinia'
@@ -11,7 +11,7 @@ export const useSurveyorsStore = defineStore('surveyors', () => {
   const usersStore = useUsersStore()
   const endPoint = '/surveyors'
   const entity = 'Surveyor'
-  const selected: any = ref(defaultModel)
+  const selected: any = ref(usersStore.defaultModel)
   const selectedId: any = ref(null)
   const isLoading = ref(false)
   const errors = ref({})

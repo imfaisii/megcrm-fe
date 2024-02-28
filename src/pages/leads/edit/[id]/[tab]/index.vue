@@ -6,8 +6,10 @@ import { requiredValidator } from "@validators";
 
 const store = useLeadsStore();
 const route = useRoute();
-
+// const tooltip = ref(true);
 const activeTab = ref(route.params.tab);
+
+const showTooltip = computed(() => store.showEditButton);
 
 const tabs = [
   {
@@ -32,6 +34,11 @@ const tabs = [
   },
   { title: "Communications", icon: "mdi-phone-outline", tab: "communications" },
   { title: "History", icon: "mdi-clock-outline", tab: "history" },
+  {
+    title: "Call History",
+    icon: "openmoji:mobile-info",
+    tab: "call-history",
+  },
   {
     title: "Coming soon...",
     icon: "mdi-clock-alert-outline",
@@ -157,7 +164,7 @@ onUnmounted(() => {
 
               <VRow>
                 <VCol class="d-flex flex-wrap align-center" cols="12">
-                  <VCombobox
+                  <VAutocomplete
                     v-model="store.selectedLead.status_details.name"
                     :items="
                       store.selectedLead.is_marked_as_job
@@ -198,7 +205,7 @@ onUnmounted(() => {
                         />
                       </VFadeTransition>
                     </template>
-                  </VCombobox>
+                  </VAutocomplete>
 
                   <VBtn @click="isCommentsDialogVisible = true">
                     Save Status
@@ -258,6 +265,10 @@ onUnmounted(() => {
             :statuses="store.selectedLead?.statuses ?? []"
           />
         </VWindowItem>
+
+        <VWindowItem value="call-history">
+          <AirCallHistory />
+        </VWindowItem>
       </VWindow>
     </div>
 
@@ -291,7 +302,7 @@ onUnmounted(() => {
         size="88"
       >
         <div class="ma-4">
-          <VTooltip position="top">
+          <VTooltip position="top" v-model="showTooltip">
             <template #activator="{ props }">
               <VFadeTransition leave-absolute>
                 <VProgressCircular
@@ -302,14 +313,16 @@ onUnmounted(() => {
                 />
 
                 <VBtn
-                  v-else
+                  v-else-if="store.showEditButton"
                   @click="handleLeadUpdate"
                   v-bind="props"
-                  icon="mdi-content-save-edit-outline"
-                  size="large"
+                  size="x-large"
                   color="warning"
                   elevation="8"
-                />
+                >
+                  <VIcon start icon="mdi-content-save-edit-outline" />
+                  Save
+                </VBtn>
               </VFadeTransition>
             </template>
             Click to update lead details.

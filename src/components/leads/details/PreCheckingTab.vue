@@ -81,6 +81,11 @@ const documents: any = ref([
     color: "primary",
     icon: "mdi-document",
   },
+  {
+    title: "Datamatch Consent",
+    color: "primary",
+    icon: "mdi-document",
+  },
 ]);
 
 watch(
@@ -231,8 +236,8 @@ onMounted(async () => {
       </VCardText>
     </VCard>
 
-    <section>
-      <VCard class="mb-2">
+    <section class="mb-4">
+      <VCard class="mb-4">
         <VCardItem>
           <template #prepend>
             <VIcon icon="mdi-file-check-outline" class="text-disabled" />
@@ -244,7 +249,7 @@ onMounted(async () => {
         <VDivider />
       </VCard>
 
-      <VRow class="mt-4">
+      <VRow>
         <VCol
           v-for="document in documents"
           :key="document.title"
@@ -260,6 +265,105 @@ onMounted(async () => {
         </VCol>
       </VRow>
     </section>
+
+    <!-- Checks -->
+    <VCard class="mb-4">
+      <VCardItem>
+        <template #prepend>
+          <VIcon icon="mdi-check-circle-outline" class="text-disabled" />
+        </template>
+
+        <VCardTitle>Additional Checks</VCardTitle>
+      </VCardItem>
+
+      <VDivider />
+
+      <VCardText class="d-flex justify-space-between">
+        <VTooltip>
+          <template #activator="{ props }">
+            <div v-bind="props">
+              <VCheckbox
+                v-model="store.selectedLead.lead_additional.datamatch_confirmed"
+                label="Datamatch Confirmed"
+                true-icon="mdi-check-circle"
+                false-icon="mdi-close-circle"
+                :color="
+                  store.selectedLead.lead_additional.datamatch_confirmed
+                    ? 'success'
+                    : 'error'
+                "
+              />
+            </div>
+          </template>
+          Mark as {{ !store.selectedLead.lead_additional.datamatch_confirmed }}
+        </VTooltip>
+
+        <VTooltip>
+          <template #activator="{ props }">
+            <div v-bind="props">
+              <VCheckbox
+                v-model="
+                  store.selectedLead.lead_additional.land_registry_confirmed
+                "
+                label="Land Registry Confirmed"
+                true-icon="mdi-check-circle"
+                false-icon="mdi-close-circle"
+                :color="
+                  store.selectedLead.lead_additional.land_registry_confirmed
+                    ? 'success'
+                    : 'error'
+                "
+              />
+            </div>
+          </template>
+          Mark as
+          {{ !store.selectedLead.lead_additional.land_registry_confirmed }}
+        </VTooltip>
+
+        <VTooltip>
+          <template #activator="{ props }">
+            <div v-bind="props">
+              <VCheckbox
+                v-model="
+                  store.selectedLead.lead_additional.proof_of_address_confirmed
+                "
+                label="Proof of address Confirmed"
+                true-icon="mdi-check-circle"
+                false-icon="mdi-close-circle"
+                :color="
+                  store.selectedLead.lead_additional.proof_of_address_confirmed
+                    ? 'success'
+                    : 'error'
+                "
+              />
+            </div>
+          </template>
+          Mark as
+          {{ !store.selectedLead.lead_additional.proof_of_address_confirmed }}
+        </VTooltip>
+
+        <VTooltip>
+          <template #activator="{ props }">
+            <div v-bind="props">
+              <VCheckbox
+                v-model="
+                  store.selectedLead.lead_additional.epr_report_confirmed
+                "
+                label="EPR Report Confirmed"
+                true-icon="mdi-check-circle"
+                false-icon="mdi-close-circle"
+                :color="
+                  store.selectedLead.lead_additional.epr_report_confirmed
+                    ? 'success'
+                    : 'error'
+                "
+              />
+            </div>
+          </template>
+          Mark as {{ !store.selectedLead.lead_additional.epr_report_confirmed }}
+        </VTooltip>
+      </VCardText>
+    </VCard>
 
     <!-- Dialogs -->
     <CommentsDialog

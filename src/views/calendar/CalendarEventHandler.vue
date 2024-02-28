@@ -133,7 +133,7 @@ const endDateTimePickerConfig = computed(() => {
 
               <!-- 👉 Calendar -->
               <VCol cols="12">
-                <VSelect
+                <VAutocomplete
                   v-model="event.extendedProps.calendar"
                   label="Calendar"
                   placeholder="Select Event Type"
@@ -157,7 +157,7 @@ const endDateTimePickerConfig = computed(() => {
                       <span>{{ item.raw.name }}</span>
                     </div>
                   </template>
-                </VSelect>
+                </VAutocomplete>
               </VCol>
 
               <!-- 👉 Start date -->

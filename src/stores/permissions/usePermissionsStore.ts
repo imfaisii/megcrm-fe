@@ -23,6 +23,7 @@ export const usePermissionsStore = defineStore('permissions', () => {
   const userRoles: any = ref([])
 
   const isSuperAdmin = computed(() => !!userRoles.value.includes(roleConstants.SUPER_ADMIN))
+  const isSurveyorOnly = computed(() => (!!(userRoles.value.length === 1) && (userRoles.value.includes(roleConstants.SURVEYOR))))
 
   const isRoleSelected = computed(() => !!selectedRole.value)
 
@@ -145,6 +146,16 @@ export const usePermissionsStore = defineStore('permissions', () => {
     }
   }
 
+  const getRoleNameFromId = (id: number) => {
+    return roles.value.find((i: any) => i.id === id);
+  }
+
+  const hasRole = (rolesArray: any = [], name: string) => {
+    const localRole: any = roles.value.find((i: any) => i.name === name);
+
+    return rolesArray.includes(localRole.id)
+  }
+
   const $reset = () => {
     roles.value = []
     permissions.value = []
@@ -163,7 +174,10 @@ export const usePermissionsStore = defineStore('permissions', () => {
     userRoles,
     userPermissions,
     isSuperAdmin,
+    isSurveyorOnly,
 
+    hasRole,
+    getRoleNameFromId,
     is,
     can,
     storeRole,

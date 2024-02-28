@@ -2,12 +2,26 @@
 import { useDropboxStore } from "@/stores/dropbox/useDropboxStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
+import { isImageFileName } from "@/utils/useHelper";
+import errorimage from "@images/custom/404.jpg";
 import { useDropzone } from "vue3-dropzone";
 
 const dbStore = useDropboxStore();
 const leadsStore = useLeadsStore();
 
-const show = (url: string) => EventBus.$emit("view-lightbox", url);
+const show = (image: any) => {
+  if (isImageFileName(image.name)) {
+    const toShow = dbStore.folderImages.map((i: any) => i.link);
+    const index = toShow.indexOf(image.link);
+
+    EventBus.$emit("view-lightbox", {
+      imgs: toShow,
+      index: index !== -1 ? index : 0,
+    });
+  } else {
+    window.open(image.url, "_blank");
+  }
+};
 
 const saveFiles = async (files: any) => {
   for await (const file of files) {
@@ -28,12 +42,19 @@ const onDrop = (acceptFiles: any, rejectReasons: any) => saveFiles(acceptFiles);
 
 const { getRootProps, getInputProps, ...rest } = useDropzone({
   onDrop,
-  accept: ["image/*"],
+  accept: ["image/*", "video/*", "application/pdf"],
 });
+
+const showRenameDialog = (fileName: string, filePath: string) => {
+  EventBus.$emit("show-dropbox-rename-dialog", {
+    fileName,
+    filePath,
+  });
+};
 
 onMounted(async () => {
   await dbStore.create(`${dbStore.folder}/Survey`);
-  await dbStore.index(dbStore.folder);
+  dbStore.index(dbStore.folder);
 });
 </script>
 
@@ -92,13 +113,52 @@ onMounted(async () => {
             </VCardTitle>
           </VCardText>
         </div>
-        <VCard @click="show(image.link)" v-else>
+        <VCard @click="show(image)" v-else>
           <VTooltip>
             <template #activator="{ props }">
               <div v-bind="props">
-                <VImg :src="image.link" height="170" loading="lazy" cover />
+                <VRow>
+                  <VCol cols="12">
+                    <!-- Image -->
+                    <VImg
+                      :src="`${
+                        isImageFileName(image.name) ? image.link : errorimage
+                      }`"
+                      height="170"
+                      loading="lazy"
+                    />
+                  </VCol>
 
-                <VCardSubtitle class="pa-3">{{ image.name }}</VCardSubtitle>
+                  <VCol
+                    class="d-flex justify-space-between align-center pa-3 mb-2"
+                    cols="12"
+                  >
+                    <!-- Name -->
+                    <VCardSubtitle>{{ image.name }}</VCardSubtitle>
+
+                    <!-- Edit Button -->
+
+                    <IconBtn
+                      size="x-small"
+                      class="mr-2"
+                      @click.stop="
+                        showRenameDialog(image.name, image.path_display)
+                      "
+                    >
+                      <VTooltip>
+                        <template #activator="{ props }">
+                          <VIcon
+                            v-bind:="props"
+                            size="large"
+                            color="secondary"
+                            icon="mdi-pencil-outline"
+                          />
+                        </template>
+                        <span>Rename file</span>
+                      </VTooltip>
+                    </IconBtn>
+                  </VCol>
+                </VRow>
               </div>
             </template>
             <span>Click to preview</span>
@@ -117,6 +177,9 @@ onMounted(async () => {
       </VCol>
     </VRow>
   </div>
+
+  <!-- Dialogs-->
+  <RenameFileDialog />
 </template>
 
 <style lang="scss" scoped>

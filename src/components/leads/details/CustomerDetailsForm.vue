@@ -143,7 +143,7 @@ onMounted(async () => {
 
         <!-- Title -->
         <VCol cols="12" lg="4">
-          <VCombobox
+          <VAutocomplete
             v-model="store.selectedLead.title"
             :items="titles"
             :rules="[requiredValidator]"
@@ -158,11 +158,10 @@ onMounted(async () => {
         <VCol cols="12" lg="4">
           <VTextField
             v-model="store.selectedLead.email"
-            :rules="[requiredValidator, emailValidator]"
+            :rules="[emailValidator]"
             label="Email"
             placeholder="johndoe@example.com"
             clearable
-            required
           />
         </VCol>
 
@@ -241,7 +240,7 @@ onMounted(async () => {
 
         <!-- Lead Generator -->
         <VCol cols="12" lg="4">
-          <VCombobox
+          <VAutocomplete
             v-model="store.selectedLead.lead_generator_id"
             :items="store.leadGenerators"
             label="Lead Generator"
@@ -254,7 +253,7 @@ onMounted(async () => {
 
         <!-- Lead Source -->
         <VCol cols="12" lg="4">
-          <VCombobox
+          <VAutocomplete
             v-model="store.selectedLead.lead_source_id"
             :items="store.leadSources"
             label="Lead Source"
@@ -265,10 +264,10 @@ onMounted(async () => {
           />
         </VCol>
 
-        <!-- Comments -->
+        <!-- Notes -->
         <VCol cols="12">
           <VTextarea
-            v-model="store.selectedLead.comments"
+            v-model="store.selectedLead.notes"
             label="Comments"
             placeholder="Some comments..."
             auto-grow
@@ -359,7 +358,7 @@ onMounted(async () => {
 
           <!-- Dataprogress Value -->
           <VCol cols="12" lg="6">
-            <VCombobox
+            <VAutocomplete
               v-model="
                 store.selectedLead.lead_customer_additional_detail
                   .datamatch_progress
@@ -376,7 +375,7 @@ onMounted(async () => {
 
           <!-- Dataprogress Date -->
           <VCol cols="12" lg="6">
-            <VCombobox
+            <VAutocomplete
               v-model="
                 store.selectedLead.lead_customer_additional_detail
                   .datamatch_progress_date

@@ -1,10 +1,13 @@
 <script lang="ts" setup>
+import useApiFetch from "@/composables/useApiFetch";
 import useDataTable from "@/composables/useDatatable";
 import useTime from "@/composables/useTime";
+import { useToast } from "@/plugins/toastr";
 import router from "@/router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { mergeProps } from "vue";
+import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 
 export type Comment = {
   leadId: Number | String;
@@ -30,6 +33,7 @@ const filters = ref({
   post_code: "",
   statuses: [],
   lead_generator_id: [],
+  surveyor_id: [],
   timestamp: "",
 });
 
@@ -44,6 +48,7 @@ const form = reactive<Comment>({
 // composables
 const store: any = useLeadsStore();
 const auth: any = useAuthStore();
+const permStore: any = usePermissionsStore();
 const time = useTime();
 const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
   store.fetchLeads({ include: "leadGenerator" })
@@ -81,6 +86,30 @@ const handleRedirect = (itemId: any) => {
 onMounted(async () => {
   await store.getExtras();
 });
+
+const airCallLoader = ref(false);
+const toast = useToast();
+const fixNumber = (str: string): string => str.replace(/\D/g, "").slice(-10);
+
+const handleAirCall = async (lead: any) => {
+  try {
+    store.selectedId = lead.id;
+    airCallLoader.value = true;
+
+    const { data, message } = await useApiFetch("/aircall/dial-call", {
+      data: {
+        phone_number: "+44" + fixNumber(lead?.phone_no ?? ""),
+      },
+      method: "POST",
+    });
+    toast.success("AirCall Success");
+  } catch (err: any) {
+    toast.error(err.response?.data?.message ?? "Something Went Wrong!");
+  } finally {
+    airCallLoader.value = false;
+    store.selectedId = null;
+  }
+};
 </script>
 
 <template>
@@ -98,8 +127,8 @@ onMounted(async () => {
       <VTextField v-model="filters.post_code" label="Post code" clearable />
     </VCol>
 
-    <VCol cols="12" lg="4">
-      <VCombobox
+    <VCol cols="12" lg="6">
+      <VAutocomplete
         v-model="filters.statuses"
         :items="store.leadTableStatuses"
         label="Status"
@@ -113,8 +142,23 @@ onMounted(async () => {
       />
     </VCol>
 
-    <VCol cols="12" lg="4">
-      <VCombobox
+    <VCol cols="12" lg="6">
+      <AppDateTimePicker
+        v-model="filters.timestamp"
+        :config="{
+          mode: 'range',
+          wrap: true,
+          altInput: true,
+          altFormat: 'F j, Y',
+          dateFormat: 'Y-m-d',
+        }"
+        label="Dated"
+        placeholder="Select date"
+      />
+    </VCol>
+
+    <VCol cols="12" lg="6">
+      <VAutocomplete
         v-model="filters.lead_generator_id"
         :items="store.leadGenerators"
         label="Lead Generator"
@@ -127,18 +171,20 @@ onMounted(async () => {
         :return-object="false"
       />
     </VCol>
-    <VCol cols="12" lg="4">
-      <AppDateTimePicker
-        v-model="filters.timestamp"
-        :config="{
-          mode: 'range',
-          wrap: true,
-          altInput: true,
-          altFormat: 'F j, Y',
-          dateFormat: 'Y-m-d',
-        }"
-        label="Dated"
-        placeholder="Select date"
+
+    <VCol cols="12" lg="6">
+      <VAutocomplete
+        v-model="filters.surveyor_id"
+        :items="store.surveyors"
+        label="Surveyor"
+        placeholder="Select surveyor"
+        item-title="name"
+        item-value="id"
+        chips
+        multiple
+        clearable
+        :return-object="false"
+        :disabled="permStore.isSurveyorOnly"
       />
     </VCol>
   </VRow>
@@ -191,8 +237,9 @@ onMounted(async () => {
             <template v-slot:activator="{ props: tooltip }">
               <VBtn
                 :class="
-                  item.raw?.status_details?.name.toUpperCase() ===
-                    'CANCELLED' && 'text-white'
+                  item.raw?.status_details?.name
+                    .toUpperCase()
+                    .includes('CANCELLED') && 'text-white'
                 "
                 size="x-small"
                 :color="
@@ -264,6 +311,20 @@ onMounted(async () => {
           </IconBtn>
         </template>
         <span>Are you sure you want to delete this lead?</span>
+      </VTooltip>
+      <VTooltip location="bottom">
+        <template #activator="{ props }">
+          <IconBtn @click.stop="handleAirCall(item.raw)" v-bind="props">
+            <VProgressCircular
+              v-if="airCallLoader && store.selectedId === item.raw.id"
+              size="24"
+              color="info"
+              indeterminate
+            />
+            <VIcon v-else color="info" icon="mdi-phone-dial-outline" />
+          </IconBtn>
+        </template>
+        <span>Open The Aircall App And Put this Number on Dial Pad</span>
       </VTooltip>
     </template>
   </DataTable>

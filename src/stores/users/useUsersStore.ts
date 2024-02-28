@@ -14,18 +14,27 @@ type UserData = {
   status: string
 }
 
-export const defaultModel = {
-  id: null,
-  name: null,
-  email: null,
-  current_password: null,
-  password: null,
-  password_confirmation: null,
-  is_active: true,
-  roles: [],
-}
 
 export const useUsersStore = defineStore('users', () => {
+  const GENDERS = ['Male', 'Female']
+
+  const defaultModel = {
+    id: null,
+    name: null,
+    email: null,
+    current_password: null,
+    password: null,
+    password_confirmation: null,
+    is_active: true,
+    roles: [],
+    aircall_email_address: null,
+    additional: {
+      dob: null,
+      gender: GENDERS[0],
+      address: null,
+      phone_no: null,
+    }
+  }
   const endPoint = '/users'
   const entity = 'User'
   const users = ref<any>([])
@@ -56,6 +65,11 @@ export const useUsersStore = defineStore('users', () => {
     const { data } = await useApiFetch(`${endPoint}/${userId}`)
     selected.value = data.user
     selected.value.roles = data.user.roles.map((i: any) => i.id)
+
+    if (selected.value.additional === null) {
+      selected.value.additional = defaultModel.additional
+    }
+
     isLoading.value = false
     EventBus.$emit('toggle-users-dialog', true)
   }
@@ -151,6 +165,9 @@ export const useUsersStore = defineStore('users', () => {
 
 
   return {
+    GENDERS,
+
+    defaultModel,
     users,
     selectedId,
     isLoading,

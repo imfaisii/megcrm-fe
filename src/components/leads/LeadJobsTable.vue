@@ -5,6 +5,7 @@ import router from "@/router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useLeadJobsStore } from "@/stores/leads/useLeadJobsStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
+import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { mergeProps } from "vue";
 
 export type Comment = {
@@ -39,6 +40,7 @@ const filters = ref({
   post_code: "",
   statuses: [],
   lead_generator_id: [],
+  surveyor_id: [],
   timestamp: "",
   ...props.filters,
 });
@@ -54,6 +56,7 @@ const form = reactive<Comment>({
 // composables
 const store: any = useLeadsStore();
 const auth: any = useAuthStore();
+const permStore: any = usePermissionsStore();
 const leadJobStore: any = useLeadJobsStore();
 const time = useTime();
 const { onSortChange, onPaginationChange } = useDataTable(
@@ -111,10 +114,10 @@ onMounted(async () => {
       <VTextField v-model="filters.post_code" label="Post code" clearable />
     </VCol>
 
-    <VCol cols="12" lg="4">
-      <VCombobox
+    <VCol cols="12" lg="6">
+      <VAutocomplete
         v-model="filters.statuses"
-        :items="store.leadJobTableStatuses"
+        :items="store.leadTableStatuses"
         label="Status"
         placeholder="Select status"
         item-title="name"
@@ -126,8 +129,23 @@ onMounted(async () => {
       />
     </VCol>
 
-    <VCol cols="12" lg="4">
-      <VCombobox
+    <VCol cols="12" lg="6">
+      <AppDateTimePicker
+        v-model="filters.timestamp"
+        :config="{
+          mode: 'range',
+          wrap: true,
+          altInput: true,
+          altFormat: 'F j, Y',
+          dateFormat: 'Y-m-d',
+        }"
+        label="Dated"
+        placeholder="Select date"
+      />
+    </VCol>
+
+    <VCol cols="12" lg="6">
+      <VAutocomplete
         v-model="filters.lead_generator_id"
         :items="store.leadGenerators"
         label="Lead Generator"
@@ -140,18 +158,20 @@ onMounted(async () => {
         :return-object="false"
       />
     </VCol>
-    <VCol cols="12" lg="4">
-      <AppDateTimePicker
-        v-model="filters.timestamp"
-        :config="{
-          mode: 'range',
-          wrap: true,
-          altInput: true,
-          altFormat: 'F j, Y',
-          dateFormat: 'Y-m-d',
-        }"
-        label="Dated"
-        placeholder="Select date"
+
+    <VCol cols="12" lg="6">
+      <VAutocomplete
+        v-model="filters.surveyor_id"
+        :items="store.surveyors"
+        label="Surveyor"
+        placeholder="Select surveyor"
+        item-title="name"
+        item-value="id"
+        chips
+        multiple
+        clearable
+        :return-object="false"
+        :disabled="permStore.isSurveyorOnly"
       />
     </VCol>
   </VRow>
@@ -204,8 +224,9 @@ onMounted(async () => {
             <template v-slot:activator="{ props: tooltip }">
               <VBtn
                 :class="
-                  item.raw?.status_details?.name.toUpperCase() ===
-                    'CANCELLED' && 'text-white'
+                  item.raw?.status_details?.name
+                    .toUpperCase()
+                    .includes('CANCELLED') && 'text-white'
                 "
                 size="x-small"
                 :color="

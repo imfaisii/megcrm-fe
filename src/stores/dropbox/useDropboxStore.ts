@@ -1,8 +1,9 @@
 import { useToast } from '@/plugins/toastr'
 import { useAuthStore } from '@/stores/auth/useAuthStore'
+import { useLeadsStore } from '@/stores/leads/useLeadsStore'
+import { sleep } from '@/utils/useHelper'
 import axios from 'axios'
 import { defineStore } from 'pinia'
-import { useLeadsStore } from '../leads/useLeadsStore'
 
 export const useDropboxStore = defineStore('dropbox', () => {
 
@@ -21,6 +22,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
   const fileUploadEndpoint = "https://content.dropboxapi.com/2/files/upload";
   const newFolderEndpoint = `${baseUrl}/create_folder_v2`
   const folderFilesEndpoint = `${baseUrl}/list_folder`
+  const renameEndpoint = `${baseUrl}/move_v2`
   const getTemporaryLinkEndpoint = `${baseUrl}/get_temporary_link`
 
   const folderImages: any = ref([])
@@ -48,7 +50,11 @@ export const useDropboxStore = defineStore('dropbox', () => {
         headers
       })
 
-      folderImages.value = data.entries
+      const filteredEntries = data.entries.filter((entry: any) => {
+        return !folderImages.value.some((image: any) => image.path_display === entry.path_display);
+      });
+
+      folderImages.value = [...folderImages.value, ...filteredEntries];
 
       if (fetchLinks) {
         getTemporaryLinks(folderImages)
@@ -134,22 +140,63 @@ export const useDropboxStore = defineStore('dropbox', () => {
     }
   }
 
+  const getTemporaryLink = (e: any) => {
+    axios.post(`${getTemporaryLinkEndpoint}`, {
+      path: `${e.path_display}`
+    }, {
+      headers
+    }).then((r) => {
+      e.link = r.data.link
+
+    })
+
+  }
+
+
   const getTemporaryLinks = async (ref: Ref) => {
     try {
-      ref.value.forEach(async (e: any) => {
-        if (!e.link) {
-          const { data } = await axios.post(`${getTemporaryLinkEndpoint}`, {
-            path: `${e.path_display}`
-          }, {
-            headers
-          })
+      for (let i = 0; i < ref.value.length; i += 10) {
+        const chunk = ref.value.slice(i, i + 10);
 
-          e.link = data.link
+        for (const e of chunk) {
+          if (!e.link) {
+            getTemporaryLink(e);
+          }
         }
-      });
+
+        await sleep(1000);
+      }
 
     } catch (e: any) {
       console.log("DROPBOX:create => ", e.message);
+    }
+  }
+
+  const renameFile = async (oldPath: string, newPath: string, newFileName: string) => {
+    try {
+      loading.value = true
+
+      await axios.post(`${renameEndpoint}`, {
+        "allow_ownership_transfer": false,
+        "allow_shared_folder": false,
+        "autorename": false,
+        "from_path": oldPath,
+        "to_path": newPath
+      }, {
+        headers
+      })
+
+      const entry = folderImages.value.find((i: any) => i.path_display = oldPath)
+
+      if (entry) {
+        entry.name = newFileName;
+        entry.path_display = newPath;
+      }
+    }
+    catch (e: any) {
+      $toast.error(e?.message ?? 'Failed to rename, please try again.')
+    } finally {
+      loading.value = false
     }
   }
 
@@ -160,6 +207,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
     folder,
     precheckingDocuments,
 
+    renameFile,
     getPreCheckingFiles,
     create,
     index,

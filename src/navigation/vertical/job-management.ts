@@ -20,6 +20,10 @@ export default [
         permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
       },
       {
+        title: 'Survey Done', to: 'jobs-survey-done',
+        permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
+      },
+      {
         title: 'Survey Booked', to: 'jobs-survey-booked',
         permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
       },
@@ -28,9 +32,17 @@ export default [
         permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
       },
       {
-        title: 'Survey Done', to: 'jobs-survey-done',
+        title: 'Cancelled Leads', to: 'jobs-cancelled-leads',
         permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
       },
+      {
+        title: 'Cancelled Jobs', to: 'jobs-cancelled-jobs',
+        permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
+      },
+      {
+        title: 'Cancelled Surveys', to: 'jobs-cancelled-surveys',
+        permissions: [modules.LEAD_JOBS + '.index', modules.LEADS + '.assigned-leads'],
+      }
     ]
   },
 ] as VerticalNavItems

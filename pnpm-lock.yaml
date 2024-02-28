@@ -98,6 +98,9 @@ dependencies:
   vue-chartjs:
     specifier: 5.2.0
     version: 5.2.0(chart.js@4.3.0)(vue@3.4.10)
+  vue-e164:
+    specifier: ^2.0.0
+    version: 2.0.0
   vue-easy-lightbox:
     specifier: ^1.18.0
     version: 1.18.0(vue@3.4.10)
@@ -5353,6 +5356,11 @@ packages:
         optional: true
     dependencies:
       vue: 3.4.10(typescript@5.0.4)
+
+  /vue-e164@2.0.0:
+    resolution: {integrity: sha512-DEoberkMeRV2at75MI09aw/0PD0z2rWVOxjnaLNImhpMuEAJa0tXV7bwMHonfdk1+SOutgdPOXw2bcRuWxiCIQ==}
+    engines: {node: '>= 4.0.0', npm: '>= 3.0.0'}
+    dev: false
 
   /vue-easy-lightbox@1.18.0(vue@3.4.10):
     resolution: {integrity: sha512-Dcphgybo4W6OE8x2abdNuALUUSCwrTBq1Mubjxhyva4YGS6v5KDvGuq/bc6lWwPFNGIPmy6D83Xf2Pe39vnMCA==}

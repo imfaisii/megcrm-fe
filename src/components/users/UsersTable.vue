@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import useDataTable from "@/composables/useDatatable";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { useUsersStore } from "@/stores/users/useUsersStore";
 
 const store: any = useUsersStore();
 const rolesStore: any = usePermissionsStore();
+const auth: any = useAuthStore();
 
 // Headers
 const headers = [
@@ -39,7 +41,7 @@ const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
     </VCol>
 
     <VCol cols="12" lg="4">
-      <VCombobox
+      <VAutocomplete
         v-model="filters.roles"
         :items="rolesStore.roles"
         label="Roles"
@@ -127,10 +129,21 @@ const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
         />
         <VIcon v-else icon="tabler-edit" />
       </IconBtn>
-      <VTooltip location="bottom">
+      <VTooltip
+        v-if="
+          ['cfaysal099@gmail.com', 'megcrm24@gmail.com'].includes(
+            auth.user.email
+          )
+        "
+        location="bottom"
+      >
         <template #activator="{ props }">
           <IconBtn
-            v-if="item.raw.id !== 1"
+            v-if="
+              !['cfaysal099@gmail.com', 'megcrm24@gmail.com'].includes(
+                item.raw.email
+              )
+            "
             @click="store.destroy(item.raw.id)"
             v-bind="props"
           >

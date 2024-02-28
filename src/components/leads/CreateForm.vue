@@ -101,7 +101,7 @@ const addressInformationForm = ref({
 });
 
 const additionalInformationForm = ref({
-  comments: null,
+  notes: null,
   measures: [],
   job_type_id: null,
   fuel_type_id: null,
@@ -292,7 +292,7 @@ onMounted(async () => await store.getExtras());
             </VCol>
 
             <VCol cols="12" lg="7">
-              <VCombobox
+              <VAutocomplete
                 v-model="addressInformationForm.address"
                 ref="addressCombobox"
                 :items="suggestions"
@@ -360,7 +360,7 @@ onMounted(async () => await store.getExtras());
             </VCol>
 
             <VCol cols="12" lg="4">
-              <VCombobox
+              <VAutocomplete
                 v-model="personalInformationForm.title"
                 :items="titles"
                 :rules="[requiredValidator]"
@@ -374,11 +374,10 @@ onMounted(async () => await store.getExtras());
             <VCol cols="12" lg="4">
               <VTextField
                 v-model="personalInformationForm.email"
-                :rules="[requiredValidator, emailValidator]"
+                :rules="[emailValidator]"
                 label="Email"
                 placeholder="johndoe@example.com"
                 clearable
-                required
               />
             </VCol>
 
@@ -412,7 +411,7 @@ onMounted(async () => await store.getExtras());
             </VCol>
 
             <VCol cols="12" lg="6">
-              <VCombobox
+              <VAutocomplete
                 v-model="additionalInformationForm.lead_generator_id"
                 :items="store.leadGenerators"
                 :rules="[requiredValidator]"
@@ -450,7 +449,7 @@ onMounted(async () => await store.getExtras());
         >
           <VRow>
             <VCol cols="12">
-              <VCombobox
+              <VAutocomplete
                 v-model="additionalInformationForm.measures"
                 :items="store.measures"
                 label="Measures"
@@ -465,7 +464,7 @@ onMounted(async () => await store.getExtras());
             </VCol>
 
             <VCol cols="12" lg="6">
-              <VCombobox
+              <VAutocomplete
                 v-model="additionalInformationForm.job_type_id"
                 :items="store.jobTypes"
                 label="Job Type"
@@ -477,7 +476,7 @@ onMounted(async () => await store.getExtras());
             </VCol>
 
             <VCol cols="12" lg="6">
-              <VCombobox
+              <VAutocomplete
                 v-model="additionalInformationForm.fuel_type_id"
                 :items="store.fuelTypes"
                 label="Fuel Type"
@@ -489,7 +488,7 @@ onMounted(async () => await store.getExtras());
             </VCol>
 
             <VCol cols="12" lg="6">
-              <VCombobox
+              <VAutocomplete
                 v-model="additionalInformationForm.lead_source_id"
                 :items="store.leadSources"
                 label="Lead Source"
@@ -516,7 +515,7 @@ onMounted(async () => await store.getExtras());
 
             <VCol cols="12">
               <VTextarea
-                v-model="additionalInformationForm.comments"
+                v-model="additionalInformationForm.notes"
                 label="Comments"
                 placeholder="Some comments..."
                 auto-grow
