@@ -17,6 +17,7 @@ declare module '@vue/runtime-core' {
     AddEditLeadStatusDialog: typeof import('./src/components/leads/AddEditLeadStatusDialog.vue')['default']
     AddEditPermissionDialog: typeof import('./src/components/permissions/AddEditPermissionDialog.vue')['default']
     AddEditRoleDialog: typeof import('./src/components/permissions/AddEditRoleDialog.vue')['default']
+    AddEditTeamDialog: typeof import('./src/components/team/AddEditTeamDialog.vue')['default']
     AddEditUserDialog: typeof import('./src/components/users/AddEditUserDialog.vue')['default']
     AddNameOnlyDialog: typeof import('./src/components/dialogs/AddNameOnlyDialog.vue')['default']
     AddOtherDocument: typeof import('./src/components/leads/details/AddOtherDocument.vue')['default']

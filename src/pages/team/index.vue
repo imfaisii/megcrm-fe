@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import UsersTable from "@/components/users/UsersTable.vue";
-import { useUsersStore } from "@/stores/users/useUsersStore";
+import AddEditTeamDialog from "@/components/team/AddEditTeamDialog.vue";
+import { useTeamStore } from "@/stores/team/useTeamStore";
 
-const store = useUsersStore();
-const isAddUserDialogVisible: any = ref(false);
+const store = useTeamStore();
+const isTeamDialogVisible: any = ref(false);
 </script>
 <template>
   <section>
@@ -24,19 +24,19 @@ const isAddUserDialogVisible: any = ref(false);
                 lg="6"
                 :class="$vuetify.display.lgAndUp ? 'text-right' : 'text-center'"
               >
-                <VBtn @click="isAddUserDialogVisible = true" color="primary">
-                  Create User
+                <VBtn @click="isTeamDialogVisible = true" color="primary">
+                  Make Team
                 </VBtn>
               </VCol>
             </VRow>
           </VCardTitle>
 
-          <UsersTable />
+          <!-- <UsersTable /> -->
         </VCard>
       </VCol>
     </VRow>
-    <AddEditUserDialog
-      v-model:is-dialog-visible="isAddUserDialogVisible"
+    <AddEditTeamDialog
+      v-model:is-dialog-visible="isTeamDialogVisible"
       :store="store"
     />
   </section>

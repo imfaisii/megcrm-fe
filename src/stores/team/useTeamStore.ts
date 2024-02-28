@@ -14,10 +14,11 @@ export const defaultModel = {
   name: null,
 }
 
-export const useUsersStore = defineStore('users', () => {
+export const useTeamStore = defineStore('team', () => {
   const endPoint = '/team'
   const entity = 'Team'
-  const users = ref<any>([])
+  const teamLeader = ref<any>([]);
+  const team = ref<any>([])
   const selected = ref<any>(defaultModel)
   const selectedId = ref<any>(null)
   const errors = ref<any>({})
@@ -31,7 +32,7 @@ export const useUsersStore = defineStore('users', () => {
   const index = async (options = {}) => {
     isLoading.value = true
     const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPoint, meta.value, options))
-    users.value = data.users
+    team.value = data.users
     meta.value = {
       filters: meta.value?.filters ?? {},
       ...serverMeta
@@ -49,6 +50,33 @@ export const useUsersStore = defineStore('users', () => {
     EventBus.$emit('toggle-users-dialog', true)
   }
 
+  const setTeamLeads = async () => {
+    try {
+      isLoading.value = true
+
+      /* this will set get all the team leader from the backend in the case of edit and all surveyors in the case of add */
+      if (selectedId) {
+        // its an edit case so get all the team leader
+        // const response = await 
+
+      }
+      else {
+        // this will return all the users with surverys roles
+        const response = await useApiFetch(reshapeParams("users", {}, {
+          all: true,
+          filters: {
+            roles: [3]
+          }
+        }));
+      }
+
+    } catch (err) {
+      console.log(`output - err`, err)
+    } finally {
+      isLoading.value = false
+    }
+
+  }
   const store = async (userData: UserData, options: any = { method: 'POST' }) => {
     try {
       isLoading.value = true
@@ -71,7 +99,7 @@ export const useUsersStore = defineStore('users', () => {
     try {
       isLoading.value = true
       selectedId.value = id
-      await useApiFetch(`${endPoint}/${id}`, options)
+      await useApiFetch(`${endPoint} / ${id}`, options)
       $toast.success(`${entity} was deleted successfully.`)
       await index()
     } catch (error) {
@@ -84,7 +112,7 @@ export const useUsersStore = defineStore('users', () => {
   const update = async (id: number | string, payload: any, options = { method: 'PUT' }) => {
     try {
       isLoading.value = true
-      await useApiFetch(`${endPoint}/${id}`, {
+      await useApiFetch(`${endPoint} / ${id}`, {
         data: payload,
         ...options
       })
@@ -103,7 +131,7 @@ export const useUsersStore = defineStore('users', () => {
     try {
       errors.value = {}
       isLoading.value = true
-      await useApiFetch(`${endPoint}/${id}/profile`, {
+      await useApiFetch(`${endPoint} / ${id} / profile`, {
         data: payload,
         ...options
       })
@@ -140,7 +168,7 @@ export const useUsersStore = defineStore('users', () => {
 
 
   return {
-    users,
+    team,
     selectedId,
     isLoading,
     isSelected,
@@ -148,6 +176,7 @@ export const useUsersStore = defineStore('users', () => {
     meta,
     errors,
     includes,
+    teamLeader,
 
     resolveUserStatusVariant,
     resolveUserRoleVariant,
@@ -157,6 +186,7 @@ export const useUsersStore = defineStore('users', () => {
     store,
     destroy,
     update,
-    updateProfile
+    updateProfile,
+    setTeamLeads,
   }
 })
