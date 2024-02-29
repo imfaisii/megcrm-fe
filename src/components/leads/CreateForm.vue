@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import env from "@/constants/env";
+import useApiFetch from "@/composables/useApiFetch";
 import { titles } from "@/constants/leads/customerDetails";
 import { useToast } from "@/plugins/toastr";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
@@ -10,7 +10,6 @@ import {
   integerValidator,
   requiredValidator,
 } from "@validators";
-import axios from "axios";
 import moment from "moment";
 import { VForm } from "vuetify/components/VForm";
 
@@ -157,20 +156,18 @@ const getSuggestions = async () => {
     return;
   }
 
-  const token = env.VITE_APP_GET_ADDRESS_API;
   loading.value = true;
   suggestions.value = [];
 
   try {
-    const { data } = await axios.post(
-      `https://api.getAddress.io/autocomplete/${addressInformationForm.value.post_code.toUpperCase()}?api-key=${token}`,
+    const { data } = await useApiFetch(
+      `/getSuggestions?post_code=${addressInformationForm.value.post_code.toUpperCase()}`,
       {
-        all: true,
-        template: "{formatted_address} -- {country}",
+        method: "GET",
       }
     );
 
-    data?.suggestions?.map((i: any) => suggestions.value.push(i.address));
+    data?.data?.map((i: any) => suggestions.value.push(i.address));
     addressCombobox.value.$el.querySelector("input").focus();
     addressInformationForm.value.post_code =
       addressInformationForm.value.post_code.toUpperCase();
