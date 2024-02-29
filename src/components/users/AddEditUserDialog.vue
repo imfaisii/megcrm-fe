@@ -71,6 +71,7 @@ const handleUploadFile = async () => {
     document.activeElement.blur();
     await props.store.get(props.store.selected.id);
   } catch (e: any) {
+    //
   } finally {
     uploadingFile.value = false;
   }
