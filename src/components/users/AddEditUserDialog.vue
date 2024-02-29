@@ -131,6 +131,15 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
       <!-- Form -->
       <VForm ref="formRef" class="mt-3" @submit.prevent="handleSubmit">
         <VRow>
+          <VCol v-if="!store.isSelected" class="mt-4" cols="12">
+            <p class="d-flex align-center font-italic">
+              <VIcon icon="mdi-information-outline" />
+              <span>
+                You can upload the user documents once the user is created.
+              </span>
+            </p>
+          </VCol>
+
           <!-- Name -->
           <VCol cols="12" md="6">
             <VTextField
@@ -407,13 +416,6 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
                 </VFileInput>
               </VCol>
             </VRow>
-          </VCol>
-
-          <VCol v-else class="mt-4" cols="12">
-            <p class="font-italic">
-              <VIcon icon="mdi-information-outline" />
-              You can upload the user documents once the user is created.
-            </p>
           </VCol>
 
           <!-- Documents List -->
