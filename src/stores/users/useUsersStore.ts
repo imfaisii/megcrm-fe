@@ -2,7 +2,7 @@ import useApiFetch from '@/composables/useApiFetch'
 import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
 import { EventBus } from '@/utils/useEventBus'
-import { handleError, reshapeParams } from '@/utils/useHelper'
+import { handleError, renameFile, reshapeParams } from '@/utils/useHelper'
 import { defineStore } from 'pinia'
 
 type UserData = {
@@ -28,6 +28,7 @@ export const useUsersStore = defineStore('users', () => {
     is_active: true,
     roles: [],
     aircall_email_address: null,
+    documents: [],
     additional: {
       dob: null,
       gender: GENDERS[0],
@@ -141,6 +142,26 @@ export const useUsersStore = defineStore('users', () => {
     }
   }
 
+  const uploadFile = async (userId: number, file: File, fileName: string | null, options = { method: 'POST' }) => {
+    try {
+      if (fileName) {
+        file = renameFile(file, fileName)
+      }
+
+      let formData = new FormData()
+      formData.set('file', file)
+
+      await useApiFetch(`${endPoint}/${userId}/documents/upload`, {
+        data: formData,
+        ...options
+      })
+
+      $toast.success(`File was uploaded successfully.`)
+    } catch (error) {
+      handleError(error, errors)
+    }
+  }
+
   const reset = () => {
     selected.value = { ...defaultModel }
     errors.value = {}
@@ -177,6 +198,7 @@ export const useUsersStore = defineStore('users', () => {
     errors,
     includes,
 
+    uploadFile,
     resolveUserStatusVariant,
     resolveUserRoleVariant,
     reset,

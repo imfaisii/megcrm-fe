@@ -40,6 +40,10 @@ const permissionsStore: any = usePermissionsStore();
 const label = computed(() => (props.store.isSelected ? "Update" : "Create"));
 const isPasswordVisible = ref(false);
 const isConfirmPasswordVisible = ref(false);
+const file = ref();
+const fileName = ref(null);
+const uploadingFile = ref(false);
+const documentsWhileCreating = ref([]);
 
 const statuses = [
   {
@@ -52,12 +56,32 @@ const statuses = [
   },
 ];
 
+const handleUploadFile = async () => {
+  try {
+    uploadingFile.value = true;
+    await props.store.uploadFile(
+      props.store.selectedId,
+      file.value[0],
+      fileName.value
+    );
+    fileName.value = null;
+    file.value = null;
+
+    //@ts-ignore
+    document.activeElement.blur();
+    await props.store.get(props.store.selected.id);
+  } catch (e: any) {
+  } finally {
+    uploadingFile.value = false;
+  }
+};
+
 const handleSubmit = async () => {
   formRef.value.validate().then(async (v: any) => {
-    // if (v.valid) {
     if (props.store.isSelected) {
       await props.store.update(props.store.selectedId, props.store.selected);
     } else {
+      props.store.selected.documents = documentsWhileCreating.value;
       await props.store.store(props.store.selected);
     }
     // }
@@ -93,7 +117,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
 
 <template>
   <VDialog
-    :width="$vuetify.display.smAndDown ? 'auto' : 1100"
+    :width="$vuetify.display.smAndDown ? 'auto' : 1200"
     :model-value="isDialogVisible"
     @update:model-value="closeDialog"
     persistent
@@ -229,7 +253,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
 
           <!-- Roles -->
           <VCol v-if="showRoles" cols="12">
-            <VLabel class="mb-2"><strong>Roles</strong></VLabel>
+            <VLabel text="Roles" class="mb-2"></VLabel>
             <VRow>
               <VCol
                 cols="12"
@@ -273,20 +297,105 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
             />
           </VCol>
 
-          <!-- Actions button -->
-          <div class="d-flex align-center justify-center gap-3 mt-6">
-            <VBtn
-              type="submit"
-              :disabled="store.isLoading"
-              :loading="store.isLoading"
-            >
-              {{ label }} User
-            </VBtn>
+          <VCol v-if="store.isSelected" cols="12">
+            <VLabel text="Documents" class="mb-2" />
 
-            <VBtn color="secondary" variant="tonal" @click="closeDialog">
-              Cancel
+            <VRow>
+              <VCol cols="12" md="6">
+                <VTooltip>
+                  <template #activator="{ props }">
+                    <VTextField
+                      v-model="fileName"
+                      v-bind="props"
+                      placeholder="File Name"
+                    >
+                      <template #prepend-inner>
+                        <VIcon icon="mdi-information-outline" />
+                      </template>
+                    </VTextField>
+                  </template>
+                  <span>
+                    This name is optional, if given the file will be saved with
+                    this name.
+                  </span>
+                </VTooltip>
+              </VCol>
+
+              <VCol cols="12" md="6">
+                <VFileInput
+                  v-model="file"
+                  :loading="uploadingFile"
+                  color="primary"
+                  prepend-icon=""
+                  label="Select any file to upload"
+                  @change="handleUploadFile"
+                >
+                  <template #selection="{ fileNames }">
+                    <template v-for="fileName in fileNames" :key="fileName">
+                      <VChip
+                        label
+                        size="small"
+                        variant="outlined"
+                        color="primary"
+                        class="me-2"
+                      >
+                        {{ fileName }}
+                      </VChip>
+                    </template>
+                  </template>
+
+                  <!-- AppendInner -->
+                  <template #append-inner>
+                    <VFadeTransition leave-absolute>
+                      <VProgressCircular
+                        v-if="uploadingFile"
+                        size="24"
+                        color="info"
+                        indeterminate
+                      />
+                      <VIcon v-else icon="mdi-paperclip" />
+                    </VFadeTransition>
+                  </template>
+                </VFileInput>
+              </VCol>
+            </VRow>
+          </VCol>
+
+          <VCol v-else class="mt-4" cols="12">
+            <p class="font-italic">
+              <VIcon icon="mdi-information-outline" />
+              You can upload the user documents once the user is created.
+            </p>
+          </VCol>
+
+          <VCol class="d-flex" v-if="store.isSelected" cols="12">
+            <VBtn
+              v-for="document in store.selected.documents"
+              :href="document.original_url"
+              target="_blank"
+              variant="outlined"
+            >
+              <VIcon start icon="mdi-file-outline" />
+              {{ document.file_name }}
             </VBtn>
-          </div>
+          </VCol>
+
+          <!-- Actions button -->
+          <VCol cols="12">
+            <div class="d-flex align-center justify-center gap-3 mt-6">
+              <VBtn
+                type="submit"
+                :disabled="store.isLoading"
+                :loading="store.isLoading"
+              >
+                {{ label }} User
+              </VBtn>
+
+              <VBtn color="secondary" variant="tonal" @click="closeDialog">
+                Cancel
+              </VBtn>
+            </div>
+          </VCol>
         </VRow>
       </VForm>
     </VCard>
