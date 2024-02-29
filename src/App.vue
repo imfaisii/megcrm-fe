@@ -38,6 +38,11 @@ handleSkinChanges();
 </template>
 
 <style>
+.v-input,
+td {
+  color: #000 !important;
+}
+
 .no-x-padding {
   padding-inline: 0 !important;
 }
