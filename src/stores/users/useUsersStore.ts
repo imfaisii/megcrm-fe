@@ -34,6 +34,10 @@ export const useUsersStore = defineStore('users', () => {
       gender: GENDERS[0],
       address: null,
       phone_no: null,
+      bank: null,
+      account_number: null,
+      nin: null,
+      visa_expiry: null
     }
   }
   const endPoint = '/users'
@@ -63,7 +67,7 @@ export const useUsersStore = defineStore('users', () => {
   const get = async (userId: Number) => {
     isLoading.value = true
     selectedId.value = userId
-    const { data } = await useApiFetch(`${endPoint}/${userId}`)
+    const { data } = await useApiFetch(`${endPoint}/${userId}?include=additional.bank`)
     selected.value = data.user
     selected.value.roles = data.user.roles.map((i: any) => i.id)
 
@@ -71,6 +75,7 @@ export const useUsersStore = defineStore('users', () => {
       selected.value.additional = defaultModel.additional
     }
 
+    selected.value.additional.bank = selected.value?.additional?.bank?.name ?? null;
     isLoading.value = false
     EventBus.$emit('toggle-users-dialog', true)
   }
@@ -84,6 +89,7 @@ export const useUsersStore = defineStore('users', () => {
       })
       $toast.success('User was saved successfully.')
       errors.value = {}
+      reset()
       EventBus.$emit('toggle-users-dialog', false)
       await index()
     } catch (error) {

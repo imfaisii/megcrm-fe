@@ -5,10 +5,15 @@ import { EventBus } from "@/utils/useEventBus";
 
 // Headers
 const headers = [
-  { title: "Name", key: "name" },
-  { title: "Measures", key: "installation_type_has_measures", sortable: false },
-  { title: "Added by", key: "created_by.name", sortable: false },
-  { title: "Actions", key: "actions", sortable: false },
+  { title: "Name", key: "name", width: "20%" },
+  {
+    title: "Measures",
+    key: "installation_type_has_measures",
+    sortable: false,
+    width: "40%",
+  },
+  { title: "Added by", key: "created_by.name", sortable: false, width: "20%" },
+  { title: "Actions", key: "actions", sortable: false, width: "20%" },
 ];
 
 const filters = ref({
@@ -58,21 +63,16 @@ const handleView = (item: any) => {
         No measures.
       </p>
 
-      <VRow v-else class="mt-2" no-gutters>
-        <VCol
+      <VRow class="d-flex my-4" v-else>
+        <VChip
           v-for="measure in item.raw?.installation_type_has_measures"
-          cols="12"
-          lg="4"
+          label
+          size="small"
+          class="text-capitalize mb-1"
+          color="warning"
         >
-          <VChip
-            label
-            size="small"
-            class="text-capitalize mb-1"
-            color="warning"
-          >
-            {{ measure.name }}
-          </VChip>
-        </VCol>
+          {{ measure.name }}
+        </VChip>
       </VRow>
     </template>
 

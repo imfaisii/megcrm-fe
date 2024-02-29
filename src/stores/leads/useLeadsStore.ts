@@ -44,6 +44,10 @@ type InstallationType = {
   name: string
 }
 
+type Bank = {
+  name: string
+}
+
 export const useLeadsStore = defineStore('leads', () => {
   const endPoint = '/leads'
   const leads = ref([])
@@ -68,6 +72,7 @@ export const useLeadsStore = defineStore('leads', () => {
   const leadJobTableStatuses: Ref<LeadStatus[]> = ref([])
   const installers: Ref<Installer[]> = ref([])
   const installation_types: Ref<InstallationType[]> = ref([])
+  const banks: Ref<Bank[]> = ref([])
   const errors = ref({})
   const includes = [
     "leadGenerator",
@@ -113,6 +118,7 @@ export const useLeadsStore = defineStore('leads', () => {
       leadJobTableStatuses.value = data?.lead_jobs_filters ?? []
       installers.value = data?.installers ?? []
       installation_types.value = data?.installation_types ?? []
+      banks.value = data?.banks ?? []
       isLoading.value = false
     }
   }
@@ -271,6 +277,7 @@ export const useLeadsStore = defineStore('leads', () => {
 
 
   return {
+    banks,
     installation_types,
     installers,
     leadTableStatuses,

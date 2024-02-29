@@ -2,11 +2,7 @@
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { EventBus } from "@/utils/useEventBus";
-import {
-  emailValidator,
-  integerValidator,
-  requiredValidator,
-} from "@validators";
+import { emailValidator, requiredValidator } from "@validators";
 import { VForm } from "vuetify/components/VForm";
 
 interface Emit {
@@ -142,6 +138,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
               :rules="[requiredValidator]"
               label="Name"
               placeholder="John Doe"
+              required
               :error-messages="store?.errors?.name?.[0]"
             />
           </VCol>
@@ -153,6 +150,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
               :rules="[requiredValidator, emailValidator]"
               label="Email"
               type="email"
+              required
               placeholder="johndoe@email.com"
               :error-messages="store?.errors?.email?.[0]"
             />
@@ -171,6 +169,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
               "
               :error-messages="store?.errors?.password?.[0]"
               @click:append-inner="isPasswordVisible = !isPasswordVisible"
+              required
             />
           </VCol>
 
@@ -190,6 +189,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
               @click:append-inner="
                 isConfirmPasswordVisible = !isConfirmPasswordVisible
               "
+              required
             />
           </VCol>
 
@@ -228,15 +228,59 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
             />
           </VCol>
 
+          <!-- Visa Expiry -->
+          <VCol cols="12" md="6">
+            <VTextField
+              v-model="store.selected.additional.visa_expiry"
+              type="date"
+              label="Visa Expiry Date"
+              placeholder="01/01/1998"
+              :error-messages="store?.errors?.visa_expiry?.[0]"
+            />
+          </VCol>
+
           <!-- Phone -->
           <VCol cols="12" lg="6">
             <VTextField
               v-model="store.selected.additional.phone_no"
-              :rules="[integerValidator]"
               label="Phone"
               placeholder="XXX-XXXXXXX"
               type="number"
               clearable
+            />
+          </VCol>
+
+          <!-- National Insurance Number -->
+          <VCol cols="12" md="6">
+            <VTextField
+              v-model="store.selected.additional.nin"
+              label="National Insurance Number"
+              placeholder="TR00111001"
+              :error-messages="store?.errors?.nin?.[0]"
+            />
+          </VCol>
+
+          <!-- Bank Name -->
+          <VCol cols="12" md="6">
+            <VCombobox
+              v-model="store.selected.additional.bank"
+              :items="leadsStore.banks"
+              item-value="name"
+              item-title="name"
+              label="Bank Name"
+              placeholder="Natwest"
+              :return-object="false"
+              :error-messages="store?.errors?.bank_id?.[0]"
+            />
+          </VCol>
+
+          <!-- Account Number -->
+          <VCol cols="12" md="6">
+            <VTextField
+              v-model="store.selected.additional.account_number"
+              label="Account Number"
+              placeholder="00-00-12345678"
+              :error-messages="store?.errors?.account_number?.[0]"
             />
           </VCol>
 
@@ -273,6 +317,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
             </VRow>
           </VCol>
 
+          <!-- Installation Types -->
           <VCol cols="12" v-if="showInstallationTypesField">
             <VSelect
               v-model="store.selected.installation_types"
@@ -287,6 +332,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
             />
           </VCol>
 
+          <!-- Aircall Email Address -->
           <VCol cols="12" v-if="showAircallEmailField">
             <VTextField
               v-model="store.selected.aircall_email_address"
@@ -298,6 +344,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
             />
           </VCol>
 
+          <!-- Documents -->
           <VCol v-if="store.isSelected" cols="12">
             <VLabel text="Documents" class="mb-2" />
 
@@ -369,6 +416,7 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
             </p>
           </VCol>
 
+          <!-- Documents List -->
           <VCol class="d-flex" v-if="store.isSelected" cols="12">
             <VBtn
               v-for="document in store.selected.documents"

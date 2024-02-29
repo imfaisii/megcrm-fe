@@ -1,6 +1,6 @@
-import type { VuetifyOptions } from 'vuetify'
 import { resolveVuetifyTheme } from '@core/utils/vuetify'
 import { themeConfig } from '@themeConfig'
+import type { VuetifyOptions } from 'vuetify'
 
 export const staticPrimaryColor = '#666CFF'
 
@@ -22,8 +22,8 @@ const theme: VuetifyOptions['theme'] = {
         'on-warning': '#fff',
         'error': '#FF4D49',
         'background': '#F7F7F9',
-        'on-background': '#4c4e64',
-        'on-surface': '#4c4e64',
+        'on-background': '#000',
+        'on-surface': '#000',
         'snackbar-background': '#212121',
         'tooltip-background': '#262732',
         'alert-background': '#F7F7F9',
@@ -44,9 +44,9 @@ const theme: VuetifyOptions['theme'] = {
 
       variables: {
         'code-color': '#d400ff',
-        'border-color': '#4c4e64',
+        'border-color': '#000',
         'hover-opacity': 0.05,
-        'overlay-scrim-background': '#4C4E64',
+        'overlay-scrim-background': '#000',
         'overlay-scrim-opacity': 0.5,
         'focus-opacity': 0.1,
         'selected-opacity': 0.12,
@@ -59,9 +59,9 @@ const theme: VuetifyOptions['theme'] = {
         'shadow-key-umbra-opacity': 0.2,
         'shadow-key-penumbra-opacity': 0.14,
         'shadow-key-ambient-opacity': 0.12,
-        'shadow-key-umbra-color': '#4C4E64',
-        'shadow-key-penumbra-color': '#4C4E64',
-        'shadow-key-ambient-color': '#4C4E64',
+        'shadow-key-umbra-color': '#000',
+        'shadow-key-penumbra-color': '#000',
+        'shadow-key-ambient-color': '#000',
       },
     },
     dark: {
