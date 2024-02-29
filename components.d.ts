@@ -59,6 +59,7 @@ declare module '@vue/runtime-core' {
     ErrorHeader: typeof import('./src/components/ErrorHeader.vue')['default']
     FuelTypesTable: typeof import('./src/components/fuel-types/FuelTypesTable.vue')['default']
     I18n: typeof import('./src/@core/components/I18n.vue')['default']
+    InstallationPictures: typeof import('./src/components/leads/details/InstallationPictures.vue')['default']
     InstallationTypesTable: typeof import('./src/components/installation-types/InstallationTypesTable.vue')['default']
     JobTypesTable: typeof import('./src/components/job-types/JobTypesTable.vue')['default']
     LeadAlertMessages: typeof import('./src/components/leads/LeadAlertMessages.vue')['default']

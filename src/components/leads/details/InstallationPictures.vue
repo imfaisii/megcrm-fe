@@ -11,7 +11,7 @@ const leadsStore = useLeadsStore();
 
 const show = (image: any) => {
   if (isImageFileName(image.name)) {
-    const toShow = dbStore.folderImages.map((i: any) => i.link);
+    const toShow = dbStore.installationImages.map((i: any) => i.link);
     const index = toShow.indexOf(image.link);
 
     EventBus.$emit("view-lightbox", {
@@ -25,14 +25,14 @@ const show = (image: any) => {
 
 const saveFiles = async (files: any) => {
   for await (const file of files) {
-    await dbStore.store(dbStore.folder, "Survey", file);
+    await dbStore.store(dbStore.folder, "Installation", file);
   }
 
-  await leadsStore.updateStatus({
-    leadId: leadsStore.selectedLead.id,
-    status: "Survey Done",
-    comments: "All files were uploaded to dropbox.",
-  });
+  // await leadsStore.updateStatus({
+  //   leadId: leadsStore.selectedLead.id,
+  //   status: "Survey Done",
+  //   comments: "All files were uploaded to dropbox.",
+  // });
 
   dbStore.index(dbStore.folder);
   EventBus.$emit("refresh-lead-data");
@@ -53,8 +53,8 @@ const showRenameDialog = (fileName: string, filePath: string) => {
 };
 
 onMounted(async () => {
-  await dbStore.create(`${dbStore.folder}/Survey`);
-  dbStore.index(dbStore.folder);
+  await dbStore.create(`${dbStore.folder}/Installation`);
+  dbStore.getInstallationPictures(dbStore.folder);
 });
 </script>
 
@@ -66,9 +66,9 @@ onMounted(async () => {
           <VIcon icon="mdi-image-marker" class="text-disabled" />
         </template>
 
-        <VCardTitle
-          >Survey Pictures ( {{ dbStore.folderImages.length }} )</VCardTitle
-        >
+        <VCardTitle>
+          Installation Pictures ( {{ dbStore.installationImages.length }} )
+        </VCardTitle>
 
         <template #append>
           <div class="me-n3 mt-n2">
@@ -97,7 +97,7 @@ onMounted(async () => {
 
     <VRow class="pa-2 mt-4">
       <VCol
-        v-for="image in (dbStore.folderImages as any)"
+        v-for="image in (dbStore.installationImages as any)"
         :key="image.id"
         class="image-card"
         cols="12"

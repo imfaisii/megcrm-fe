@@ -27,14 +27,19 @@ const tabs = [
     tab: "survey-pictures",
   },
   {
+    title: "Pre Checking",
+    icon: "mdi-image-check-outline",
+    tab: "pre-checking",
+  },
+  {
     title: "Book Installation",
     icon: "mdi-tools",
     tab: "book-installation",
   },
   {
-    title: "Pre Checking",
-    icon: "mdi-image-check-outline",
-    tab: "pre-checking",
+    title: "Installation Pictures",
+    icon: "mdi-image-marker-outline",
+    tab: "installation-pictures",
   },
   { title: "Communications", icon: "mdi-phone-outline", tab: "communications" },
   { title: "History", icon: "mdi-clock-outline", tab: "history" },
@@ -255,12 +260,16 @@ onUnmounted(() => {
           <SurveyPictures />
         </VWindowItem>
 
+        <VWindowItem value="pre-checking">
+          <PreCheckingTab />
+        </VWindowItem>
+
         <VWindowItem value="book-installation">
           <BookInstallationTab />
         </VWindowItem>
 
-        <VWindowItem value="pre-checking">
-          <PreCheckingTab />
+        <VWindowItem value="installation-pictures">
+          <InstallationPictures />
         </VWindowItem>
 
         <VWindowItem value="communications">
