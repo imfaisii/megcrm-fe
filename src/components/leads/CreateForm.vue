@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import env from "@/constants/env";
+import useApiFetch from "@/composables/useApiFetch";
 import { titles } from "@/constants/leads/customerDetails";
 import { useToast } from "@/plugins/toastr";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
@@ -10,7 +10,6 @@ import {
   integerValidator,
   requiredValidator,
 } from "@validators";
-import axios from "axios";
 import moment from "moment";
 import { VForm } from "vuetify/components/VForm";
 
@@ -157,23 +156,25 @@ const getSuggestions = async () => {
     return;
   }
 
-  const token = env.VITE_APP_GET_ADDRESS_API;
   loading.value = true;
   suggestions.value = [];
 
   try {
-    const { data } = await axios.post(
-      `https://api.getAddress.io/autocomplete/${addressInformationForm.value.post_code.toUpperCase()}?api-key=${token}`,
+    const { data } = await useApiFetch(
+      `/getSuggestions?post_code=${addressInformationForm.value.post_code.toUpperCase()}`,
       {
-        all: true,
-        template: "{formatted_address} -- {country}",
+        method: "GET",
       }
     );
 
-    data?.suggestions?.map((i: any) => suggestions.value.push(i.address));
+    data?.map((i: any) => suggestions.value.push(i));
     addressCombobox.value.$el.querySelector("input").focus();
-    addressInformationForm.value.post_code =
-      addressInformationForm.value.post_code.toUpperCase();
+    if (Array.isArray(data) && data.length > 0) {
+      addressInformationForm.value.post_code = data[0].post_code;
+    } else {
+      addressInformationForm.value.post_code =
+        addressInformationForm.value.post_code.toUpperCase();
+    }
     addressInformationForm.value.address = null;
   } catch (e) {
     $toast.error(getExceptionMessage(e));
@@ -197,7 +198,7 @@ const checkDuplicate = async (v: any) => {
     false
   );
 
-  if (store.errors.hasOwnProperty("address")) {
+  if (store.errors.hasOwnProperty("address.address")) {
     isAddressFormValid.value = false;
 
     return "This address already exists";
@@ -239,11 +240,7 @@ onMounted(async () => await store.getExtras());
         >
           <VRow>
             <VCol cols="12">
-              <LeadAlertMessages
-                v-if="addressInformationForm.post_code"
-                :postCode="addressInformationForm.post_code"
-                :address="addressInformationForm.address"
-              />
+              <LeadAlertMessages :address="addressInformationForm.address" />
             </VCol>
 
             <VCol cols="12" lg="5">
@@ -296,12 +293,15 @@ onMounted(async () => await store.getExtras());
                 v-model="addressInformationForm.address"
                 ref="addressCombobox"
                 :items="suggestions"
+                item-title="address"
+                item-value="address"
                 :rules="[checkDuplicate]"
                 label="Address"
                 placeholder="Enter postcode to search addresses"
                 type="text"
                 clearable
                 required
+                :return-object="true"
               />
             </VCol>
 
@@ -645,7 +645,7 @@ onMounted(async () => await store.getExtras());
                     }}
                   </p>
                   <p class="mb-1">
-                    {{ addressInformationForm.address }}
+                    {{ addressInformationForm.address?.address }}
                   </p>
                   <p class="mb-1">
                     {{ personalInformationForm.phone_no }}

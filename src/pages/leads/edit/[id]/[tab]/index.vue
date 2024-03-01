@@ -165,9 +165,10 @@ onUnmounted(() => {
 
               <VRow class="d-flex mb-3">
                 <LeadAlertMessages
-                  v-if="store.selectedLead.post_code"
-                  :postCode="store.selectedLead.post_code"
-                  :address="store.selectedLead.address"
+                  :address="{
+                    address: store.selectedLead.address,
+                    post_code: store.selectedLead.post_code,
+                  }"
                 />
               </VRow>
 
