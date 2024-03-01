@@ -5,6 +5,39 @@ import { useUsersStore } from "@/stores/users/useUsersStore";
 import { emailValidator, requiredValidator } from "@core/utils/validators";
 import { VForm } from "vuetify/components/VForm";
 
+const documents: any = ref([
+  {
+    title: "Gas Safe Card",
+    color: "primary",
+    icon: "mdi-document",
+    hasExpiry: true,
+  },
+  {
+    title: "Public Liability Insurance",
+    color: "primary",
+    icon: "mdi-document",
+    hasExpiry: true,
+  },
+  {
+    title: "Anamizer Callibration Cert",
+    color: "primary",
+    icon: "mdi-document",
+    hasExpiry: true,
+  },
+  {
+    title: "SS of company no. from company house",
+    color: "primary",
+    icon: "mdi-document",
+    hasExpiry: false,
+  },
+  {
+    title: "Gas Safe Certificate",
+    color: "primary",
+    icon: "mdi-document",
+    hasExpiry: false,
+  },
+]);
+
 const numberedSteps = [
   {
     title: "Account Details",
@@ -48,22 +81,30 @@ const isCsrSelected = computed(() => {
   return permissionsStore.hasRole(store.selected.roles, "csr");
 });
 
-const handleSubmit = () => {
-  // refAccountForm.value?.validate().then(async (valid) => {
-  // if (valid.valid) {
-  try {
-    // await store.store(store.selected);
+const isInstallerSelected = computed(() => {
+  return permissionsStore.hasRole(store.selected.roles, "installer");
+});
 
-    currentStep.value++;
-    isCurrentStepValid.value = true;
-  } catch (e) {
-    isCurrentStepValid.value = false;
-    //
-  }
-  // } else {
-  //   isCurrentStepValid.value = false;
-  // }
-  // });
+const handleSubmit = () => {
+  refAccountForm.value?.validate().then(async (valid) => {
+    if (valid.valid) {
+      try {
+        if (!store.selectedId) {
+          await store.store(store.selected);
+        } else {
+          await store.update(store.selectedId, store.selected);
+        }
+
+        currentStep.value++;
+        isCurrentStepValid.value = true;
+      } catch (e) {
+        isCurrentStepValid.value = false;
+        //
+      }
+    } else {
+      isCurrentStepValid.value = false;
+    }
+  });
 };
 
 onMounted(async () => {
@@ -74,6 +115,7 @@ onMounted(async () => {
   //   emit("update:isDialogVisible", type);
   // });
 });
+// :is-active-step-valid="!store.isSelected ? false : undefined"
 </script>
 
 <template>
@@ -84,7 +126,6 @@ onMounted(async () => {
         v-model:current-step="currentStep"
         :items="numberedSteps"
         align="start"
-        :is-active-step-valid="store.isSelected"
       />
     </VCardText>
 
@@ -100,7 +141,11 @@ onMounted(async () => {
             </p>
           </VCol>
 
-          <VForm ref="refAccountForm" @submit.prevent="handleSubmit">
+          <VForm
+            class="pa-4"
+            ref="refAccountForm"
+            @submit.prevent="handleSubmit"
+          >
             <VRow>
               <!-- Name -->
               <VCol cols="12" md="6">
@@ -181,7 +226,7 @@ onMounted(async () => {
                     :disabled="store.isLoading"
                     type="submit"
                   >
-                    Next
+                    Save
                     <VIcon icon="mdi-arrow-right" end class="flip-in-rtl" />
                   </VBtn>
                 </div>
@@ -196,7 +241,11 @@ onMounted(async () => {
             <p class="text-xs mb-0">Add more desccription about user.</p>
           </VCol>
 
-          <VForm ref="refPersonalForm" @submit.prevent="handleSubmit">
+          <VForm
+            class="pa-4"
+            ref="refPersonalForm"
+            @submit.prevent="handleSubmit"
+          >
             <VRow>
               <!-- Status -->
               <VCol cols="12" md="6">
@@ -316,7 +365,7 @@ onMounted(async () => {
                   </VBtn>
 
                   <VBtn type="submit">
-                    Next
+                    Save
                     <VIcon icon="mdi-arrow-right" end class="flip-in-rtl" />
                   </VBtn>
                 </div>
@@ -331,9 +380,13 @@ onMounted(async () => {
             <p class="text-xs mb-0">Manage User Roles</p>
           </VCol>
 
-          <VForm ref="refSocialLinkForm" @submit.prevent="handleSubmit">
+          <VForm
+            class="pa-4"
+            ref="refSocialLinkForm"
+            @submit.prevent="handleSubmit"
+          >
             <VRow>
-              <VCol class="d-flex justify-space-between" cols="12">
+              <VCol class="d-md-inline-flex justify-space-between" cols="12">
                 <VCheckbox
                   v-for="role in (permissionsStore.roles as any)"
                   :key="`role-${role.id}`"
@@ -343,6 +396,99 @@ onMounted(async () => {
                   dense
                 >
                 </VCheckbox>
+              </VCol>
+
+              <!-- Aircall Email Address -->
+              <VCol cols="12" v-if="isCsrSelected">
+                <VCardItem class="px-0">
+                  <template #prepend>
+                    <VIcon icon="mdi-account-outline" class="text-disabled" />
+                  </template>
+
+                  <VCardTitle>Aircall Details</VCardTitle>
+                </VCardItem>
+
+                <VDivider class="mt-1 mb-6" />
+
+                <VTextField
+                  v-model="store.selected.aircall_email_address"
+                  :rules="[emailValidator]"
+                  label="Aircall Email Address"
+                  type="email"
+                  placeholder="johndoe@email.com"
+                  :error-messages="store?.errors?.aircall_email_address?.[0]"
+                />
+              </VCol>
+
+              <!-- Installer Details -->
+              <VCol cols="12" v-if="isInstallerSelected">
+                <VCardItem class="px-0">
+                  <template #prepend>
+                    <VIcon
+                      icon="mdi-office-building-outline"
+                      class="text-disabled"
+                    />
+                  </template>
+
+                  <VCardTitle>Company Details</VCardTitle>
+                </VCardItem>
+
+                <VDivider class="mt-1 mb-6" />
+
+                <VRow>
+                  <VCol cols="12" md="6">
+                    <VTextField
+                      v-model="store.selected.installer_company.name"
+                      label="Enter Company Name"
+                      placeholder="MEG"
+                      :error-messages="
+                        store?.errors?.installer_company?.name?.[0]
+                      "
+                    />
+                  </VCol>
+
+                  <VCol cols="12" md="6">
+                    <VTextField
+                      v-model="store.selected.installer_company.address"
+                      label="Enter Company Address"
+                      placeholder="MEG"
+                      :error-messages="
+                        store?.errors?.installer_company?.address?.[0]
+                      "
+                    />
+                  </VCol>
+
+                  <VCol cols="12" md="6">
+                    <VTextField
+                      v-model="store.selected.installer_company.company_number"
+                      label="Enter Company Number"
+                      placeholder="AB112233"
+                      :error-messages="
+                        store?.errors?.installer_company?.company_number?.[0]
+                      "
+                    />
+                  </VCol>
+
+                  <VCol cols="12" md="6">
+                    <VTextField
+                      v-model="store.selected.installer_company.vat_number"
+                      label="Enter Company VAT Number"
+                      placeholder="AB112233"
+                      :error-messages="
+                        store?.errors?.installer_company?.vat_number?.[0]
+                      "
+                    />
+                  </VCol>
+
+                  <VCol
+                    v-for="document in documents"
+                    :key="document.title"
+                    cols="12"
+                    lg="4"
+                  >
+                    <InstallerDocument v-bind="document" />
+                  </VCol>
+                </VRow>
               </VCol>
 
               <VCol cols="12">
@@ -358,7 +504,7 @@ onMounted(async () => {
                     Previous
                   </VBtn>
 
-                  <VBtn color="success" type="submit"> submit </VBtn>
+                  <VBtn type="submit"> Save </VBtn>
                 </div>
               </VCol>
             </VRow>

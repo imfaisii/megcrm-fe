@@ -38,6 +38,12 @@ export const useUsersStore = defineStore('users', () => {
       account_number: null,
       nin: null,
       visa_expiry: null
+    },
+    installer_company: {
+      name: null,
+      address: null,
+      company_number: null,
+      vat_number: null,
     }
   }
   const endPoint = '/users'
@@ -67,12 +73,16 @@ export const useUsersStore = defineStore('users', () => {
   const get = async (userId: Number) => {
     isLoading.value = true
     selectedId.value = userId
-    const { data } = await useApiFetch(`${endPoint}/${userId}?include=additional.bank`)
+    const { data } = await useApiFetch(`${endPoint}/${userId}?include=additional.bank,installerCompany`)
     selected.value = data.user
     selected.value.roles = data.user.roles.map((i: any) => i.id)
 
     if (selected.value.additional === null) {
       selected.value.additional = defaultModel.additional
+    }
+
+    if (selected.value.installer_company === null) {
+      selected.value.installer_company = defaultModel.installer_company
     }
 
     selected.value.additional.bank = selected.value?.additional?.bank?.name ?? null;
@@ -83,14 +93,13 @@ export const useUsersStore = defineStore('users', () => {
   const store = async (userData: UserData, options: any = { method: 'POST' }) => {
     try {
       isLoading.value = true
-      await useApiFetch('/users', {
+      const { data } = await useApiFetch('/users', {
         data: userData,
         ...options,
       })
       $toast.success('User was saved successfully.')
       errors.value = {}
-      reset()
-      EventBus.$emit('toggle-users-dialog', false)
+      await get(data.user.id)
       await index()
     } catch (error) {
       handleError(error, errors)
@@ -168,6 +177,32 @@ export const useUsersStore = defineStore('users', () => {
     }
   }
 
+  const saveDocumentToCollection = async (collection: string, file: File, fileName: string | null, expiry: string | null, options = { method: 'POST' }) => {
+    try {
+      if (fileName) {
+        file = renameFile(file, fileName)
+      }
+
+      let formData = new FormData()
+
+      formData.set('file', file)
+      formData.set('collection', collection)
+
+      if (expiry) {
+        formData.set('expiry', expiry)
+      }
+
+      await useApiFetch(`${endPoint}/collections/docs/upload`, {
+        data: formData,
+        ...options
+      })
+
+      $toast.success(`File was uploaded successfully.`)
+    } catch (error) {
+      handleError(error, errors)
+    }
+  }
+
   const reset = () => {
     selected.value = { ...defaultModel }
     errors.value = {}
@@ -204,6 +239,7 @@ export const useUsersStore = defineStore('users', () => {
     errors,
     includes,
 
+    saveDocumentToCollection,
     uploadFile,
     resolveUserStatusVariant,
     resolveUserRoleVariant,
