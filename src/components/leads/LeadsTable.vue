@@ -6,8 +6,8 @@ import { useToast } from "@/plugins/toastr";
 import router from "@/router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
-import { mergeProps } from "vue";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
+import { mergeProps } from "vue";
 
 export type Comment = {
   leadId: Number | String;
@@ -46,7 +46,11 @@ const form = reactive<Comment>({
 });
 
 // composables
+let SelectedNumberForCall: string = "";
 const store: any = useLeadsStore();
+const body = ref("");
+const isConfirmDialogVisible = ref(false);
+let isDialCall = true;
 const auth: any = useAuthStore();
 const permStore: any = usePermissionsStore();
 const time = useTime();
@@ -88,17 +92,77 @@ onMounted(async () => {
 });
 
 const airCallLoader = ref(false);
+
 const toast = useToast();
 const fixNumber = (str: string): string => str.replace(/\D/g, "").slice(-10);
 
 const handleAirCall = async (lead: any) => {
   try {
+    if (!lead?.phone_no) {
+      toast.error("phone number invalid");
+      return;
+    }
     store.selectedId = lead.id;
     airCallLoader.value = true;
-
-    const { data, message } = await useApiFetch("/aircall/dial-call", {
+    /* before making a call i need to make another call to check the stats of this number and check whether someone else has called it or not */
+    let { data: oldCalls } = await useApiFetch("/aircall/search-call", {
       data: {
         phone_number: "+44" + fixNumber(lead?.phone_no ?? ""),
+      },
+      method: "POST",
+    });
+    SelectedNumberForCall = "+44" + fixNumber(lead?.phone_no ?? "");
+    const myCallerId = auth?.user?.air_caller_id;
+    oldCalls = oldCalls.filter(function (obj: any) {
+      /* check if some one else has called it or not */
+      if (!obj.user) {
+        return false; // if its an inbound then it should not be included
+      }
+      return myCallerId != obj?.user?.id;
+    });
+
+    if (oldCalls.length > 0) {
+      console.log(oldCalls);
+
+      const otherCallersNames = oldCalls
+        ?.map(function (obj: any) {
+          return obj.user.name;
+        })
+        .filter(
+          (value: any, index: any, self: any) => self.indexOf(value) === index // make uniquness of name
+        )
+        .join(", ");
+
+      console.log(`output->others`, otherCallersNames);
+
+      body.value = `This person is already called by ${otherCallersNames}. would you still like to call this customer`;
+      isConfirmDialogVisible.value = true;
+      // means someone has called it and its not me
+      return;
+    }
+
+    if (isDialCall) {
+      return makeDialCall(SelectedNumberForCall);
+    } else {
+      return false;
+    }
+  } catch (err: any) {
+    console.log(err);
+    toast.error(err.response?.data?.message ?? "Something Went Wrong!");
+  } finally {
+    store.selectedId = null;
+    airCallLoader.value = false;
+  }
+};
+
+const makeDialCall = async (phone_no: string) => {
+  try {
+    console.log("inside making call ");
+    console.log(`output->phone_no`, phone_no);
+    airCallLoader.value = true;
+    const { data, message } = await useApiFetch("/aircall/dial-call", {
+      data: {
+        phone_number: "+44" + fixNumber(phone_no),
       },
       method: "POST",
     });
@@ -107,7 +171,12 @@ const handleAirCall = async (lead: any) => {
     toast.error(err.response?.data?.message ?? "Something Went Wrong!");
   } finally {
     airCallLoader.value = false;
-    store.selectedId = null;
+  }
+};
+
+const handleSwalCallback = (response: boolean) => {
+  if (response) {
+    makeDialCall(SelectedNumberForCall);
   }
 };
 </script>
@@ -328,6 +397,17 @@ const handleAirCall = async (lead: any) => {
       </VTooltip>
     </template>
   </DataTable>
+
+  <!-- 👉 Confirm Dialog -->
+  <ConfirmDialog
+    v-model:isDialogVisible="isConfirmDialogVisible"
+    cancel-title="Action Cancelled"
+    confirm-title="Alert!"
+    confirm-msg="Sure, Proceeding...."
+    :confirmation-question="body"
+    cancel-msg="Some Other Customer is waiting for you 😺."
+    @confirm="handleSwalCallback"
+  />
 
   <!-- Dialogs -->
   <CommentsDialog
