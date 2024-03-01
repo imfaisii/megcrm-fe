@@ -167,10 +167,14 @@ const getSuggestions = async () => {
       }
     );
 
-    data?.data?.map((i: any) => suggestions.value.push(i.address));
+    data?.map((i: any) => suggestions.value.push(i.address));
     addressCombobox.value.$el.querySelector("input").focus();
-    addressInformationForm.value.post_code =
-      addressInformationForm.value.post_code.toUpperCase();
+    if (Array.isArray(data) && data.length > 0) {
+      addressInformationForm.value.post_code = data[0].post_code;
+    } else {
+      addressInformationForm.value.post_code =
+        addressInformationForm.value.post_code.toUpperCase();
+    }
     addressInformationForm.value.address = null;
   } catch (e) {
     $toast.error(getExceptionMessage(e));
