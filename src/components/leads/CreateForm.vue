@@ -645,7 +645,7 @@ onMounted(async () => await store.getExtras());
                     }}
                   </p>
                   <p class="mb-1">
-                    {{ addressInformationForm.address }}
+                    {{ addressInformationForm.address?.address }}
                   </p>
                   <p class="mb-1">
                     {{ personalInformationForm.phone_no }}
