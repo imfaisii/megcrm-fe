@@ -89,10 +89,13 @@ const handleSubmit = () => {
   refAccountForm.value?.validate().then(async (valid) => {
     if (valid.valid) {
       try {
-        if (!store.selectedId) {
-          await store.store(store.selected);
-        } else {
-          await store.update(store.selectedId, store.selected);
+        if (store.shouldRefresh) {
+          if (!store.selectedId) {
+            await store.store(store.selected);
+            store.index();
+          } else {
+            store.update(store.selectedId, store.selected);
+          }
         }
 
         currentStep.value++;
@@ -110,10 +113,6 @@ const handleSubmit = () => {
 onMounted(async () => {
   await permissionsStore.getRoles();
   await leadsStore.getExtras();
-
-  // EventBus.$on("toggle-users-dialog", (type: any) => {
-  //   emit("update:isDialogVisible", type);
-  // });
 });
 // :is-active-step-valid="!store.isSelected ? false : undefined"
 </script>
@@ -241,11 +240,7 @@ onMounted(async () => {
             <p class="text-xs mb-0">Add more desccription about user.</p>
           </VCol>
 
-          <VForm
-            class="pa-4"
-            ref="refPersonalForm"
-            @submit.prevent="handleSubmit"
-          >
+          <VForm class="pa-4" @submit.prevent="handleSubmit">
             <VRow>
               <!-- Status -->
               <VCol cols="12" md="6">
@@ -364,7 +359,11 @@ onMounted(async () => {
                     Previous
                   </VBtn>
 
-                  <VBtn type="submit">
+                  <VBtn
+                    :loading="store.isLoading"
+                    :disabled="store.isLoading"
+                    type="submit"
+                  >
                     Save
                     <VIcon icon="mdi-arrow-right" end class="flip-in-rtl" />
                   </VBtn>
@@ -380,11 +379,7 @@ onMounted(async () => {
             <p class="text-xs mb-0">Manage User Roles</p>
           </VCol>
 
-          <VForm
-            class="pa-4"
-            ref="refSocialLinkForm"
-            @submit.prevent="handleSubmit"
-          >
+          <VForm class="pa-4" @submit.prevent="handleSubmit">
             <VRow>
               <VCol class="d-md-inline-flex justify-space-between" cols="12">
                 <VCheckbox
@@ -422,20 +417,22 @@ onMounted(async () => {
 
               <!-- Installer Details -->
               <VCol cols="12" v-if="isInstallerSelected">
-                <VCardItem class="px-0">
-                  <template #prepend>
-                    <VIcon
-                      icon="mdi-office-building-outline"
-                      class="text-disabled"
-                    />
-                  </template>
-
-                  <VCardTitle>Company Details</VCardTitle>
-                </VCardItem>
-
-                <VDivider class="mt-1 mb-6" />
-
                 <VRow>
+                  <VCol cols="12">
+                    <VCardItem class="px-0">
+                      <template #prepend>
+                        <VIcon
+                          icon="mdi-office-building-outline"
+                          class="text-disabled"
+                        />
+                      </template>
+
+                      <VCardTitle>Company Details</VCardTitle>
+                    </VCardItem>
+
+                    <VDivider class="mt-1 mb-6" />
+                  </VCol>
+
                   <VCol cols="12" md="6">
                     <VTextField
                       v-model="store.selected.installer_company.name"
@@ -444,6 +441,7 @@ onMounted(async () => {
                       :error-messages="
                         store?.errors?.installer_company?.name?.[0]
                       "
+                      clearable
                     />
                   </VCol>
 
@@ -455,6 +453,7 @@ onMounted(async () => {
                       :error-messages="
                         store?.errors?.installer_company?.address?.[0]
                       "
+                      clearable
                     />
                   </VCol>
 
@@ -466,6 +465,7 @@ onMounted(async () => {
                       :error-messages="
                         store?.errors?.installer_company?.company_number?.[0]
                       "
+                      clearable
                     />
                   </VCol>
 
@@ -477,8 +477,24 @@ onMounted(async () => {
                       :error-messages="
                         store?.errors?.installer_company?.vat_number?.[0]
                       "
+                      clearable
                     />
                   </VCol>
+
+                  <VCol cols="12">
+                    <VCardItem class="px-0">
+                      <template #prepend>
+                        <VIcon
+                          icon="mdi-file-document-multiple-outline"
+                          class="text-disabled"
+                        />
+                      </template>
+
+                      <VCardTitle>Company Documents</VCardTitle>
+                    </VCardItem>
+                  </VCol>
+
+                  <VDivider class="mt-1 mb-6" />
 
                   <VCol
                     v-for="document in documents"
@@ -504,7 +520,70 @@ onMounted(async () => {
                     Previous
                   </VBtn>
 
-                  <VBtn type="submit"> Save </VBtn>
+                  <VBtn
+                    :loading="store.isLoading"
+                    :disabled="store.isLoading"
+                    type="submit"
+                  >
+                    Save
+                    <VIcon icon="mdi-arrow-right" end class="flip-in-rtl" />
+                  </VBtn>
+                </div>
+              </VCol>
+            </VRow>
+          </VForm>
+        </VWindowItem>
+
+        <VWindowItem>
+          <VCol class="mb-4" cols="12">
+            <h6 class="text-sm font-weight-medium">Roles</h6>
+            <p class="text-xs mb-0">Manage User Roles</p>
+          </VCol>
+
+          <VForm class="pa-4" @submit.prevent="handleSubmit">
+            <VRow>
+              <!-- Documents -->
+              <VCol cols="12">
+                <VCardItem class="px-0">
+                  <template #prepend>
+                    <VIcon icon="mdi-account-outline" class="text-disabled" />
+                  </template>
+
+                  <VCardTitle>Aircall Details</VCardTitle>
+                </VCardItem>
+
+                <VDivider class="mt-1 mb-6" />
+
+                <VTextField
+                  v-model="store.selected.aircall_email_address"
+                  :rules="[emailValidator]"
+                  label="Aircall Email Address"
+                  type="email"
+                  placeholder="johndoe@email.com"
+                  :error-messages="store?.errors?.aircall_email_address?.[0]"
+                />
+              </VCol>
+
+              <VCol cols="12">
+                <div
+                  class="d-flex flex-wrap gap-4 justify-sm-space-between justify-center mt-8"
+                >
+                  <VBtn
+                    color="secondary"
+                    variant="tonal"
+                    @click="currentStep--"
+                  >
+                    <VIcon icon="mdi-arrow-left" start class="flip-in-rtl" />
+                    Previous
+                  </VBtn>
+
+                  <VBtn
+                    :loading="store.isLoading"
+                    :disabled="store.isLoading"
+                    type="submit"
+                  >
+                    Save
+                  </VBtn>
                 </div>
               </VCol>
             </VRow>

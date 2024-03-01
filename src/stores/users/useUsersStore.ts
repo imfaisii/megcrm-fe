@@ -3,6 +3,7 @@ import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
 import { EventBus } from '@/utils/useEventBus'
 import { handleError, renameFile, reshapeParams } from '@/utils/useHelper'
+import { omit } from 'lodash'
 import { defineStore } from 'pinia'
 
 type UserData = {
@@ -17,6 +18,7 @@ type UserData = {
 
 export const useUsersStore = defineStore('users', () => {
   const GENDERS = ['Male', 'Female']
+  const selectedCopy = ref();
 
   const defaultModel = {
     id: null,
@@ -29,6 +31,7 @@ export const useUsersStore = defineStore('users', () => {
     roles: [],
     aircall_email_address: null,
     documents: [],
+    installer_documents: [],
     additional: {
       dob: null,
       gender: GENDERS[0],
@@ -70,12 +73,9 @@ export const useUsersStore = defineStore('users', () => {
     isLoading.value = false
   }
 
-  const get = async (userId: Number) => {
-    isLoading.value = true
-    selectedId.value = userId
-    const { data } = await useApiFetch(`${endPoint}/${userId}?include=additional.bank,installerCompany`)
-    selected.value = data.user
-    selected.value.roles = data.user.roles.map((i: any) => i.id)
+  const setFetchedUser = (user: any) => {
+    selected.value = user
+    selected.value.roles = user.roles.map((i: any) => i.id)
 
     if (selected.value.additional === null) {
       selected.value.additional = defaultModel.additional
@@ -86,7 +86,18 @@ export const useUsersStore = defineStore('users', () => {
     }
 
     selected.value.additional.bank = selected.value?.additional?.bank?.name ?? null;
+  }
+
+  const get = async (userId: Number) => {
+    isLoading.value = true
+    selectedId.value = userId
+
+    const { data } = await useApiFetch(`${endPoint}/${userId}?include=additional.bank,installerCompany`)
+
+    setFetchedUser(data.user)
+
     isLoading.value = false
+    selectedCopy.value = JSON.parse(JSON.stringify(selected.value))
     EventBus.$emit('toggle-users-dialog', true)
   }
 
@@ -100,7 +111,6 @@ export const useUsersStore = defineStore('users', () => {
       $toast.success('User was saved successfully.')
       errors.value = {}
       await get(data.user.id)
-      await index()
     } catch (error) {
       handleError(error, errors)
     } finally {
@@ -112,7 +122,9 @@ export const useUsersStore = defineStore('users', () => {
     try {
       isLoading.value = true
       selectedId.value = id
+
       await useApiFetch(`${endPoint}/${id}`, options)
+
       $toast.success(`${entity} was deleted successfully.`)
       await index()
     } catch (error) {
@@ -126,13 +138,17 @@ export const useUsersStore = defineStore('users', () => {
     try {
       isLoading.value = true
       await useApiFetch(`${endPoint}/${id}`, {
-        data: payload,
+        data: omit(payload, [
+          'media', 'installer_documents', 'dropbox'
+        ]),
         ...options
       })
+
+      await get(id as any)
+
       $toast.success(`${entity} was updated successfully.`)
       errors.value = {}
-      EventBus.$emit('toggle-users-dialog', false)
-      await index()
+      index()
     } catch (error) {
       handleError(error, errors)
     } finally {
@@ -177,7 +193,7 @@ export const useUsersStore = defineStore('users', () => {
     }
   }
 
-  const saveDocumentToCollection = async (collection: string, file: File, fileName: string | null, expiry: string | null, options = { method: 'POST' }) => {
+  const saveDocumentToCollection = async (userId: number, collection: string, file: File, fileName: string | null, expiry: string | null, options = { method: 'POST' }) => {
     try {
       if (fileName) {
         file = renameFile(file, fileName)
@@ -192,12 +208,25 @@ export const useUsersStore = defineStore('users', () => {
         formData.set('expiry', expiry)
       }
 
-      await useApiFetch(`${endPoint}/collections/docs/upload`, {
+      await useApiFetch(`${endPoint}/${userId}/collections/docs/upload`, {
         data: formData,
         ...options
       })
 
       $toast.success(`File was uploaded successfully.`)
+    } catch (error) {
+      handleError(error, errors)
+    }
+  }
+
+  const updateExpiryDate = async (mediaId: number, expiry: string | null, options = { method: 'POST' }) => {
+    try {
+      await useApiFetch(`${endPoint}/${mediaId}/expiry/update`, {
+        data: { expiry },
+        ...options
+      })
+
+      $toast.success(`Expiry date was updated successfully.`)
     } catch (error) {
       handleError(error, errors)
     }
@@ -225,6 +254,10 @@ export const useUsersStore = defineStore('users', () => {
     return "error";
   };
 
+  const shouldRefresh = computed(() => {
+    return JSON.stringify(selectedCopy.value) !== JSON.stringify(selected.value)
+  })
+
 
   return {
     GENDERS,
@@ -238,7 +271,9 @@ export const useUsersStore = defineStore('users', () => {
     meta,
     errors,
     includes,
+    shouldRefresh,
 
+    updateExpiryDate,
     saveDocumentToCollection,
     uploadFile,
     resolveUserStatusVariant,

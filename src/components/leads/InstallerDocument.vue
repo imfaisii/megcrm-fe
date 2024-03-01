@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useToast } from "@/plugins/toastr";
 import { useUsersStore } from "@/stores/users/useUsersStore";
 import { useDropzone } from "vue3-dropzone";
 
@@ -8,7 +7,6 @@ interface Props {
   color?: string;
   icon: string;
   hasExpiry: boolean;
-  link?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -18,9 +16,6 @@ const props = withDefaults(defineProps<Props>(), {
 const usersStore = useUsersStore();
 const expiry = ref(null);
 const loading = ref(false);
-const $toast = useToast();
-const isPdf = ref(false);
-const isImage = ref(false);
 const selectedFile = ref("");
 const onDrop = (acceptFiles: any, rejectReasons: any) => saveFiles(acceptFiles);
 const { getRootProps, getInputProps, ...rest } = useDropzone({
@@ -29,28 +24,51 @@ const { getRootProps, getInputProps, ...rest } = useDropzone({
   multiple: false,
 });
 
+const link: any = computed(() => {
+  const record = usersStore.selected.installer_documents.find(
+    (i: any) => i.name === props.title
+  );
+
+  if (!record) {
+    return null;
+  }
+
+  if (record?.custom_properties?.expiry) {
+    expiry.value = record.custom_properties.expiry;
+  }
+
+  return record;
+});
+
 const onButtonClick = (type: string) => (selectedFile.value = type);
 
 const saveFiles = async (files: any) => {
   if (Array.isArray(files) && files.length > 0) {
     await usersStore.saveDocumentToCollection(
+      usersStore.selectedId,
       "installer-documents",
       files[0],
       props.title,
       expiry.value
     );
+
+    await usersStore.update(usersStore.selectedId, usersStore.selected);
   }
 };
 
-const handleView = () => {
-  if (isPdf.value) {
-    alert("pdf");
-  } else if (isImage.value) {
-    alert("image");
-  } else {
-    $toast.error("View not supported for this file.");
+watch(
+  () => expiry.value,
+  async (n) => {
+    if (link?.value?.id) {
+      if (
+        link?.value?.custom_properties?.expiry &&
+        link.value.custom_properties.expiry !== n
+      ) {
+        await usersStore.updateExpiryDate(link.value.id, n);
+      }
+    }
   }
-};
+);
 </script>
 
 <template>
@@ -73,37 +91,24 @@ const handleView = () => {
               <span class="font-italic mt-2">{{ props.title }}</span>
             </div>
 
-            <!-- View or Download Button -->
-            <div v-if="link">
-              <VTooltip v-if="isImage || isPdf">
+            <!-- Upload or Download Buttons -->
+            <div class="d-flex">
+              <VTooltip v-if="link?.original_url">
                 <template #activator="{ props }">
                   <VBtn
-                    @click="handleView"
-                    v-bind="props"
-                    class="mr-2"
-                    size="small"
-                    color="secondary"
-                    icon="mdi-eye-outline"
-                  />
-                </template>
-                <span> Click to view file ( Only PDF are viewable ) </span>
-              </VTooltip>
-              <VTooltip>
-                <template #activator="{ props }">
-                  <VBtn
-                    :href="fileObject.link"
+                    :href="link.original_url"
+                    target="_blank"
                     v-bind="props"
                     size="small"
                     color="info"
                     icon="mdi-download-outline"
+                    :loading="usersStore.isLoading"
+                    :disabled="usersStore.isLoading"
                   />
                 </template>
                 <span> Click to download file </span>
               </VTooltip>
-            </div>
 
-            <!-- Upload Button -->
-            <div v-else>
               <div v-bind="getRootProps()">
                 <input v-bind="getInputProps()" />
                 <VTooltip>
@@ -113,8 +118,9 @@ const handleView = () => {
                       v-bind="props"
                       size="small"
                       color="primary"
-                      :disabled="loading || (hasExpiry && !expiry)"
                       icon="mdi-upload-outline"
+                      :loading="usersStore.isLoading"
+                      :disabled="usersStore.isLoading || (hasExpiry && !expiry)"
                     />
                   </template>
                   <span>
