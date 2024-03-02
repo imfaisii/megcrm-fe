@@ -1,7 +1,6 @@
 import useApiFetch from '@/composables/useApiFetch'
 import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
-import { EventBus } from '@/utils/useEventBus'
 import { handleError, renameFile, reshapeParams } from '@/utils/useHelper'
 import { omit } from 'lodash'
 import { defineStore } from 'pinia'
@@ -98,7 +97,6 @@ export const useUsersStore = defineStore('users', () => {
 
     isLoading.value = false
     selectedCopy.value = JSON.parse(JSON.stringify(selected.value))
-    EventBus.$emit('toggle-users-dialog', true)
   }
 
   const store = async (userData: UserData, options: any = { method: 'POST' }) => {
@@ -144,11 +142,10 @@ export const useUsersStore = defineStore('users', () => {
         ...options
       })
 
-      await get(id as any)
+      get(id as any)
 
       $toast.success(`${entity} was updated successfully.`)
       errors.value = {}
-      index()
     } catch (error) {
       handleError(error, errors)
     } finally {

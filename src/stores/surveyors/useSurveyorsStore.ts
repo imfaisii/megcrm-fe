@@ -36,11 +36,12 @@ export const useSurveyorsStore = defineStore('surveyors', () => {
   const get = async (userId: Number) => {
     isLoading.value = true
     selectedId.value = userId
+
     const { data } = await useApiFetch(`/users/${userId}`)
+
     selected.value = data.user
     selected.value.roles = data.user.roles.map((i: any) => i.id)
     isLoading.value = false
-    EventBus.$emit('toggle-users-dialog', true)
   }
 
   const store = async (payload: any, options: any = { method: 'POST' }) => {
@@ -50,7 +51,7 @@ export const useSurveyorsStore = defineStore('surveyors', () => {
         data: payload,
         ...options,
       })
-      EventBus.$emit('toggle-users-dialog', false)
+
       await index({ include: includes.join(",") })
       $toast.success(`${entity} was saved successfully.`)
     } catch (error) {
@@ -68,7 +69,7 @@ export const useSurveyorsStore = defineStore('surveyors', () => {
         ...options
       })
       $toast.success(`${entity} was updated successfully.`)
-      EventBus.$emit('toggle-users-dialog', false)
+      
       await index({ include: includes.join(",") })
     } catch (error) {
       handleError(error, errors)

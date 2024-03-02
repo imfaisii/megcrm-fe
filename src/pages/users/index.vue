@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import UsersTable from "@/components/users/UsersTable.vue";
-import { useUsersStore } from "@/stores/users/useUsersStore";
 
-const store = useUsersStore();
-const isAddUserDialogVisible: any = ref(false);
+const router = useRouter();
 </script>
 <template>
   <section>
@@ -24,7 +22,7 @@ const isAddUserDialogVisible: any = ref(false);
                 lg="6"
                 :class="$vuetify.display.lgAndUp ? 'text-right' : 'text-center'"
               >
-                <VBtn @click="isAddUserDialogVisible = true" color="primary">
+                <VBtn @click="router.push('/users/create')" color="primary">
                   Create User
                 </VBtn>
               </VCol>
@@ -35,9 +33,5 @@ const isAddUserDialogVisible: any = ref(false);
         </VCard>
       </VCol>
     </VRow>
-    <AddEditUserDialog
-      v-model:is-dialog-visible="isAddUserDialogVisible"
-      :store="store"
-    />
   </section>
 </template>
