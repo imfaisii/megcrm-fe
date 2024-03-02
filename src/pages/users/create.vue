@@ -1,18 +1,11 @@
 <script setup lang="ts">
-import { useLeadsStore } from "@/stores/leads/useLeadsStore";
-import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { useUsersStore } from "@/stores/users/useUsersStore";
 
 const usersStore = useUsersStore();
-const leadsStore = useLeadsStore();
-const permissionsStore: any = usePermissionsStore();
 
 onMounted(async () => {
   // resetting on create
   usersStore.reset();
-
-  await permissionsStore.getRoles();
-  await leadsStore.getExtras();
 });
 </script>
 
