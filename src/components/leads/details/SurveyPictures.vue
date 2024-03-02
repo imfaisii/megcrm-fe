@@ -124,7 +124,7 @@ onMounted(async () => {
                       :src="`${
                         isImageFileName(image.name) ? image.link : errorimage
                       }`"
-                      height="400"
+                      height="450"
                       loading="lazy"
                     />
                   </VCol>
@@ -183,6 +183,11 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
+/* stylelint-disable-next-line selector-pseudo-class-no-unknown */
+:deep(.image-card img) {
+  object-fit: fill !important;
+}
+
 .image-card {
   padding-inline: 4px 4px;
 
