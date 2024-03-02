@@ -66,9 +66,9 @@ onMounted(async () => {
           <VIcon icon="mdi-image-marker" class="text-disabled" />
         </template>
 
-        <VCardTitle
-          >Survey Pictures ( {{ dbStore.folderImages.length }} )</VCardTitle
-        >
+        <VCardTitle>
+          Survey Pictures ( {{ dbStore.folderImages.length }} )
+        </VCardTitle>
 
         <template #append>
           <div class="me-n3 mt-n2">

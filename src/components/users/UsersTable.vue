@@ -4,6 +4,7 @@ import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { useUsersStore } from "@/stores/users/useUsersStore";
 
+const router = useRouter();
 const store: any = useUsersStore();
 const rolesStore: any = usePermissionsStore();
 const auth: any = useAuthStore();
@@ -27,6 +28,10 @@ const filters = ref({
 const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
   store.index({ include: store.includes.join(",") })
 );
+
+const handleRedirect = (id: number) => {
+  router.push({ name: "users-id-edit", params: { id } });
+};
 </script>
 
 <template>
@@ -120,7 +125,7 @@ const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
 
     <!-- Actions -->
     <template #item.actions="{ item }">
-      <IconBtn @click="store.get(item.raw.id)">
+      <IconBtn @click="handleRedirect(item.raw.id)">
         <VProgressCircular
           v-if="store.isLoading && store.selectedId === item.raw.id"
           size="24"
