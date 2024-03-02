@@ -124,7 +124,7 @@ onMounted(async () => {
                       :src="`${
                         isImageFileName(image.name) ? image.link : errorimage
                       }`"
-                      height="170"
+                      height="400"
                       loading="lazy"
                     />
                   </VCol>
