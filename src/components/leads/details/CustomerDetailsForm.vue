@@ -261,6 +261,8 @@ onMounted(async () => {
             item-value="id"
             clearable
             :return-object="false"
+            disabled
+            readonly
           />
         </VCol>
 
