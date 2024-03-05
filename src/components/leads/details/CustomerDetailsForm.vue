@@ -246,7 +246,6 @@ onMounted(async () => {
             label="Lead Generator"
             item-title="name"
             item-value="id"
-            clearable
             :return-object="false"
             readonly=""
           />
