@@ -137,7 +137,7 @@ onUnmounted(() => {
                       <VChip
                         v-bind="props"
                         label
-                        size="small"
+                        size="x-large"
                         class="text-capitalize mb-2 ml-0"
                         color="warning"
                       >
@@ -151,7 +151,7 @@ onUnmounted(() => {
                       <VChip
                         v-bind="props"
                         label
-                        size="small"
+                        size="x-large"
                         class="text-capitalize mb-2 blink-animate ml-0"
                         color="warning"
                       >
