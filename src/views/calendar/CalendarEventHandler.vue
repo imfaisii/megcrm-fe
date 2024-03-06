@@ -132,10 +132,22 @@ const endDateTimePickerConfig = computed(() => {
                 />
               </VCol>
 
+              <!-- Comments -->
+              <VCol v-if="event?.extendedProps?.eventable?.comments" cols="12">
+                <VTextarea
+                  v-model="event.extendedProps.eventable.comments"
+                  label="Comments"
+                  placeholder="Meeting comment"
+                  readonly=""
+                />
+              </VCol>
+
               <!-- Surveyor -->
-              <VCol cols="12">
+              <VCol
+                v-if="event?.extendedProps?.eventable?.surveyor?.name"
+                cols="12"
+              >
                 <VTextField
-                  v-if="event?.extendedProps?.eventable?.surveyor?.name"
                   v-model="event.extendedProps.eventable.surveyor.name"
                   label="Surveyor Name"
                   placeholder="John Doe"
@@ -211,16 +223,6 @@ const endDateTimePickerConfig = computed(() => {
                   v-model="event.extendedProps.description"
                   label="Description"
                   placeholder="Meeting description"
-                  readonly=""
-                />
-              </VCol>
-
-              <!-- Comments -->
-              <VCol v-if="event?.extendedProps?.eventable?.comments" cols="12">
-                <VTextarea
-                  v-model="event.extendedProps.eventable.comments"
-                  label="Comments"
-                  placeholder="Meeting comment"
                   readonly=""
                 />
               </VCol>
