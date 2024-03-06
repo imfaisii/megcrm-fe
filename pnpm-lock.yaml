@@ -119,9 +119,6 @@ dependencies:
   vue-router:
     specifier: 4.2.1
     version: 4.2.1(vue@3.4.10)
-  vue-sweetalert2:
-    specifier: ^5.0.5
-    version: 5.0.5(vue@3.4.10)
   vue-toast-notification:
     specifier: ^3.1.2
     version: 3.1.2(vue@3.4.10)
@@ -4981,10 +4978,6 @@ packages:
       picocolors: 1.0.0
     dev: true
 
-  /sweetalert2@11.10.5:
-    resolution: {integrity: sha512-q9eE3EKhMcpIDU/Xcz7z5lk8axCGkgxwK47gXGrrfncnBJWxHPPHnBVAjfsVXcTt8Yi8U6HNEcBRSu+qGeyFdA==}
-    dev: false
-
   /table@6.8.1:
     resolution: {integrity: sha512-Y4X9zqrCftUhMeH2EptSSERdVKt/nEdijTOacGD/97EKjhQ/Qs8RTlEGABSJNNN8lac9kheH+af7yAkEWlgneA==}
     engines: {node: '>=10.0.0'}
@@ -5428,15 +5421,6 @@ packages:
       shepherd.js: 11.2.0
       vue: 3.4.10(typescript@5.0.4)
     dev: true
-
-  /vue-sweetalert2@5.0.5(vue@3.4.10):
-    resolution: {integrity: sha512-Q7+TjQxNwGruT2jfPaSKMz18HHWs81r4umEwlrrtOf/QL5Iwl1T+tUaNkcvKB7Rf9rYftubt7NnOMjfDMnDH3A==}
-    peerDependencies:
-      vue: '*'
-    dependencies:
-      sweetalert2: 11.10.5
-      vue: 3.4.10(typescript@5.0.4)
-    dev: false
 
   /vue-template-compiler@2.7.16:
     resolution: {integrity: sha512-AYbUWAJHLGGQM7+cNTELw+KsOG9nl2CnSv467WobS5Cv9uk3wFcnr1Etsz2sEIHEZvw1U+o9mRlEO6QbZvUPGQ==}

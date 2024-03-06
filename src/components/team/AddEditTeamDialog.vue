@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { EventBus } from "@/utils/useEventBus";
-import {
-  emailValidator,
-  integerValidator,
-  requiredValidator,
-} from "@validators";
+import { requiredValidator } from "@validators";
 import { VForm } from "vuetify/components/VForm";
 
 interface Emit {
@@ -51,13 +47,13 @@ const statuses = [
 
 const handleSubmit = async () => {
   formRef.value.validate().then(async (v: any) => {
-    // if (v.valid) {
-    if (props.store.isSelected) {
-      await props.store.update(props.store.selectedId, props.store.selected);
-    } else {
-      await props.store.store(props.store.selected);
+    if (v.valid) {
+      if (props.store.isSelected) {
+        await props.store.update(props.store.selectedId, props.store.selected);
+      } else {
+        await props.store.store(props.store.selected);
+      }
     }
-    // }
   });
 };
 
@@ -76,14 +72,13 @@ watch(
 );
 
 onMounted(async () => {
-  await props.store.setTeamLeads();
-  await permissionsStore.getRoles();
-  EventBus.$on("toggle-users-dialog", (type: any) => {
+  await props.store.getUsersForAssignment();
+  EventBus.$on("toggle-team-dialog", (type: any) => {
     emit("update:isDialogVisible", type);
   });
 });
 
-onUnmounted(() => EventBus.$off("toggle-users-dialog"));
+onUnmounted(() => EventBus.$off("toggle-team-dialog"));
 </script>
 
 <template>
@@ -124,12 +119,15 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
               <VCol md="12" sm="12" cols="12">
                 <!-- Team Leader -->
                 <VSelect
-                  v-model="store.selected.team_lead"
+                  v-model="store.selected.admin_id"
                   :rules="[requiredValidator]"
-                  :items="store.leaders"
+                  :items="store.users"
+                  item-title="formated_name"
+                  item-value="id"
+                  :return-object="false"
                   label="Team Leader"
                   placeholder="Leader"
-                  :error-messages="store?.errors?.team_lead?.[0]"
+                  :error-messages="store?.errors?.admin_id?.[0]"
                 />
               </VCol>
             </VRow>
@@ -138,11 +136,14 @@ onUnmounted(() => EventBus.$off("toggle-users-dialog"));
               <VCol md="12" sm="12" cols="12">
                 <!-- Members -->
                 <VSelect
-                  v-model="store.selected.team_lead"
+                  v-model="store.selected.members"
                   :rules="[requiredValidator]"
-                  :items="store.leaders"
+                  :items="store.users"
+                  item-title="formated_name"
+                  item-value="id"
                   label="Members"
                   placeholder="Members"
+                  :return-object="false"
                   :error-messages="store?.errors?.members?.[0]"
                   multiple
                 />

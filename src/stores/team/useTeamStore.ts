@@ -5,19 +5,23 @@ import { EventBus } from '@/utils/useEventBus'
 import { handleError, reshapeParams } from '@/utils/useHelper'
 import { defineStore } from 'pinia'
 
-type UserData = {
-  name: string
+type teamData = {
+  name: string,
+  admin_id: string,
+  members: string[]
 }
 
-export const defaultModel = {
+const defaultModel = {
   id: null,
   name: null,
+  admin_id: null,
+  members: [],
 }
 
 export const useTeamStore = defineStore('team', () => {
   const endPoint = '/team'
   const entity = 'Team'
-  const teamLeader = ref<any>([]);
+  const users = ref<any>([]);
   const team = ref<any>([])
   const selected = ref<any>(defaultModel)
   const selectedId = ref<any>(null)
@@ -47,29 +51,25 @@ export const useTeamStore = defineStore('team', () => {
     selected.value = data.user
     selected.value.roles = data.user.roles.map((i: any) => i.id)
     isLoading.value = false
-    EventBus.$emit('toggle-users-dialog', true)
+    EventBus.$emit('toggle-team-dialog', true)
   }
 
-  const setTeamLeads = async () => {
+  const getUsersForAssignment = async () => {
     try {
       isLoading.value = true
 
-      /* this will set get all the team leader from the backend in the case of edit and all surveyors in the case of add */
-      if (selectedId) {
-        // its an edit case so get all the team leader
-        // const response = await 
+      const { data: response } = await useApiFetch(reshapeParams("/users", {}, {
+        all: true,
+      }));
 
-      }
-      else {
-        // this will return all the users with surverys roles
-        const response = await useApiFetch(reshapeParams("users", {}, {
-          all: true,
-          filters: {
-            roles: [3]
-          }
-        }));
+      users.value = response.users.map(function (user: any) {
+        return {
+          ...user,
+          'formated_name': `${user.name} : ${user.email}`,
+        }
       }
 
+      );
     } catch (err) {
       console.log(`output - err`, err)
     } finally {
@@ -77,16 +77,22 @@ export const useTeamStore = defineStore('team', () => {
     }
 
   }
-  const store = async (userData: UserData, options: any = { method: 'POST' }) => {
+
+  const filterUser = (roles: string[]) => {
+    return users?.value.filter(function (user: any) {
+      return user.roles.some((role: any) => roles.includes(role.name));
+    });
+  }
+  const store = async (teamData: teamData, options: any = { method: 'POST' }) => {
     try {
       isLoading.value = true
-      await useApiFetch('/users', {
-        data: userData,
+      await useApiFetch('/team', {
+        data: teamData,
         ...options,
       })
-      $toast.success('User was saved successfully.')
+      $toast.success('Team Created Successfully.')
       errors.value = {}
-      EventBus.$emit('toggle-users-dialog', false)
+      EventBus.$emit('toggle-team-dialog', false)
       await index()
     } catch (error) {
       handleError(error, errors)
@@ -118,7 +124,7 @@ export const useTeamStore = defineStore('team', () => {
       })
       $toast.success(`${entity} was updated successfully.`)
       errors.value = {}
-      EventBus.$emit('toggle-users-dialog', false)
+      EventBus.$emit('toggle-team-dialog', false)
       await index()
     } catch (error) {
       handleError(error, errors)
@@ -176,7 +182,7 @@ export const useTeamStore = defineStore('team', () => {
     meta,
     errors,
     includes,
-    teamLeader,
+    users,
 
     resolveUserStatusVariant,
     resolveUserRoleVariant,
@@ -187,6 +193,7 @@ export const useTeamStore = defineStore('team', () => {
     destroy,
     update,
     updateProfile,
-    setTeamLeads,
+    getUsersForAssignment,
+    filterUser,
   }
 })
