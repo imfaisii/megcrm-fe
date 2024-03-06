@@ -132,6 +132,18 @@ const endDateTimePickerConfig = computed(() => {
                 />
               </VCol>
 
+              <!-- Surveyor -->
+              <VCol cols="12">
+                <VTextField
+                  v-if="event?.extendedProps?.eventable?.surveyor?.name"
+                  v-model="event.extendedProps.eventable.surveyor.name"
+                  label="Surveyor Name"
+                  placeholder="John Doe"
+                  :rules="[requiredValidator]"
+                  readonly=""
+                />
+              </VCol>
+
               <!-- Calendar -->
               <VCol cols="12">
                 <VAutocomplete
