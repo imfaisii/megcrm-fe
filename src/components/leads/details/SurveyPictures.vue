@@ -4,6 +4,7 @@ import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
 import { isImageFileName } from "@/utils/useHelper";
 import errorimage from "@images/custom/404.jpg";
+import Compressor from "compressorjs";
 import { useDropzone } from "vue3-dropzone";
 
 const dbStore = useDropboxStore();
@@ -25,7 +26,19 @@ const show = (image: any) => {
 
 const saveFiles = async (files: any) => {
   for await (const file of files) {
-    await dbStore.store(dbStore.folder, "Survey", file);
+    if (!file) {
+      return;
+    }
+
+    new Compressor(file, {
+      quality: 0.5,
+      async success(result: any) {
+        await dbStore.store(dbStore.folder, "Survey", result);
+      },
+      error(err: any) {
+        console.log(err.message);
+      },
+    });
   }
 
   await leadsStore.updateStatus({
