@@ -189,6 +189,7 @@ export const useLeadsStore = defineStore('leads', () => {
         selectedLead.value.survey_booking = {
           surveyor_id: null,
           survey_at: null,
+          survey_to: null,
           preffered_time: null,
           comments: null,
         }

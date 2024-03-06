@@ -23,7 +23,7 @@ onMounted(async () => {
 
     <VCardText>
       <VRow>
-        <VCol cols="12" lg="4">
+        <VCol cols="12" lg="6">
           <VAutocomplete
             v-model="store.selectedLead.survey_booking.surveyor_id"
             :items="store.surveyors"
@@ -37,7 +37,18 @@ onMounted(async () => {
           />
         </VCol>
 
-        <VCol cols="12" lg="4">
+        <VCol cols="12" lg="6">
+          <VAutocomplete
+            v-model="store.selectedLead.survey_booking.preffered_time"
+            :rules="[requiredValidator]"
+            :items="['Morning', 'Afternoon', 'Evening']"
+            label="Preffered Time"
+            clearable
+            required
+          />
+        </VCol>
+
+        <VCol cols="12" lg="6">
           <AppDateTimePicker
             v-model="store.selectedLead.survey_booking.survey_at"
             :rules="[requiredValidator]"
@@ -48,19 +59,25 @@ onMounted(async () => {
               dateFormat: 'Y-m-d H:i',
               enableTime: true,
             }"
-            label="Survey Time"
+            label="Survey Start Time"
             placeholder="Select date and time"
             required
           />
         </VCol>
 
-        <VCol cols="12" lg="4">
-          <VAutocomplete
-            v-model="store.selectedLead.survey_booking.preffered_time"
+        <VCol cols="12" lg="6">
+          <AppDateTimePicker
+            v-model="store.selectedLead.survey_booking.survey_to"
             :rules="[requiredValidator]"
-            :items="['Morning', 'Afternoon', 'Evening']"
-            label="Preffered Time"
-            clearable
+            :config="{
+              minDate: 'today',
+              altInput: true,
+              altFormat: 'F j, Y H:i',
+              dateFormat: 'Y-m-d H:i',
+              enableTime: true,
+            }"
+            label="Survey End Time"
+            placeholder="Select date and time"
             required
           />
         </VCol>

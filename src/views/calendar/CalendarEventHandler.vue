@@ -85,7 +85,7 @@ const startDateTimePickerConfig = computed(() => {
 const endDateTimePickerConfig = computed(() => {
   const config: Options = {
     enableTime: !event.value.all_day,
-    dateFormat: `Y-m-d${event.value.all_day ? "" : " H:i"}`,
+    dateFormat: `d/m/Y${event.value.all_day ? "" : " H:i"}`,
   };
 
   if (event.value.start_date) config.minDate = event.value.start_date;
