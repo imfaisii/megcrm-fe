@@ -36,6 +36,18 @@ type Surveyor = {
   name: string
 }
 
+type Installer = {
+  name: string
+}
+
+type InstallationType = {
+  name: string
+}
+
+type Bank = {
+  name: string
+}
+
 export const useLeadsStore = defineStore('leads', () => {
   const endPoint = '/leads'
   const leads = ref([])
@@ -58,15 +70,20 @@ export const useLeadsStore = defineStore('leads', () => {
   const leadStatuses: Ref<LeadStatus[]> = ref([])
   const leadTableStatuses: Ref<LeadStatus[]> = ref([])
   const leadJobTableStatuses: Ref<LeadStatus[]> = ref([])
+  const installers: Ref<Installer[]> = ref([])
+  const installation_types: Ref<InstallationType[]> = ref([])
+  const banks: Ref<Bank[]> = ref([])
   const errors = ref({})
   const includes = [
     "leadGenerator",
     "statuses",
     "leadCustomerAdditionalDetail",
     "benefits",
+    "measures",
     "callCenters.callCenterStatus",
     "callCenters.createdBy",
     "surveyBooking",
+    "installationBookings",
     "comments.commentator",
     "leadAdditional"
   ];
@@ -99,6 +116,9 @@ export const useLeadsStore = defineStore('leads', () => {
       leadStatuses.value = data?.lead_statuses ?? []
       leadTableStatuses.value = data?.lead_table_filters ?? []
       leadJobTableStatuses.value = data?.lead_jobs_filters ?? []
+      installers.value = data?.installers ?? []
+      installation_types.value = data?.installation_types ?? []
+      banks.value = data?.banks ?? []
       isLoading.value = false
     }
   }
@@ -149,6 +169,22 @@ export const useLeadsStore = defineStore('leads', () => {
       const { data } = await useApiFetch(`${endPoint}/${leadId}?${setQueryParams(options)}`)
       selectedLead.value = data.lead
 
+      let installations: any = [];
+
+      data.lead.measures.forEach((measure: any) => {
+        const entry = data.lead.installation_bookings.find((installationBooking: any) => installationBooking.measure_id === measure.id)
+
+        installations.push({
+          installer_id: entry?.installer_id ?? null,
+          installation_at: entry?.installation_at ?? null,
+          measure_id: entry?.measure_id ?? measure.id,
+          name: entry?.name ?? measure.name,
+          comments: entry?.comments ?? null,
+        })
+      })
+
+      selectedLead.value.installation_bookings = installations
+
       if (selectedLead.value.survey_booking === null) {
         selectedLead.value.survey_booking = {
           surveyor_id: null,
@@ -168,6 +204,7 @@ export const useLeadsStore = defineStore('leads', () => {
       }
 
       selectedLead.value.benefits = data.lead?.benefits.map((i: any) => i.id)
+      selectedLead.value.measures = data.lead?.measures.map((i: any) => i.id)
       selectedLeadCopy.value = JSON.parse(JSON.stringify(selectedLead.value))
     } catch (error) {
       $toast.error(getExceptionMessage(error))
@@ -240,6 +277,9 @@ export const useLeadsStore = defineStore('leads', () => {
 
 
   return {
+    banks,
+    installation_types,
+    installers,
     leadTableStatuses,
     leadStatuses,
     leadJobTableStatuses,

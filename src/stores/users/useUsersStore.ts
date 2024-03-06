@@ -1,8 +1,8 @@
 import useApiFetch from '@/composables/useApiFetch'
 import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
-import { EventBus } from '@/utils/useEventBus'
-import { handleError, reshapeParams } from '@/utils/useHelper'
+import { handleError, renameFile, reshapeParams } from '@/utils/useHelper'
+import { omit } from 'lodash'
 import { defineStore } from 'pinia'
 
 type UserData = {
@@ -17,6 +17,7 @@ type UserData = {
 
 export const useUsersStore = defineStore('users', () => {
   const GENDERS = ['Male', 'Female']
+  const selectedCopy = ref();
 
   const defaultModel = {
     id: null,
@@ -28,11 +29,23 @@ export const useUsersStore = defineStore('users', () => {
     is_active: true,
     roles: [],
     aircall_email_address: null,
+    documents: [],
+    installer_documents: [],
     additional: {
       dob: null,
       gender: GENDERS[0],
       address: null,
       phone_no: null,
+      bank: null,
+      account_number: null,
+      nin: null,
+      visa_expiry: null
+    },
+    installer_company: {
+      name: null,
+      address: null,
+      company_number: null,
+      vat_number: null,
     }
   }
   const endPoint = '/users'
@@ -59,32 +72,43 @@ export const useUsersStore = defineStore('users', () => {
     isLoading.value = false
   }
 
-  const get = async (userId: Number) => {
-    isLoading.value = true
-    selectedId.value = userId
-    const { data } = await useApiFetch(`${endPoint}/${userId}`)
-    selected.value = data.user
-    selected.value.roles = data.user.roles.map((i: any) => i.id)
+  const setFetchedUser = (user: any) => {
+    selected.value = user
+    selected.value.roles = user.roles.map((i: any) => i.id)
 
     if (selected.value.additional === null) {
       selected.value.additional = defaultModel.additional
     }
 
+    if (selected.value.installer_company === null) {
+      selected.value.installer_company = defaultModel.installer_company
+    }
+
+    selected.value.additional.bank = selected.value?.additional?.bank?.name ?? null;
+  }
+
+  const get = async (userId: Number) => {
+    isLoading.value = true
+    selectedId.value = userId
+
+    const { data } = await useApiFetch(`${endPoint}/${userId}?include=additional.bank,installerCompany`)
+
+    setFetchedUser(data.user)
+
     isLoading.value = false
-    EventBus.$emit('toggle-users-dialog', true)
+    selectedCopy.value = JSON.parse(JSON.stringify(selected.value))
   }
 
   const store = async (userData: UserData, options: any = { method: 'POST' }) => {
     try {
       isLoading.value = true
-      await useApiFetch('/users', {
+      const { data } = await useApiFetch('/users', {
         data: userData,
         ...options,
       })
       $toast.success('User was saved successfully.')
       errors.value = {}
-      EventBus.$emit('toggle-users-dialog', false)
-      await index()
+      await get(data.user.id)
     } catch (error) {
       handleError(error, errors)
     } finally {
@@ -96,7 +120,9 @@ export const useUsersStore = defineStore('users', () => {
     try {
       isLoading.value = true
       selectedId.value = id
+
       await useApiFetch(`${endPoint}/${id}`, options)
+
       $toast.success(`${entity} was deleted successfully.`)
       await index()
     } catch (error) {
@@ -110,13 +136,16 @@ export const useUsersStore = defineStore('users', () => {
     try {
       isLoading.value = true
       await useApiFetch(`${endPoint}/${id}`, {
-        data: payload,
+        data: omit(payload, [
+          'media', 'installer_documents', 'dropbox'
+        ]),
         ...options
       })
+
+      get(id as any)
+
       $toast.success(`${entity} was updated successfully.`)
       errors.value = {}
-      EventBus.$emit('toggle-users-dialog', false)
-      await index()
     } catch (error) {
       handleError(error, errors)
     } finally {
@@ -138,6 +167,65 @@ export const useUsersStore = defineStore('users', () => {
       handleError(error, errors)
     } finally {
       isLoading.value = false
+    }
+  }
+
+  const uploadFile = async (userId: number, file: File, fileName: string | null, options = { method: 'POST' }) => {
+    try {
+      if (fileName) {
+        file = renameFile(file, fileName)
+      }
+
+      let formData = new FormData()
+      formData.set('file', file)
+
+      await useApiFetch(`${endPoint}/${userId}/documents/upload`, {
+        data: formData,
+        ...options
+      })
+
+      $toast.success(`File was uploaded successfully.`)
+    } catch (error) {
+      handleError(error, errors)
+    }
+  }
+
+  const saveDocumentToCollection = async (userId: number, collection: string, file: File, fileName: string | null, expiry: string | null, options = { method: 'POST' }) => {
+    try {
+      if (fileName) {
+        file = renameFile(file, fileName)
+      }
+
+      let formData = new FormData()
+
+      formData.set('file', file)
+      formData.set('collection', collection)
+
+      if (expiry) {
+        formData.set('expiry', expiry)
+      }
+
+      await useApiFetch(`${endPoint}/${userId}/collections/docs/upload`, {
+        data: formData,
+        ...options
+      })
+
+      $toast.success(`File was uploaded successfully.`)
+    } catch (error) {
+      handleError(error, errors)
+    }
+  }
+
+  const updateExpiryDate = async (mediaId: number, expiry: string | null, options = { method: 'POST' }) => {
+    try {
+      await useApiFetch(`${endPoint}/${mediaId}/expiry/update`, {
+        data: { expiry },
+        ...options
+      })
+
+      $toast.success(`Expiry date was updated successfully.`)
+    } catch (error) {
+      handleError(error, errors)
     }
   }
 
@@ -163,6 +251,10 @@ export const useUsersStore = defineStore('users', () => {
     return "error";
   };
 
+  const shouldRefresh = computed(() => {
+    return JSON.stringify(selectedCopy.value) !== JSON.stringify(selected.value)
+  })
+
 
   return {
     GENDERS,
@@ -176,7 +268,11 @@ export const useUsersStore = defineStore('users', () => {
     meta,
     errors,
     includes,
+    shouldRefresh,
 
+    updateExpiryDate,
+    saveDocumentToCollection,
+    uploadFile,
     resolveUserStatusVariant,
     resolveUserRoleVariant,
     reset,

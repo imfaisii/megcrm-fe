@@ -1,9 +1,5 @@
 <script lang="ts" setup>
-import { useSurveyorsStore } from "@/stores/surveyors/useSurveyorsStore";
-
-const isAddUserDialogVisible: any = ref(false);
-
-const store = useSurveyorsStore();
+const router = useRouter();
 </script>
 
 <template>
@@ -25,7 +21,7 @@ const store = useSurveyorsStore();
                 lg="6"
                 :class="$vuetify.display.lgAndUp ? 'text-right' : 'text-center'"
               >
-                <VBtn @click="isAddUserDialogVisible = true" color="primary">
+                <VBtn @click="router.push('/users/create')" color="primary">
                   Create Surveyor
                 </VBtn>
               </VCol>
@@ -37,10 +33,4 @@ const store = useSurveyorsStore();
       </VCol>
     </VRow>
   </section>
-
-  <AddEditUserDialog
-    v-model:is-dialog-visible="isAddUserDialogVisible"
-    :show-roles="false"
-    :store="store"
-  />
 </template>

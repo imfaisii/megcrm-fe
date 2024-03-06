@@ -73,9 +73,6 @@ onMounted(
               <VCardText class="d-flex align-center pb-1">
                 <span> {{ role?.users.length }} user(s) </span>&nbsp;
                 <span v-if="roles.SUPER_ADMIN !== role?.name">
-                  {{ role?.meta.moduleCount }} module(s) </span
-                >&nbsp;
-                <span v-if="roles.SUPER_ADMIN !== role?.name">
                   {{ role?.meta.totalPermissions }} permission(s)
 
                   <VTooltip location="bottom">

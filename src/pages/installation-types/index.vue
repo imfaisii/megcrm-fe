@@ -1,13 +1,16 @@
 <script lang="ts" setup>
-import UsersTable from "@/components/users/UsersTable.vue";
+import { EventBus } from "@/utils/useEventBus";
 
-const router = useRouter();
+const addInstallationType = () => {
+  EventBus.$emit("show-installation-dialog");
+};
 </script>
+
 <template>
   <section>
     <VRow>
       <VCol cols="12">
-        <VCard class="users-card">
+        <VCard class="leads-card">
           <VCardTitle class="pl-4 pr-4 mt-3 mb-2">
             <VRow class="text-layout">
               <VCol
@@ -15,23 +18,25 @@ const router = useRouter();
                 lg="6"
                 :class="$vuetify.display.lgAndUp ? 'text-left' : 'text-center'"
               >
-                <h6 class="text-h5">Users Table</h6>
+                <h6 class="text-h5">Installation Engineer Types Table</h6>
               </VCol>
               <VCol
                 cols="12"
                 lg="6"
                 :class="$vuetify.display.lgAndUp ? 'text-right' : 'text-center'"
               >
-                <VBtn @click="router.push('/users/create')" color="primary">
-                  Create User
+                <VBtn @click="addInstallationType" color="primary">
+                  Create Installation Engineer Type
                 </VBtn>
               </VCol>
             </VRow>
           </VCardTitle>
 
-          <UsersTable />
+          <InstallationTypesTable />
         </VCard>
       </VCol>
     </VRow>
   </section>
+
+  <AddInstallationTypeDialog />
 </template>

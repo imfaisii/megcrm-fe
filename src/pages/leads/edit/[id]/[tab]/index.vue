@@ -6,7 +6,6 @@ import { requiredValidator } from "@validators";
 
 const store = useLeadsStore();
 const route = useRoute();
-// const tooltip = ref(true);
 const activeTab = ref(route.params.tab);
 
 const showTooltip = computed(() => store.showEditButton);
@@ -31,6 +30,16 @@ const tabs = [
     title: "Pre Checking",
     icon: "mdi-image-check-outline",
     tab: "pre-checking",
+  },
+  {
+    title: "Book Installation",
+    icon: "mdi-tools",
+    tab: "book-installation",
+  },
+  {
+    title: "Installation Pictures",
+    icon: "mdi-image-marker-outline",
+    tab: "installation-pictures",
   },
   { title: "Communications", icon: "mdi-phone-outline", tab: "communications" },
   { title: "History", icon: "mdi-clock-outline", tab: "history" },
@@ -156,9 +165,10 @@ onUnmounted(() => {
 
               <VRow class="d-flex mb-3">
                 <LeadAlertMessages
-                  v-if="store.selectedLead.post_code"
-                  :postCode="store.selectedLead.post_code"
-                  :address="store.selectedLead.address"
+                  :address="{
+                    address: store.selectedLead.address,
+                    post_code: store.selectedLead.post_code,
+                  }"
                 />
               </VRow>
 
@@ -253,6 +263,14 @@ onUnmounted(() => {
 
         <VWindowItem value="pre-checking">
           <PreCheckingTab />
+        </VWindowItem>
+
+        <VWindowItem value="book-installation">
+          <BookInstallationTab />
+        </VWindowItem>
+
+        <VWindowItem value="installation-pictures">
+          <InstallationPictures />
         </VWindowItem>
 
         <VWindowItem value="communications">

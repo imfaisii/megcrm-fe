@@ -3,27 +3,23 @@ import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 
 const store = useLeadsStore();
 const props = defineProps({
-  postCode: {
-    required: true,
-    type: String,
-  },
   address: {
-    type: String,
-    default: () => "",
+    type: Object,
+    default: () => {},
   },
 });
 
 const epcLink = computed(() => {
-  if (store.checkIfCountryIsScotland(props.address)) {
+  if (store.checkIfCountryIsScotland(props.address.address)) {
     return "https://www.scottishepcregister.org.uk/CustomerFacingPortal/EPCPostcodeSearch";
   }
 
-  return `https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${props.postCode}`;
+  return `https://find-energy-certificate.service.gov.uk/find-a-certificate/search-by-postcode?postcode=${props.address.post_code}`;
 });
 </script>
 
 <template>
-  <VCol class="d-flex flex-wrap">
+  <VCol v-if="address?.address && address.post_code" class="d-flex flex-wrap">
     <VTooltip>
       <template #activator="{ props }">
         <VChip
@@ -34,11 +30,11 @@ const epcLink = computed(() => {
           color="info"
         >
           <a :href="epcLink" target="_blank">
-            EPC Link ({{ postCode.toUpperCase() }})
+            EPC Link ({{ address.post_code.toUpperCase() }})
           </a>
         </VChip>
       </template>
-      <span>View EPCs of {{ postCode.toUpperCase() }}</span>
+      <span>View EPCs of {{ address.post_code.toUpperCase() }}</span>
     </VTooltip>
 
     <VTooltip>

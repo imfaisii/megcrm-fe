@@ -59,6 +59,11 @@ export default [
         permissions: [modules.MEASURES + '.*'],
       },
       {
+        title: 'Installation Engineer Measures',
+        to: 'installation-types',
+        permissions: [modules.MEASURES + '.*'],
+      },
+      {
         title: 'Leads Statuses', to: 'leads-statuses',
         permissions: [modules.LEAD_STATUSES + '.*'],
       },

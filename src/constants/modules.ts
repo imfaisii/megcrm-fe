@@ -17,4 +17,5 @@ export const modules = {
   LEAD_JOBS: 'lead-jobs',
   BOILERS: 'boilers',
   TEAM: 'team',
+  INSTALLATION_TYPES: 'installation-types'
 }

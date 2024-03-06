@@ -26,6 +26,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
   const getTemporaryLinkEndpoint = `${baseUrl}/get_temporary_link`
 
   const folderImages: any = ref([])
+  const installationImages: any = ref([])
   const precheckingDocuments: any = ref([])
 
   const headers = {
@@ -58,6 +59,39 @@ export const useDropboxStore = defineStore('dropbox', () => {
 
       if (fetchLinks) {
         getTemporaryLinks(folderImages)
+      }
+    } catch (e: any) {
+      console.log("DROPBOX:index => ", e.message);
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const getInstallationPictures = async (folderName: string, fetchLinks: boolean = true) => {
+    try {
+      loading.value = true
+
+      const { data } = await axios.post(`${folderFilesEndpoint}`, {
+        "include_deleted": false,
+        "include_has_explicit_shared_members": false,
+        "include_media_info": true,
+        "include_mounted_folders": true,
+        "include_non_downloadable_files": true,
+        "limit": 2000,
+        "path": `${baseDirectory}/${folderName}/Installation`,
+        "recursive": false
+      }, {
+        headers
+      })
+
+      const filteredEntries = data.entries.filter((entry: any) => {
+        return !installationImages.value.some((image: any) => image.path_display === entry.path_display);
+      });
+
+      installationImages.value = [...installationImages.value, ...filteredEntries];
+
+      if (fetchLinks) {
+        getTemporaryLinks(installationImages)
       }
     } catch (e: any) {
       console.log("DROPBOX:index => ", e.message);
@@ -204,10 +238,12 @@ export const useDropboxStore = defineStore('dropbox', () => {
   return {
     loading,
     folderImages,
+    installationImages,
     folder,
     precheckingDocuments,
 
     renameFile,
+    getInstallationPictures,
     getPreCheckingFiles,
     create,
     index,
