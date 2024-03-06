@@ -26,85 +26,17 @@ onMounted(async () => {
 
 <template>
   <VCard>
-    <VCardItem>
-      <template #prepend>
-        <VIcon icon="mdi-account-edit" class="text-disabled" />
-      </template>
-
-      <VCardTitle>Customer Details</VCardTitle>
-    </VCardItem>
-
-    <VDivider />
-
     <VCardText>
       <VRow>
-        <!-- Job Types -->
-        <VCol cols="12" lg="6">
-          <VLabel class="mb-4" text="Job Type" />
-          <CustomRadios
-            v-model:selected-radio="store.selectedLead.job_type_id"
-            :radio-content="jobTypes"
-            :grid-column="{ lg: '4', cols: '12' }"
-          />
-        </VCol>
-
-        <!-- Contact Methods -->
-        <VCol cols="12" lg="6">
-          <VLabel class="mb-4" text="Contact Methods" />
-          <CustomRadios
-            v-model:selected-radio="
-              store.selectedLead.lead_customer_additional_detail.contact_method
-            "
-            :radio-content="contactMethods"
-            :grid-column="{ lg: '4', cols: '12' }"
-          />
-        </VCol>
-
-        <!-- Priority Types -->
-        <VCol cols="12" lg="6">
-          <VLabel class="mb-4" text="Priority Type" />
-          <CustomRadios
-            v-model:selected-radio="
-              store.selectedLead.lead_customer_additional_detail.priority_type
-            "
-            :radio-content="priorityTypes"
-            :grid-column="{ lg: '4', cols: '12' }"
-          />
-        </VCol>
-
-        <!-- Time to contact -->
-        <VCol cols="12" lg="6">
-          <VLabel class="mb-4">
-            <!-- append -->
-            <template #default>
-              <span class="mr-2">Time to contact</span>
-
-              <VTooltip location="bottom">
-                <template #activator="{ props }">
-                  <VIcon v-bind="props" icon="mdi-help-circle-outline" />
-                </template>
-                Most suitable time to contact the customer.
-              </VTooltip>
-            </template>
-          </VLabel>
-          <CustomRadios
-            v-model:selected-radio="
-              store.selectedLead.lead_customer_additional_detail.time_to_contact
-            "
-            :radio-content="timesToContact"
-            :grid-column="{ lg: '4', cols: '12' }"
-          />
-        </VCol>
-
         <VCardItem>
           <template #prepend>
-            <VIcon icon="mdi-account-details-outline" class="text-disabled" />
+            <VIcon icon="mdi-account-edit" class="text-disabled" />
           </template>
 
-          <VCardTitle>Other Details</VCardTitle>
+          <VCardTitle>Customer Details</VCardTitle>
         </VCardItem>
 
-        <VDivider class="my-2" />
+        <VDivider class="mb-3" />
 
         <!--First Name -->
         <VCol cols="12" lg="4">
@@ -368,10 +300,10 @@ onMounted(async () => {
               <VIcon icon="mdi-bullseye-arrow" class="text-disabled" />
             </template>
 
-            <VCardTitle>Other Details</VCardTitle>
+            <VCardTitle>More Details</VCardTitle>
           </VCardItem>
 
-          <VDivider class="my-2" />
+          <VDivider class="mb-3" />
 
           <!-- Dataprogress Value -->
           <VCol cols="12" lg="6">
@@ -407,6 +339,76 @@ onMounted(async () => {
           </VCol>
         </VRow>
       </transition>
+
+      <VRow>
+        <VCardItem>
+          <template #prepend>
+            <VIcon icon="mdi-account-details-outline" class="text-disabled" />
+          </template>
+
+          <VCardTitle>Other Details</VCardTitle>
+        </VCardItem>
+
+        <VDivider class="mb-3" />
+
+        <!-- Job Types -->
+        <VCol cols="12" lg="6">
+          <VLabel class="mb-4" text="Job Type" />
+          <CustomRadios
+            v-model:selected-radio="store.selectedLead.job_type_id"
+            :radio-content="jobTypes"
+            :grid-column="{ lg: '4', cols: '12' }"
+          />
+        </VCol>
+
+        <!-- Contact Methods -->
+        <VCol cols="12" lg="6">
+          <VLabel class="mb-4" text="Contact Methods" />
+          <CustomRadios
+            v-model:selected-radio="
+              store.selectedLead.lead_customer_additional_detail.contact_method
+            "
+            :radio-content="contactMethods"
+            :grid-column="{ lg: '4', cols: '12' }"
+          />
+        </VCol>
+
+        <!-- Priority Types -->
+        <VCol cols="12" lg="6">
+          <VLabel class="mb-4" text="Priority Type" />
+          <CustomRadios
+            v-model:selected-radio="
+              store.selectedLead.lead_customer_additional_detail.priority_type
+            "
+            :radio-content="priorityTypes"
+            :grid-column="{ lg: '4', cols: '12' }"
+          />
+        </VCol>
+
+        <!-- Time to contact -->
+        <VCol cols="12" lg="6">
+          <VLabel class="mb-4">
+            <!-- append -->
+            <template #default>
+              <span class="mr-2">Time to contact</span>
+
+              <VTooltip location="bottom">
+                <template #activator="{ props }">
+                  <VIcon v-bind="props" icon="mdi-help-circle-outline" />
+                </template>
+                Most suitable time to contact the customer.
+              </VTooltip>
+            </template>
+          </VLabel>
+          <CustomRadios
+            v-model:selected-radio="
+              store.selectedLead.lead_customer_additional_detail.time_to_contact
+            "
+            :radio-content="timesToContact"
+            :grid-column="{ lg: '4', cols: '12' }"
+          />
+        </VCol>
+      </VRow>
     </VCardText>
   </VCard>
 </template>
