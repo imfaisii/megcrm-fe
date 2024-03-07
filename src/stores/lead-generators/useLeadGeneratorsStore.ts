@@ -8,13 +8,15 @@ export type LeadGenerator = {
   id: string | null | number
   name: string | null
   sender_id: string | null
+  email: string | null
 }
 
 export const useLeadGeneratorsStore = defineStore('lead-generators', () => {
   const defaultModel = {
     id: null,
     name: null,
-    sender_id: null
+    sender_id: null,
+    email: null
   }
 
   const endPoint = '/lead-generators'

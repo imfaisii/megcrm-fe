@@ -83,6 +83,26 @@ onMounted(async () => {
         </VCol>
 
         <VCol cols="12">
+          <VTooltip :disabled="store.selectedLead.phone_number_formatted">
+            <template #activator="{ props }">
+              <div v-bind="props" class="d-inline-block">
+                <VSwitch
+                  v-model="
+                    store.selectedLead.survey_booking.is_sms_alert_enabled
+                  "
+                  label="Send SMS Alert?"
+                  :disabled="!store.selectedLead.phone_number_formatted"
+                />
+              </div>
+            </template>
+            <span>
+              This lead have invalid number, please fix it to allow sending text
+              messages.
+            </span>
+          </VTooltip>
+        </VCol>
+
+        <VCol cols="12">
           <VTextarea
             v-model="store.selectedLead.survey_booking.comments"
             label="Comments"

@@ -42,6 +42,7 @@ const tabs = [
     tab: "installation-pictures",
   },
   { title: "Communications", icon: "mdi-phone-outline", tab: "communications" },
+  { title: "SMS Alerts", icon: "mdi-cellphone", tab: "sms-alerts" },
   { title: "History", icon: "mdi-clock-outline", tab: "history" },
   {
     title: "Call History",
@@ -160,6 +161,23 @@ onUnmounted(() => {
                     </template>
                     <span>Current Lead Status</span>
                   </VTooltip>
+                  <VTooltip v-if="!store.selectedLead?.phone_number_formatted">
+                    <template #activator="{ props }">
+                      <VChip
+                        v-bind="props"
+                        label
+                        size="x-large"
+                        class="text-capitalize mb-2 blink-animate ml-0"
+                        color="error"
+                      >
+                        {{ store.selectedLead.phone_no }}
+                      </VChip>
+                    </template>
+                    <span>
+                      This lead has invalid number, that can cause problems with
+                      SMS alerts.
+                    </span>
+                  </VTooltip>
                 </VCol>
               </VRow>
 
@@ -275,6 +293,10 @@ onUnmounted(() => {
 
         <VWindowItem value="communications">
           <CallCenterTab />
+        </VWindowItem>
+
+        <VWindowItem value="sms-alerts">
+          <SmsAlertsTab />
         </VWindowItem>
 
         <VWindowItem value="history">

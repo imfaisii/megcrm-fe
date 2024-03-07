@@ -81,6 +81,18 @@ const handleSubmit = async () => {
                 required
               />
             </VCol>
+
+            <VCol cols="12">
+              <VTextField
+                v-model="store.selected.email"
+                :rules="[requiredValidator]"
+                :error-messages="store.errors?.email"
+                label="Email Address"
+                placeholder="info@leadgenerator.co.uk"
+                clearable
+                required
+              />
+            </VCol>
           </VRow>
 
           <!-- Actions button -->
