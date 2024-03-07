@@ -33,10 +33,10 @@ export const useTeamStore = defineStore('team', () => {
 
   const isSelected = computed(() => !!selected.value.id)
 
-  const index = async (options = {}) => {
+  const index = async (options = { include: includes.join(",") }) => {
     isLoading.value = true
     const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPoint, meta.value, options))
-    team.value = data.users
+    team.value = data.teams
     meta.value = {
       filters: meta.value?.filters ?? {},
       ...serverMeta
@@ -97,6 +97,7 @@ export const useTeamStore = defineStore('team', () => {
     } catch (error) {
       handleError(error, errors)
     } finally {
+      reset();
       isLoading.value = false
     }
   }
@@ -105,7 +106,7 @@ export const useTeamStore = defineStore('team', () => {
     try {
       isLoading.value = true
       selectedId.value = id
-      await useApiFetch(`${endPoint} / ${id}`, options)
+      await useApiFetch(`${endPoint}/${id}`, options)
       $toast.success(`${entity} was deleted successfully.`)
       await index()
     } catch (error) {
@@ -118,7 +119,7 @@ export const useTeamStore = defineStore('team', () => {
   const update = async (id: number | string, payload: any, options = { method: 'PUT' }) => {
     try {
       isLoading.value = true
-      await useApiFetch(`${endPoint} / ${id}`, {
+      await useApiFetch(`${endPoint}/${id}`, {
         data: payload,
         ...options
       })
@@ -129,26 +130,11 @@ export const useTeamStore = defineStore('team', () => {
     } catch (error) {
       handleError(error, errors)
     } finally {
+      reset();
       isLoading.value = false
     }
   }
 
-  const updateProfile = async (id: number | string, payload: any, options = { method: 'PUT' }) => {
-    try {
-      errors.value = {}
-      isLoading.value = true
-      await useApiFetch(`${endPoint} / ${id} / profile`, {
-        data: payload,
-        ...options
-      })
-      $toast.success(`Profile was updated successfully.`)
-      errors.value = {}
-    } catch (error) {
-      handleError(error, errors)
-    } finally {
-      isLoading.value = false
-    }
-  }
 
   const reset = () => {
     selected.value = { ...defaultModel }
@@ -172,6 +158,19 @@ export const useTeamStore = defineStore('team', () => {
     return "error";
   };
 
+  const setTeamForSelected = (team: any) => {
+    selectedId.value = team.id;
+    selected.value.name = team.name;
+    selected.value.admin_id = team.admin_id;
+    selected.value.id = team.id;
+    var userIds: [] = [];
+    team.users.forEach(function (user: any) {
+      userIds.push(user.id);
+    });
+    console.log(`output->userIds`, userIds)
+    selected.value.members = userIds;
+  }
+
 
   return {
     team,
@@ -192,8 +191,8 @@ export const useTeamStore = defineStore('team', () => {
     store,
     destroy,
     update,
-    updateProfile,
     getUsersForAssignment,
     filterUser,
+    setTeamForSelected,
   }
 })

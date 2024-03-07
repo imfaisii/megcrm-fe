@@ -84,6 +84,7 @@ declare module '@vue/runtime-core' {
     StatusesTable: typeof import('./src/components/leads/StatusesTable.vue')['default']
     SurveyorsTable: typeof import('./src/components/surveyors/SurveyorsTable.vue')['default']
     SurveyPictures: typeof import('./src/components/leads/details/SurveyPictures.vue')['default']
+    TeamTable: typeof import('./src/components/team/TeamTable.vue')['default']
     TheCustomizer: typeof import('./src/@core/components/TheCustomizer.vue')['default']
     ThemeSwitcher: typeof import('./src/@core/components/ThemeSwitcher.vue')['default']
     UploadLeadForm: typeof import('./src/components/leads/UploadLeadForm.vue')['default']

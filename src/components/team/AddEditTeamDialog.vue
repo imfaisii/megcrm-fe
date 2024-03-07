@@ -31,19 +31,6 @@ const showAircallEmailField = ref(false);
 const formRef = ref();
 const permissionsStore: any = usePermissionsStore();
 const label = computed(() => (props.store.isSelected ? "Update" : "Create"));
-const isPasswordVisible = ref(false);
-const isConfirmPasswordVisible = ref(false);
-
-const statuses = [
-  {
-    key: true,
-    value: "Active",
-  },
-  {
-    key: false,
-    value: "Inactive",
-  },
-];
 
 const handleSubmit = async () => {
   formRef.value.validate().then(async (v: any) => {
@@ -62,14 +49,6 @@ const closeDialog: any = () => {
 
   setTimeout(() => props.store.reset(), 500);
 };
-
-watch(
-  () => props.store.selected.roles,
-  (n) => {
-    showAircallEmailField.value = permissionsStore.hasRole(n, "csr");
-  },
-  { deep: true }
-);
 
 onMounted(async () => {
   await props.store.getUsersForAssignment();

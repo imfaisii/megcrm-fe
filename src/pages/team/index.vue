@@ -1,9 +1,15 @@
 <script lang="ts" setup>
 import AddEditTeamDialog from "@/components/team/AddEditTeamDialog.vue";
+import TeamTable from "@/components/team/TeamTable.vue";
 import { useTeamStore } from "@/stores/team/useTeamStore";
 
 const store = useTeamStore();
 const isTeamDialogVisible: any = ref(false);
+
+const openEditTeamModal = (team: any) => {
+  isTeamDialogVisible.value = true;
+  store.setTeamForSelected(team);
+};
 </script>
 <template>
   <section>
@@ -31,7 +37,7 @@ const isTeamDialogVisible: any = ref(false);
             </VRow>
           </VCardTitle>
 
-          <!-- <UsersTable /> -->
+          <TeamTable @edit-team="openEditTeamModal" />
         </VCard>
       </VCol>
     </VRow>
