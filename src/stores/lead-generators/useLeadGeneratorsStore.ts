@@ -1,19 +1,22 @@
 import useApiFetch from '@/composables/useApiFetch'
 import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
-import { EventBus } from '@/utils/useEventBus'
 import { handleError, reshapeParams } from '@/utils/useHelper'
 import { defineStore } from 'pinia'
 
 export type LeadGenerator = {
   id: string | null | number
   name: string | null
+  sender_id: string | null
+  email: string | null
 }
 
 export const useLeadGeneratorsStore = defineStore('lead-generators', () => {
   const defaultModel = {
     id: null,
-    name: null
+    name: null,
+    sender_id: null,
+    email: null
   }
 
   const endPoint = '/lead-generators'
@@ -24,6 +27,7 @@ export const useLeadGeneratorsStore = defineStore('lead-generators', () => {
   const meta = ref(defaultPagination)
   const entries = ref([])
   const $toast: any = useToast()
+  const include: any = ['createdBy']
 
   const isSelected = computed(() => !!selected.value.id)
 
@@ -45,7 +49,7 @@ export const useLeadGeneratorsStore = defineStore('lead-generators', () => {
         data: payload,
         ...options,
       })
-      EventBus.$emit('reset-name-only-dialog')
+
       $toast.success(`${entity} was saved successfully.`)
     } catch (error) {
       handleError(error, errors)
@@ -61,8 +65,8 @@ export const useLeadGeneratorsStore = defineStore('lead-generators', () => {
         data: payload,
         ...options
       })
+
       $toast.success(`${entity} was updated successfully.`)
-      EventBus.$emit('reset-name-only-dialog')
     } catch (error) {
       handleError(error, errors)
     } finally {
@@ -75,8 +79,9 @@ export const useLeadGeneratorsStore = defineStore('lead-generators', () => {
       isLoading.value = true
       selected.value.id = id
       await useApiFetch(`${endPoint}/${id}`, options)
+
       $toast.success(`${entity} was deleted successfully.`)
-      await fetchAll({ include: "createdBy" })
+      await fetchAll({ include: include.join(',') })
     } catch (error) {
       handleError(error, errors)
     } finally {
@@ -86,7 +91,7 @@ export const useLeadGeneratorsStore = defineStore('lead-generators', () => {
   }
 
   const resetState = () => {
-    selected.value = defaultModel
+    selected.value = { ...defaultModel }
   }
 
   return {
@@ -96,6 +101,7 @@ export const useLeadGeneratorsStore = defineStore('lead-generators', () => {
     selected,
     meta,
     errors,
+    include,
 
     resetState,
     fetchAll,

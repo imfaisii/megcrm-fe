@@ -85,7 +85,8 @@ export const useLeadsStore = defineStore('leads', () => {
     "surveyBooking",
     "installationBookings",
     "comments.commentator",
-    "leadAdditional"
+    "leadAdditional",
+    'notifications'
   ];
   const router = useRouter()
 
@@ -189,8 +190,10 @@ export const useLeadsStore = defineStore('leads', () => {
         selectedLead.value.survey_booking = {
           surveyor_id: null,
           survey_at: null,
+          survey_to: null,
           preffered_time: null,
           comments: null,
+          is_sms_alert_enabled: false,
         }
       }
 
@@ -231,12 +234,14 @@ export const useLeadsStore = defineStore('leads', () => {
   const update = async (options = { method: 'PUT' }) => {
     try {
       isLoading.value = true
+
       await useApiFetch(`/leads/${selectedLead.value.id}`, {
         data: omit(selectedLead.value, [
           'logs', 'status_details', 'statuses', 'lead_generator', 'call_centers'
         ]),
         ...options
       })
+
       $toast.success('Lead was updated successfully.')
     } catch (error) {
       handleError(error, errors)
@@ -275,6 +280,23 @@ export const useLeadsStore = defineStore('leads', () => {
     return JSON.stringify(selectedLeadCopy.value) !== JSON.stringify(selectedLead.value)
   })
 
+  const sendSms = async (leadId: string, payload: { body: string | null }, options = { method: 'POST' }) => {
+    try {
+      isLoading.value = true
+
+      await useApiFetch(`/send-sms/${leadId}`, {
+        data: payload,
+        ...options
+      })
+
+      $toast.success('SMS was sent successfully.')
+    } catch (error) {
+      handleError(error, errors)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
 
   return {
     banks,
@@ -308,6 +330,7 @@ export const useLeadsStore = defineStore('leads', () => {
     fetchLead,
     storeLead,
     deleteLead,
-    getExtras
+    getExtras,
+    sendSms
   }
 })

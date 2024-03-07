@@ -85,7 +85,7 @@ const startDateTimePickerConfig = computed(() => {
 const endDateTimePickerConfig = computed(() => {
   const config: Options = {
     enableTime: !event.value.all_day,
-    dateFormat: `Y-m-d${event.value.all_day ? "" : " H:i"}`,
+    dateFormat: `d/m/Y${event.value.all_day ? "" : " H:i"}`,
   };
 
   if (event.value.start_date) config.minDate = event.value.start_date;
@@ -103,9 +103,9 @@ const endDateTimePickerConfig = computed(() => {
     class="scrollable-content"
     @update:model-value="(val) => $emit('update:isDrawerOpen', val)"
   >
-    <!-- 👉 Header -->
+    <!--  Header -->
     <AppDrawerHeaderSection
-      :title="event.id ? 'Update Event' : 'Add Event'"
+      title="Event Details"
       @cancel="$emit('update:isDrawerOpen', false)"
     >
       <template #beforeClose>
@@ -121,17 +121,42 @@ const endDateTimePickerConfig = computed(() => {
           <!-- SECTION Form -->
           <VForm ref="refForm" @submit.prevent="handleSubmit">
             <VRow>
-              <!-- 👉 Title -->
+              <!-- Title -->
               <VCol cols="12">
                 <VTextField
                   v-model="event.title"
                   label="Title"
                   placeholder="Meeting with Jane"
                   :rules="[requiredValidator]"
+                  readonly=""
                 />
               </VCol>
 
-              <!-- 👉 Calendar -->
+              <!-- Comments -->
+              <VCol v-if="event?.extendedProps?.eventable?.comments" cols="12">
+                <VTextarea
+                  v-model="event.extendedProps.eventable.comments"
+                  label="Comments"
+                  placeholder="Meeting comment"
+                  readonly=""
+                />
+              </VCol>
+
+              <!-- Surveyor -->
+              <VCol
+                v-if="event?.extendedProps?.eventable?.surveyor?.name"
+                cols="12"
+              >
+                <VTextField
+                  v-model="event.extendedProps.eventable.surveyor.name"
+                  label="Surveyor Name"
+                  placeholder="John Doe"
+                  :rules="[requiredValidator]"
+                  readonly=""
+                />
+              </VCol>
+
+              <!-- Calendar -->
               <VCol cols="12">
                 <VAutocomplete
                   v-model="event.extendedProps.calendar"
@@ -141,6 +166,7 @@ const endDateTimePickerConfig = computed(() => {
                   :items="store.availableCalendars"
                   :item-title="(item) => item.name"
                   :item-value="(item) => item.id"
+                  readonly=""
                 >
                   <template #selection="{ item }">
                     <div
@@ -160,7 +186,7 @@ const endDateTimePickerConfig = computed(() => {
                 </VAutocomplete>
               </VCol>
 
-              <!-- 👉 Start date -->
+              <!-- Start date -->
               <VCol cols="12">
                 <AppDateTimePicker
                   :key="JSON.stringify(startDateTimePickerConfig)"
@@ -169,10 +195,11 @@ const endDateTimePickerConfig = computed(() => {
                   label="Start date"
                   placeholder="Select Date"
                   :config="startDateTimePickerConfig"
+                  readonly=""
                 />
               </VCol>
 
-              <!-- 👉 End date -->
+              <!-- End date -->
               <VCol cols="12">
                 <AppDateTimePicker
                   :key="JSON.stringify(endDateTimePickerConfig)"
@@ -181,25 +208,27 @@ const endDateTimePickerConfig = computed(() => {
                   label="End date"
                   placeholder="Select End Date"
                   :config="endDateTimePickerConfig"
+                  readonly=""
                 />
               </VCol>
 
-              <!-- 👉 All day -->
+              <!-- All day -->
               <VCol cols="12">
-                <VSwitch v-model="event.allDay" label="All day" />
+                <VSwitch v-model="event.allDay" label="All day" readonly="" />
               </VCol>
 
-              <!-- 👉 Description -->
+              <!-- Description -->
               <VCol cols="12">
                 <VTextarea
                   v-model="event.extendedProps.description"
                   label="Description"
                   placeholder="Meeting description"
+                  readonly=""
                 />
               </VCol>
 
-              <!-- 👉 Form buttons -->
-              <VCol cols="12">
+              <!-- Form buttons -->
+              <VCol v-if="false" cols="12">
                 <VBtn type="submit" class="me-3"> Submit </VBtn>
                 <VBtn variant="outlined" color="secondary" @click="onCancel">
                   Cancel

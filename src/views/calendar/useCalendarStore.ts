@@ -35,7 +35,8 @@ export const useCalendarStore = defineStore('calendar', () => {
       params:
       {
         "filter[calendars]": selectedCalendars.value.join(','),
-        include: ['calendar'].join(',')
+        include: ['calendar'].join(','),
+        all: true
       }
     })
   }

@@ -57,7 +57,7 @@ onMounted(async () => {
   <div>
     <VCard>
       <!-- `z-index: 0` Allows overlapping vertical nav on calendar -->
-      <VLayout style="z-index: 0">
+      <VLayout style="z-index: 0;">
         <!-- 👉 Navigation drawer -->
         <VNavigationDrawer
           v-model="isLeftSidebarOpen"
@@ -69,13 +69,13 @@ onMounted(async () => {
           :temporary="$vuetify.display.mdAndDown"
         >
           <div class="pa-5 d-flex flex-column gap-y-7">
-            <VBtn
+            <!-- <VBtn
               block
               prepend-icon="mdi-plus"
               @click="isEventHandlerSidebarActive = true"
             >
               Add event
-            </VBtn>
+            </VBtn> -->
             <div>
               <p class="text-sm text-uppercase text-medium-emphasis mb-3">
                 Calendars

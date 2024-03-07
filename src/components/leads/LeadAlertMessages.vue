@@ -1,5 +1,8 @@
 <script lang="ts" setup>
+import env from "@/constants/env";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
+
+const { VITE_APP_API_URL: BASE_URL } = env;
 
 const store = useLeadsStore();
 const props = defineProps({
@@ -70,6 +73,26 @@ const epcLink = computed(() => {
         </VChip>
       </template>
       <span>Click to check gas safe register</span>
+    </VTooltip>
+
+    <VTooltip>
+      <template #activator="{ props }">
+        <VChip
+          v-bind="props"
+          label
+          size="small"
+          class="text-capitalize"
+          color="info"
+        >
+          <a
+            :href="`${BASE_URL}/leads-links/council-tax/${address.post_code.toUpperCase()}`"
+            target="_blank"
+          >
+            Council tax link
+          </a>
+        </VChip>
+      </template>
+      <span>Click to check council tax</span>
     </VTooltip>
   </VCol>
 </template>

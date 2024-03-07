@@ -15,6 +15,7 @@ export const blankEvent = {
   allDay: false,
   extendedProps: {
     calendar: undefined,
+    eventable: {}
   },
 }
 
@@ -38,6 +39,7 @@ export const useCalendar = (event: Ref<Event | NewEvent>, isEventHandlerSidebarA
       allDay,
       extendedProps: {
         calendar,
+        eventable,
         description
       }
     }: any = eventApi
@@ -50,6 +52,7 @@ export const useCalendar = (event: Ref<Event | NewEvent>, isEventHandlerSidebarA
       allDay,
       extendedProps: {
         calendar,
+        eventable,
         description
       }
     }

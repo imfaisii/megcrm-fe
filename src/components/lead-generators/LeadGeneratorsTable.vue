@@ -6,12 +6,16 @@ import { EventBus } from "@/utils/useEventBus";
 // Headers
 const headers = [
   { title: "Name", key: "name" },
+  { title: "SMS Sender Title", key: "sender_id" },
+  { title: "Email Reference in SMS", key: "email" },
   { title: "Added by", key: "created_by.name", sortable: false },
   { title: "Actions", key: "actions", sortable: false },
 ];
 
 const filters = ref({
   name: "",
+  sender_id: "",
+  email: "",
 });
 
 const includes = ["createdBy"];
@@ -32,8 +36,16 @@ const handleView = (item: any) => {
 <template>
   <!-- Filters -->
   <VRow class="pa-4">
-    <VCol cols="12" lg="3">
+    <VCol cols="12" md="4">
       <VTextField v-model="filters.name" label="Name" clearable />
+    </VCol>
+
+    <VCol cols="12" md="4">
+      <VTextField v-model="filters.sender_id" label="Sender Name" clearable />
+    </VCol>
+
+    <VCol cols="12" md="4">
+      <VTextField v-model="filters.email" label="Email" clearable />
     </VCol>
   </VRow>
 
@@ -47,16 +59,15 @@ const handleView = (item: any) => {
     @update:on-pagination-change="onPaginationChange"
     @update:on-sort-change="onSortChange"
   >
-    <!-- Color -->
-    <template #item.color="{ item }">
-      <VBadge :color="item.raw.color" />
+    <template #item.email="{ item }">
+      <p class="mb-0 font-italic">{{ item?.raw?.email ?? "NULL" }}</p>
     </template>
 
     <!-- Actions -->
     <template #item.actions="{ item }">
-      <!-- <IconBtn @click="handleView(item.raw)">
+      <IconBtn @click="handleView(item.raw)">
         <VIcon icon="tabler-edit" />
-      </IconBtn> -->
+      </IconBtn>
       <VTooltip location="bottom">
         <template #activator="{ props }">
           <IconBtn v-bind="props" @click="store.destroy(item.raw.id)">
@@ -73,7 +84,7 @@ const handleView = (item: any) => {
             <VIcon v-else color="error" icon="tabler-trash" />
           </IconBtn>
         </template>
-        <span>Are you sure you want to delete this benefit type?</span>
+        <span>Are you sure you want to delete this leaad generator?</span>
       </VTooltip>
     </template>
   </DataTable>
