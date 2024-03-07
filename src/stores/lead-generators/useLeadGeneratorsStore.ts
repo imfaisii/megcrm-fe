@@ -9,6 +9,7 @@ export type LeadGenerator = {
   name: string | null
   sender_id: string | null
   email: string | null
+  phone_no: string | null
 }
 
 export const useLeadGeneratorsStore = defineStore('lead-generators', () => {
@@ -16,7 +17,8 @@ export const useLeadGeneratorsStore = defineStore('lead-generators', () => {
     id: null,
     name: null,
     sender_id: null,
-    email: null
+    email: null,
+    phone_no: null
   }
 
   const endPoint = '/lead-generators'
@@ -92,6 +94,7 @@ export const useLeadGeneratorsStore = defineStore('lead-generators', () => {
 
   const resetState = () => {
     selected.value = { ...defaultModel }
+    errors.value = {}
   }
 
   return {
