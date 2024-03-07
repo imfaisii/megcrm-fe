@@ -6,12 +6,14 @@ import {
   titles,
 } from "@/constants/leads/customerDetails";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
+import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import {
   emailValidator,
   integerValidator,
   requiredValidator,
 } from "@validators";
 
+const permissionsStore = usePermissionsStore(())
 const store = useLeadsStore();
 const jobTypes = computed(() =>
   store.jobTypes.map((i: any) => {
@@ -137,7 +139,7 @@ onMounted(async () => {
             :rules="[requiredValidator]"
             placeholder="Enter postcode to search addresses"
             required
-            readonly=""
+            :readonly="permissionsStore.isSuperAdmin"
           />
         </VCol>
 
@@ -151,7 +153,7 @@ onMounted(async () => {
             placeholder="Enter postcode to search addresses"
             type="text"
             required
-            readonly=""
+            :readonly="permissionsStore.isSuperAdmin"
           />
         </VCol>
 
@@ -179,7 +181,7 @@ onMounted(async () => {
             item-title="name"
             item-value="id"
             :return-object="false"
-            readonly=""
+            :readonly="permissionsStore.isSuperAdmin"
           />
         </VCol>
 
