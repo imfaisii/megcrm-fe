@@ -6,6 +6,7 @@ import { EventBus } from "@/utils/useEventBus";
 // Headers
 const headers = [
   { title: "Name", key: "name" },
+  { title: "SMS Sender Title", key: "sender_id" },
   { title: "Added by", key: "created_by.name", sortable: false },
   { title: "Actions", key: "actions", sortable: false },
 ];
@@ -47,16 +48,11 @@ const handleView = (item: any) => {
     @update:on-pagination-change="onPaginationChange"
     @update:on-sort-change="onSortChange"
   >
-    <!-- Color -->
-    <template #item.color="{ item }">
-      <VBadge :color="item.raw.color" />
-    </template>
-
     <!-- Actions -->
     <template #item.actions="{ item }">
-      <!-- <IconBtn @click="handleView(item.raw)">
+      <IconBtn @click="handleView(item.raw)">
         <VIcon icon="tabler-edit" />
-      </IconBtn> -->
+      </IconBtn>
       <VTooltip location="bottom">
         <template #activator="{ props }">
           <IconBtn v-bind="props" @click="store.destroy(item.raw.id)">
@@ -73,7 +69,7 @@ const handleView = (item: any) => {
             <VIcon v-else color="error" icon="tabler-trash" />
           </IconBtn>
         </template>
-        <span>Are you sure you want to delete this benefit type?</span>
+        <span>Are you sure you want to delete this leaad generator?</span>
       </VTooltip>
     </template>
   </DataTable>

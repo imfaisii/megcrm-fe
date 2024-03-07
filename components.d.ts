@@ -14,6 +14,7 @@ declare module '@vue/runtime-core' {
     ActivityTimeline: typeof import('./src/components/leads/details/ActivityTimeline.vue')['default']
     AddCallRecordDialog: typeof import('./src/components/call-center/AddCallRecordDialog.vue')['default']
     AddEditLeadDialog: typeof import('./src/components/leads/AddEditLeadDialog.vue')['default']
+    AddEditLeadGeneratorDialog: typeof import('./src/components/dialogs/AddEditLeadGeneratorDialog.vue')['default']
     AddEditLeadStatusDialog: typeof import('./src/components/leads/AddEditLeadStatusDialog.vue')['default']
     AddEditPermissionDialog: typeof import('./src/components/permissions/AddEditPermissionDialog.vue')['default']
     AddEditRoleDialog: typeof import('./src/components/permissions/AddEditRoleDialog.vue')['default']
