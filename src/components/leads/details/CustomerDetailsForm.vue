@@ -139,7 +139,7 @@ onMounted(async () => {
             :rules="[requiredValidator]"
             placeholder="Enter postcode to search addresses"
             required
-            :readonly="permissionsStore.isSuperAdmin"
+            :readonly="!permissionsStore.isSuperAdmin"
           />
         </VCol>
 
@@ -153,7 +153,7 @@ onMounted(async () => {
             placeholder="Enter postcode to search addresses"
             type="text"
             required
-            :readonly="permissionsStore.isSuperAdmin"
+            :readonly="!permissionsStore.isSuperAdmin"
           />
         </VCol>
 
@@ -181,7 +181,7 @@ onMounted(async () => {
             item-title="name"
             item-value="id"
             :return-object="false"
-            :readonly="permissionsStore.isSuperAdmin"
+            :readonly="!permissionsStore.isSuperAdmin"
           />
         </VCol>
 
