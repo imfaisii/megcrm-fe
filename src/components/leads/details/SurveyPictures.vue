@@ -12,6 +12,7 @@ const leadsStore = useLeadsStore();
 const filesUploaded = ref(0);
 const selectedFilesLength = ref(0);
 const isUploading = ref(false);
+const myFiles = ref([]);
 
 const show = (image: any) => {
   if (isImageFileName(image.name)) {
@@ -66,9 +67,9 @@ async function uploadFilesInChunks(files: any, chunkSize: number = 3) {
         await new Promise((resolve, reject) => {
           new Compressor(file, {
             quality: 0.4,
-            async success(result) {
+            success(result) {
               try {
-                await dbStore.store(dbStore.folder, "Survey", result);
+                dbStore.store(dbStore.folder, "Survey", result);
                 filesUploaded.value++;
 
                 resolve();
@@ -126,6 +127,10 @@ const showRenameDialog = (fileName: string, filePath: string) => {
   });
 };
 
+const handleFilePondInit = () => {
+  console.log(myFiles.value);
+};
+
 onMounted(async () => {
   await dbStore.create(`${dbStore.folder}/Survey`);
   dbStore.index(dbStore.folder);
@@ -150,7 +155,14 @@ onMounted(async () => {
         <template #append>
           <div class="me-n3 mt-n2">
             <VCol cols="12">
-              <div v-bind="getRootProps()">
+              <FilePond
+                label-idle="Drop files here..."
+                v-bind:allow-multiple="true"
+                accepted-file-types="image/jpeg, image/png"
+                v-bind:files="myFiles"
+                v-on:init="handleFilePondInit"
+              />
+              <!-- <div v-bind="getRootProps()">
                 <input v-bind="getInputProps()" />
                 <VTooltip>
                   <template #activator="{ props }">
@@ -165,7 +177,7 @@ onMounted(async () => {
 
                   <span>Upload files</span>
                 </VTooltip>
-              </div>
+              </div> -->
             </VCol>
           </div>
         </template>

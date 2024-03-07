@@ -50,6 +50,12 @@ dependencies:
   compressorjs:
     specifier: ^1.2.1
     version: 1.2.1
+  filepond:
+    specifier: ^4.30.6
+    version: 4.30.6
+  filepond-plugin-file-validate-type:
+    specifier: ^1.2.9
+    version: 1.2.9(filepond@4.30.6)
   flatpickr:
     specifier: ^4.6.13
     version: 4.6.13
@@ -107,6 +113,9 @@ dependencies:
   vue-easy-lightbox:
     specifier: ^1.18.0
     version: 1.18.0(vue@3.4.10)
+  vue-filepond:
+    specifier: ^7.0.4
+    version: 7.0.4(filepond@4.30.6)(vue@3.4.10)
   vue-flatpickr-component:
     specifier: 11.0.3
     version: 11.0.3(vue@3.4.10)
@@ -2666,6 +2675,18 @@ packages:
     engines: {node: '>= 10'}
     dependencies:
       tslib: 2.6.2
+    dev: false
+
+  /filepond-plugin-file-validate-type@1.2.9(filepond@4.30.6):
+    resolution: {integrity: sha512-Tzv07aNdZvjUXDRA3XL16QMEvh6llDrXlcZ6W0eTHQ+taHaVg/JKJTFs/AViO+6ZcpPCcQStbhYEL2HoS+vldw==}
+    peerDependencies:
+      filepond: '>=1.x <5.x'
+    dependencies:
+      filepond: 4.30.6
+    dev: false
+
+  /filepond@4.30.6:
+    resolution: {integrity: sha512-gBsVKJgr5HFTkQSA/3R6utne4Qt6Pue0O3+k3IjjVBbaQxMgGMI0fXwoob9SdRRoULCs8BAhWjttM28hOAi/0w==}
     dev: false
 
   /fill-range@7.0.1:
@@ -5387,6 +5408,16 @@ packages:
     peerDependencies:
       vue: ^3.0.0
     dependencies:
+      vue: 3.4.10(typescript@5.0.4)
+    dev: false
+
+  /vue-filepond@7.0.4(filepond@4.30.6)(vue@3.4.10):
+    resolution: {integrity: sha512-HvWlCG8qjvyykrpPTDjJ+JqsHTXt5/0zWMX9vu7kU3JXCUODPUkGi9prZcauOnIZ4MqyeSZ9M0sDVwdMATyt1g==}
+    peerDependencies:
+      filepond: '>=4.7.4 < 5.x'
+      vue: '>=3 < 4'
+    dependencies:
+      filepond: 4.30.6
       vue: 3.4.10(typescript@5.0.4)
     dev: false
 

@@ -17,6 +17,9 @@ import VueEasyLightbox from 'vue-easy-lightbox'
 import VueLazyload from 'vue-lazyload'
 import VuePdfEmbed from 'vue-pdf-embed'
 import ToastPlugin from 'vue-toast-notification'
+import vueFilePond from 'vue-filepond';
+
+import 'filepond/dist/filepond.min.css';
 
 // essential styles
 import 'vue-pdf-embed/dist/style/index.css'
@@ -36,6 +39,7 @@ const app = createApp(App)
 // Use plugins
 app.component('Skeleton', Skeleton)
 app.component('VuePdfEmbed', VuePdfEmbed)
+app.component('FilePond', vueFilePond())
 app.use(createPinia())
 app.use(VueLazyload, {
   preLoad: 1.3,
