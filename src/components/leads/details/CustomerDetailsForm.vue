@@ -13,7 +13,7 @@ import {
   requiredValidator,
 } from "@validators";
 
-const permissionsStore = usePermissionsStore()
+const permissionsStore = usePermissionsStore();
 const store = useLeadsStore();
 const jobTypes = computed(() =>
   store.jobTypes.map((i: any) => {
