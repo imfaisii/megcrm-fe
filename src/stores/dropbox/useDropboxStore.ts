@@ -14,7 +14,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
   const leadsStore: any = useLeadsStore();
   const folder = `${leadsStore.selectedLead.post_code
     .toUpperCase()
-    .replace(/ /g, "")} - ${leadsStore.selectedLead.address}`;
+    .replace(/ /g, "")} - ${leadsStore.selectedLead.address.replace("/", "|")}`;
 
   const baseUrl = 'https://api.dropboxapi.com/2/files'
   const baseDirectory = '/001 Umar Riaz Ashton/~~~~##########ECO 4 SURVEY'

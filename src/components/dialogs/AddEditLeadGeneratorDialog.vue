@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { useLeadGeneratorsStore } from "@/stores/lead-generators/useLeadGeneratorsStore";
-import { requiredValidator } from "@validators";
+import {
+  emailValidator,
+  integerValidator,
+  lengthValidator,
+  maxLengthValidator,
+  requiredValidator,
+} from "@validators";
 
 interface Emit {
   (e: "update:isDialogVisible", value: boolean): void;
 }
 
-const props = defineProps({
+defineProps({
   isDialogVisible: {
     type: Boolean,
     default: () => false,
@@ -14,6 +20,7 @@ const props = defineProps({
 });
 
 const store = useLeadGeneratorsStore();
+const formRef = ref();
 const emit = defineEmits<Emit>();
 
 const closeDialog = () => {
@@ -24,15 +31,19 @@ const closeDialog = () => {
 
 const handleSubmit = async () => {
   try {
-    if (store?.selected?.id) {
-      await store.update(store.selected.id, store.selected);
-    } else {
-      await store.store(store.selected);
-    }
+    formRef.value.validate().then(async (v: any) => {
+      if (v.valid) {
+        if (store?.selected?.id) {
+          await store.update(store.selected.id, store.selected);
+        } else {
+          await store.store(store.selected);
+        }
 
-    store.fetchAll({ include: store.include.join(",") });
+        store.fetchAll({ include: store.include.join(",") });
 
-    closeDialog();
+        closeDialog();
+      }
+    });
   } catch (e) {
     //
   }
@@ -56,7 +67,7 @@ const handleSubmit = async () => {
       </VCardItem>
 
       <VCardText class="mt-6">
-        <VForm @submit.prevent="handleSubmit">
+        <VForm ref="formRef" @submit.prevent="handleSubmit">
           <VRow>
             <VCol cols="12">
               <VTextField
@@ -85,10 +96,26 @@ const handleSubmit = async () => {
             <VCol cols="12">
               <VTextField
                 v-model="store.selected.email"
-                :rules="[requiredValidator]"
+                :rules="[emailValidator]"
                 :error-messages="store.errors?.email"
                 label="Email Address"
                 placeholder="info@leadgenerator.co.uk"
+                clearable
+                required
+              />
+            </VCol>
+
+            <VCol cols="12">
+              <VTextField
+                v-model="store.selected.phone_no"
+                :rules="[
+                  integerValidator,
+                  (v) => maxLengthValidator(v, 10),
+                  (v) => lengthValidator(v, 10),
+                ]"
+                :error-messages="store.errors?.phone_no"
+                label="Phone No"
+                placeholder="7943111111"
                 clearable
                 required
               />

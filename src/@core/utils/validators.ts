@@ -95,7 +95,7 @@ export const lengthValidator = (value: unknown, length: number) => {
   if (isEmpty(value))
     return true
 
-  return String(value).length === length || `The Min Character field must be at least ${length} characters`
+  return String(value).length === length || `The min character field must be at least ${length} characters`
 }
 
 // 👉 Max Length Validator
@@ -103,7 +103,7 @@ export const maxLengthValidator = (value: unknown, length: number) => {
   if (isEmpty(value))
     return true
 
-  return String(value).length < length || `The max number of characters allowed ${length}.`
+  return String(value).length <= length || `The max number of characters allowed is ${length}.`
 }
 
 // 👉 Alpha-dash Validator

@@ -4,10 +4,14 @@ import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
 import { isImageFileName } from "@/utils/useHelper";
 import errorimage from "@images/custom/404.jpg";
+import Compressor from "compressorjs";
 import { useDropzone } from "vue3-dropzone";
 
 const dbStore = useDropboxStore();
 const leadsStore = useLeadsStore();
+const filesUploaded = ref(0);
+const selectedFilesLength = ref(0);
+const isUploading = ref(false);
 
 const show = (image: any) => {
   if (isImageFileName(image.name)) {
@@ -23,19 +27,89 @@ const show = (image: any) => {
   }
 };
 
-const saveFiles = async (files: any) => {
-  for await (const file of files) {
-    await dbStore.store(dbStore.folder, "Survey", file);
+async function uploadFiles(files: any) {
+  for (const file of files) {
+    if (!file) {
+      continue;
+    }
+
+    await new Promise((resolve, reject) => {
+      new Compressor(file, {
+        quality: 0.4,
+        async success(result) {
+          try {
+            await dbStore.store(dbStore.folder, "Survey", result);
+            filesUploaded.value++;
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        },
+        error(err) {
+          console.log(err.message);
+          reject(err);
+        },
+      });
+    });
   }
+}
 
-  await leadsStore.updateStatus({
-    leadId: leadsStore.selectedLead.id,
-    status: "Survey Done",
-    comments: "All files were uploaded to dropbox.",
-  });
+async function uploadFilesInChunks(files: any, chunkSize: number = 3) {
+  for (let i = 0; i < files.length; i += chunkSize) {
+    const chunk = files.slice(i, i + chunkSize);
+    await Promise.all(
+      chunk.map(async (file: any) => {
+        if (!file) {
+          return;
+        }
 
-  dbStore.index(dbStore.folder);
-  EventBus.$emit("refresh-lead-data");
+        await new Promise((resolve, reject) => {
+          new Compressor(file, {
+            quality: 0.4,
+            async success(result) {
+              try {
+                await dbStore.store(dbStore.folder, "Survey", result);
+                filesUploaded.value++;
+
+                resolve();
+              } catch (error) {
+                reject(error);
+              }
+            },
+            error(err) {
+              console.log(err.message);
+              reject(err);
+            },
+          });
+        });
+      })
+    );
+  }
+}
+
+const saveFiles = async (files: any) => {
+  isUploading.value = true;
+  selectedFilesLength.value = files.length;
+
+  uploadFilesInChunks(files)
+    .then(async () => {
+      await leadsStore.updateStatus({
+        leadId: leadsStore.selectedLead.id,
+        status: "Survey Done",
+        comments: "All files were uploaded to dropbox.",
+      });
+
+      setTimeout(() => {
+        dbStore.index(dbStore.folder);
+        EventBus.$emit("refresh-lead-data");
+      }, 2000);
+    })
+    .catch((error) => {
+      console.error("Error uploading files:", error);
+    })
+    .finally(() => {
+      //
+    });
 };
 
 const onDrop = (acceptFiles: any, rejectReasons: any) => saveFiles(acceptFiles);
@@ -68,6 +142,9 @@ onMounted(async () => {
 
         <VCardTitle>
           Survey Pictures ( {{ dbStore.folderImages.length }} )
+          <span v-if="isUploading">
+            Uploaded {{ filesUploaded }} / {{ selectedFilesLength }}
+          </span>
         </VCardTitle>
 
         <template #append>
