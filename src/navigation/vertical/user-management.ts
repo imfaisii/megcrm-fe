@@ -24,6 +24,6 @@ export default [
     title: 'Team Management',
     icon: { icon: 'fluent-mdl2:team-favorite' },
     to: 'team',
-    // permissions: [modules.TEAM + '.*'],
+    permissions: [modules.TEAM + '.*'],
   },
 ] as VerticalNavItems
