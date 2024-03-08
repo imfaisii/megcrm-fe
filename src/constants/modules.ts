@@ -16,5 +16,6 @@ export const modules = {
   CALL_CENTER: 'call-center',
   LEAD_JOBS: 'lead-jobs',
   BOILERS: 'boilers',
+  TEAM: 'team',
   INSTALLATION_TYPES: 'installation-types'
 }
