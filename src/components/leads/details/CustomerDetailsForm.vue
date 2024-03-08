@@ -109,6 +109,7 @@ onMounted(async () => {
             type="number"
             clearable
             required
+            :readonly="!permissionsStore.isSuperAdmin"
           />
         </VCol>
 
