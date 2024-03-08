@@ -71,6 +71,10 @@ export default [
         title: 'Assignments', to: 'leads-assignments',
         permissions: [modules.LEAD_GENERATOR_ASSIGNMENTS + '.*'],
       },
+      {
+        title: 'Data Match Upload', to: 'data-match-upload',
+        permissions: [modules.LEADS + '.*'],
+      },
     ]
   },
 ] as VerticalNavItems
