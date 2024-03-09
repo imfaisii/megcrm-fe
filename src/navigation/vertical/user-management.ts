@@ -20,4 +20,10 @@ export default [
     to: 'users-roles',
     permissions: [modules.PERMISSIONS + '.*'],
   },
+  {
+    title: 'Team Management',
+    icon: { icon: 'fluent-mdl2:team-favorite' },
+    to: 'team',
+    permissions: [modules.TEAM + '.*'],
+  },
 ] as VerticalNavItems
