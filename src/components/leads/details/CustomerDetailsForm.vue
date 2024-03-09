@@ -20,6 +20,11 @@ const jobTypes = computed(() =>
     return { title: i.name, value: i.id };
   })
 );
+const isDisabledBecauseDatamatch = computed(
+  () =>
+    store.selectedLead.lead_customer_additional_detail.datamatch_progress ==
+      "Sent" && !permissionsStore.isSuperAdmin
+);
 
 onMounted(async () => {
   await store.getExtras();
@@ -49,6 +54,7 @@ onMounted(async () => {
             placeholder="John"
             clearable
             required
+            :disabled="isDisabledBecauseDatamatch"
           />
         </VCol>
 
@@ -71,6 +77,7 @@ onMounted(async () => {
             label="Last Name"
             placeholder="Doe"
             clearable
+            :disabled="isDisabledBecauseDatamatch"
             required
           />
         </VCol>
@@ -109,6 +116,7 @@ onMounted(async () => {
             type="number"
             clearable
             required
+            :disabled="isDisabledBecauseDatamatch"
             :readonly="!permissionsStore.isSuperAdmin"
           />
         </VCol>
@@ -127,6 +135,7 @@ onMounted(async () => {
             }"
             label="Date of Birth"
             placeholder="Select date"
+            :disabled="isDisabledBecauseDatamatch"
             required
           />
         </VCol>
@@ -140,6 +149,7 @@ onMounted(async () => {
             :rules="[requiredValidator]"
             placeholder="Enter postcode to search addresses"
             required
+            :disabled="isDisabledBecauseDatamatch"
             :readonly="!permissionsStore.isSuperAdmin"
           />
         </VCol>
@@ -154,6 +164,7 @@ onMounted(async () => {
             placeholder="Enter postcode to search addresses"
             type="text"
             required
+            :disabled="isDisabledBecauseDatamatch"
             :readonly="!permissionsStore.isSuperAdmin"
           />
         </VCol>
