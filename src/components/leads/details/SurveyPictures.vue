@@ -63,25 +63,37 @@ async function uploadFilesInChunks(files: any, chunkSize: number = 3) {
           return;
         }
 
-        await new Promise((resolve, reject) => {
-          new Compressor(file, {
-            quality: 0.4,
-            async success(result) {
-              try {
-                await dbStore.store(dbStore.folder, "Survey", result);
-                filesUploaded.value++;
+        // Check if the file is an image
+        if (file.type.startsWith("image/")) {
+          // If it's an image, compress it
+          await new Promise((resolve, reject) => {
+            new Compressor(file, {
+              quality: 0.4,
+              async success(result) {
+                try {
+                  await dbStore.store(dbStore.folder, "Survey", result);
+                  filesUploaded.value++;
 
-                resolve();
-              } catch (error) {
-                reject(error);
-              }
-            },
-            error(err) {
-              console.log(err.message);
-              reject(err);
-            },
+                  resolve();
+                } catch (error) {
+                  reject(error);
+                }
+              },
+              error(err) {
+                console.log(err.message);
+                reject(err);
+              },
+            });
           });
-        });
+        } else {
+          // If it's not an image, upload it directly
+          try {
+            await dbStore.store(dbStore.folder, "Survey", file);
+            filesUploaded.value++;
+          } catch (error) {
+            console.error("Error uploading file:", error);
+          }
+        }
       })
     );
   }
