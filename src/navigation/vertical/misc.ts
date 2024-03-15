@@ -9,6 +9,7 @@ const globalPermissions = [
   modules.SURVEYORS + '.*',
   modules.LEAD_GENERATORS + '.*',
   modules.LEAD_SOURCES + '.*',
+  modules.LEADS + '.*',
   modules.LEAD_STATUSES + '.*',
   modules.LEAD_GENERATOR_ASSIGNMENTS + '.*',
 ]
