@@ -45,9 +45,10 @@ const handleSubmit = async () => {
 };
 
 const closeDialog: any = () => {
+  props.store.reset();
   emit("update:isDialogVisible", false);
 
-  setTimeout(() => props.store.reset(), 500);
+  // setTimeout(() => props.store.reset(), 500);
 };
 
 onMounted(async () => {
@@ -97,16 +98,17 @@ onUnmounted(() => EventBus.$off("toggle-team-dialog"));
             <VRow>
               <VCol md="12" sm="12" cols="12">
                 <!-- Team Leader -->
-                <VSelect
+                <VAutocomplete
                   v-model="store.selected.admin_id"
                   :rules="[requiredValidator]"
                   :items="store.users"
-                  item-title="formated_name"
-                  item-value="id"
-                  :return-object="false"
                   label="Team Leader"
                   placeholder="Leader"
+                  item-title="formated_name"
+                  item-value="id"
+                  clearable
                   :error-messages="store?.errors?.admin_id?.[0]"
+                  :return-object="false"
                 />
               </VCol>
             </VRow>
@@ -114,7 +116,8 @@ onUnmounted(() => EventBus.$off("toggle-team-dialog"));
             <VRow>
               <VCol md="12" sm="12" cols="12">
                 <!-- Members -->
-                <VSelect
+
+                <VAutocomplete
                   v-model="store.selected.members"
                   :rules="[requiredValidator]"
                   :items="store.users"
@@ -125,6 +128,8 @@ onUnmounted(() => EventBus.$off("toggle-team-dialog"));
                   :return-object="false"
                   :error-messages="store?.errors?.members?.[0]"
                   multiple
+                  chips
+                  clearable
                 />
               </VCol>
             </VRow>
