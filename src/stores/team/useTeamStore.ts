@@ -23,7 +23,7 @@ export const useTeamStore = defineStore('team', () => {
   const entity = 'Team'
   const users = ref<any>([]);
   const team = ref<any>([])
-  const selected = ref<any>(defaultModel)
+  const selected = ref<any>({ ...defaultModel })
   const selectedId = ref<any>(null)
   const errors = ref<any>({})
   const isLoading = ref<any>(false)
@@ -137,7 +137,7 @@ export const useTeamStore = defineStore('team', () => {
 
 
   const reset = () => {
-    selected.value = { ...defaultModel }
+    selected.value = { ...defaultModel };
     errors.value = {}
   }
 
@@ -165,7 +165,8 @@ export const useTeamStore = defineStore('team', () => {
     selected.value.id = team.id;
     var userIds: [] = [];
     team.users.forEach(function (user: any) {
-      userIds.push(user.id);
+      if (user.id !== team.admin_id)
+        userIds.push(user.id);
     });
     console.log(`output->userIds`, userIds)
     selected.value.members = userIds;
