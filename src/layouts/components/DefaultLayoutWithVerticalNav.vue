@@ -10,6 +10,7 @@ import UserProfile from "@/layouts/components/UserProfile.vue";
 
 // @layouts plugin
 import useTime from "@/composables/useTime";
+import env from "@/constants/env";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { VerticalNavLayout } from "@layouts";
@@ -25,6 +26,7 @@ const { width: windowWidth } = useWindowSize();
 const store: any = usePermissionsStore();
 const auth: any = useAuthStore();
 const time = useTime();
+const { VITE_APP_API_URL: BASE_URL } = env;
 
 // ℹ️ Provide animation name for vertical nav collapse icon.
 const verticalNavHeaderActionAnimationName = ref<
@@ -34,7 +36,7 @@ const verticalNavHeaderActionAnimationName = ref<
 const handleFileDownload = async () => {
   const token = auth.accessToken || localStorage.getItem("access_token");
 
-  axios("http://megcrm-be.test/api/V1/leads-datamatch-download", {
+  axios(`${BASE_URL}/leads-datamatch-download`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
