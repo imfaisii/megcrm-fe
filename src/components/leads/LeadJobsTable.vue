@@ -43,6 +43,7 @@ const filters = ref({
   surveyor_id: [],
   timestamp: "",
   address: "",
+  reference_number: "",
   ...props.filters,
 });
 
@@ -161,7 +162,7 @@ onMounted(async () => {
       />
     </VCol>
 
-    <VCol cols="12" lg="6">
+    <VCol cols="12" lg="4">
       <AppDateTimePicker
         v-model="filters.timestamp"
         :config="{
@@ -176,8 +177,16 @@ onMounted(async () => {
       />
     </VCol>
 
-    <VCol cols="12" lg="6">
+    <VCol cols="12" lg="4">
       <VTextField v-model="filters.address" label="Address" clearable />
+    </VCol>
+
+    <VCol cols="12" lg="4">
+      <VTextField
+        v-model="filters.reference_number"
+        label="Reference Number"
+        clearable
+      />
     </VCol>
   </VRow>
 

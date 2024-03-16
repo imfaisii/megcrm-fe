@@ -5,7 +5,7 @@ const route = useRoute();
 const usersStore = useUsersStore();
 
 onMounted(async () => {
-  await usersStore.get(route.params.id);
+  await usersStore.get(route.params.id as any);
 });
 </script>
 

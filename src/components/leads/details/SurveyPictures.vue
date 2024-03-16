@@ -199,7 +199,9 @@ onUnmounted(() => {
               <VChip
                 v-bind="props"
                 :color="
-                  dbStore.surveyFileNames.includes(additional)
+                  dbStore.surveyFileNames.includes(
+                    `${leadsStore.selectedLead.reference_number} - ${additional}`
+                  )
                     ? 'info'
                     : 'error'
                 "
@@ -210,7 +212,9 @@ onUnmounted(() => {
             </template>
             <span>
               {{
-                dbStore.surveyFileNames.includes(additional)
+                dbStore.surveyFileNames.includes(
+                  `${leadsStore.selectedLead.reference_number} - ${additional}`
+                )
                   ? "Uploaded"
                   : "Not uploaded"
               }}

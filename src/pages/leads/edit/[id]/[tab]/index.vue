@@ -147,6 +147,22 @@ onUnmounted(() => {
                     </template>
                     <span>Customer Address</span>
                   </VTooltip>
+
+                  <VTooltip>
+                    <template #activator="{ props }">
+                      <VChip
+                        v-bind="props"
+                        label
+                        size="x-large"
+                        class="text-capitalize mb-2 ml-0"
+                        color="info"
+                      >
+                        Reference: {{ store.selectedLead.reference_number }}
+                      </VChip>
+                    </template>
+                    <span> Lead reference number </span>
+                  </VTooltip>
+
                   <VTooltip>
                     <template #activator="{ props }">
                       <VChip
@@ -161,6 +177,7 @@ onUnmounted(() => {
                     </template>
                     <span>Current Lead Status</span>
                   </VTooltip>
+
                   <VTooltip v-if="!store.selectedLead?.phone_number_formatted">
                     <template #activator="{ props }">
                       <VChip

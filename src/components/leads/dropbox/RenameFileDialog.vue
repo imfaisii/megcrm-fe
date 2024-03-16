@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { ADDITIONAL } from "@/constants/general";
 import { useDropboxStore } from "@/stores/dropbox/useDropboxStore";
+import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
 import { getExtension } from "@/utils/useHelper";
 import { requiredValidator } from "@validators";
 
 const store = useDropboxStore();
-
+const leadsStore = useLeadsStore();
 const name: any = ref(null);
 const oldName: any = ref(null);
 const path: any = ref(null);
@@ -33,11 +34,14 @@ const handleSubmit = async () => {
 
       await store.renameFile(
         path.value,
-        path.value.replace(oldName.value, nameWithExtension),
+        path.value.replace(
+          oldName.value,
+          `${leadsStore.selectedLead.reference_number} - ${nameWithExtension}`
+        ),
         nameWithExtension
       );
 
-      EventBus.$emit('refresh-survey-pictures')
+      EventBus.$emit("refresh-survey-pictures");
       closeDialog();
     }
   });

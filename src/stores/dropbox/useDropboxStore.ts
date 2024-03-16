@@ -52,12 +52,17 @@ export const useDropboxStore = defineStore('dropbox', () => {
         headers
       })
 
+
+      surveyFileNames.value = data.entries.map((i: any) => i.name.split('.')[0])
+      folderImages.value = folderImages.value.filter((image: any) => {
+        return surveyFileNames.value.includes(image.name.split('.')[0]);
+      });
+
       const filteredEntries = data.entries.filter((entry: any) => {
         return !folderImages.value.some((image: any) => image.path_display === entry.path_display);
       });
 
       folderImages.value = [...folderImages.value, ...filteredEntries];
-      surveyFileNames.value = folderImages.value.map((i: any) => i.name.split('.')[0])
 
       if (fetchLinks) {
         getTemporaryLinks(folderImages)
