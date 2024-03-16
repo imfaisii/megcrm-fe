@@ -35,6 +35,7 @@ const filters = ref({
   lead_generator_id: [],
   surveyor_id: [],
   timestamp: "",
+  address: "",
 });
 
 const isCommentsDialogVisible = ref(false);
@@ -196,7 +197,7 @@ const handleSwalCallback = (response: boolean) => {
       <VTextField v-model="filters.post_code" label="Post code" clearable />
     </VCol>
 
-    <VCol cols="12" lg="6">
+    <VCol cols="12" lg="4">
       <VAutocomplete
         v-model="filters.statuses"
         :items="store.leadTableStatuses"
@@ -208,6 +209,37 @@ const handleSwalCallback = (response: boolean) => {
         multiple
         clearable
         :return-object="false"
+      />
+    </VCol>
+
+    <VCol cols="12" lg="4">
+      <VAutocomplete
+        v-model="filters.lead_generator_id"
+        :items="store.leadGenerators"
+        label="Lead Generator"
+        placeholder="Select Lead Genrator"
+        item-title="name"
+        item-value="id"
+        chips
+        multiple
+        clearable
+        :return-object="false"
+      />
+    </VCol>
+
+    <VCol cols="12" lg="4">
+      <VAutocomplete
+        v-model="filters.surveyor_id"
+        :items="store.surveyors"
+        label="Surveyor"
+        placeholder="Select surveyor"
+        item-title="name"
+        item-value="id"
+        chips
+        multiple
+        clearable
+        :return-object="false"
+        :disabled="permStore.isSurveyorOnly"
       />
     </VCol>
 
@@ -227,34 +259,7 @@ const handleSwalCallback = (response: boolean) => {
     </VCol>
 
     <VCol cols="12" lg="6">
-      <VAutocomplete
-        v-model="filters.lead_generator_id"
-        :items="store.leadGenerators"
-        label="Lead Generator"
-        placeholder="Select Lead Genrator"
-        item-title="name"
-        item-value="id"
-        chips
-        multiple
-        clearable
-        :return-object="false"
-      />
-    </VCol>
-
-    <VCol cols="12" lg="6">
-      <VAutocomplete
-        v-model="filters.surveyor_id"
-        :items="store.surveyors"
-        label="Surveyor"
-        placeholder="Select surveyor"
-        item-title="name"
-        item-value="id"
-        chips
-        multiple
-        clearable
-        :return-object="false"
-        :disabled="permStore.isSurveyorOnly"
-      />
+      <VTextField v-model="filters.address" label="Address" clearable />
     </VCol>
   </VRow>
 
