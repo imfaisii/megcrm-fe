@@ -26,6 +26,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
   const getTemporaryLinkEndpoint = `${baseUrl}/get_temporary_link`
 
   const folderImages: any = ref([])
+  const surveyFileNames: any = ref([])
   const installationImages: any = ref([])
   const precheckingDocuments: any = ref([])
 
@@ -56,6 +57,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
       });
 
       folderImages.value = [...folderImages.value, ...filteredEntries];
+      surveyFileNames.value = folderImages.value.map((i: any) => i.name.split('.')[0])
 
       if (fetchLinks) {
         getTemporaryLinks(folderImages)
@@ -183,9 +185,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
       e.link = r.data.link
 
     })
-
   }
-
 
   const getTemporaryLinks = async (ref: Ref) => {
     try {
@@ -241,6 +241,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
     installationImages,
     folder,
     precheckingDocuments,
+    surveyFileNames,
 
     renameFile,
     getInstallationPictures,

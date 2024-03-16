@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ADDITIONAL } from "@/constants/general";
 import { useDropboxStore } from "@/stores/dropbox/useDropboxStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
@@ -139,8 +140,16 @@ const showRenameDialog = (fileName: string, filePath: string) => {
 };
 
 onMounted(async () => {
+  EventBus.$on("refresh-survey-pictures", () => {
+    dbStore.index(dbStore.folder);
+  });
+
   await dbStore.create(`${dbStore.folder}/Survey`);
   dbStore.index(dbStore.folder);
+});
+
+onUnmounted(() => {
+  EventBus.$off("refresh-survey-pictures");
 });
 </script>
 
@@ -181,6 +190,33 @@ onMounted(async () => {
             </VCol>
           </div>
         </template>
+      </VCardItem>
+      <VDivider />
+      <VCardItem>
+        <div class="d-flex flex-wrap" :style="{ gap: '10px' }">
+          <VTooltip v-for="additional in ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS">
+            <template #activator="{ props }">
+              <VChip
+                v-bind="props"
+                :color="
+                  dbStore.surveyFileNames.includes(additional)
+                    ? 'info'
+                    : 'error'
+                "
+                variant="flat"
+              >
+                {{ additional }}
+              </VChip>
+            </template>
+            <span>
+              {{
+                dbStore.surveyFileNames.includes(additional)
+                  ? "Uploaded"
+                  : "Not uploaded"
+              }}
+            </span>
+          </VTooltip>
+        </div>
       </VCardItem>
     </VCard>
 
@@ -223,7 +259,9 @@ onMounted(async () => {
                     cols="12"
                   >
                     <!-- Name -->
-                    <VCardSubtitle>{{ image.name }}</VCardSubtitle>
+                    <VCardSubtitle :style="{ width: '250px' }">
+                      {{ image.name }}
+                    </VCardSubtitle>
 
                     <!-- Edit Button -->
 

@@ -37,6 +37,7 @@ const handleSubmit = async () => {
         nameWithExtension
       );
 
+      EventBus.$emit('refresh-survey-pictures')
       closeDialog();
     }
   });
