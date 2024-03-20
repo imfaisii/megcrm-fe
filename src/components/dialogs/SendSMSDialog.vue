@@ -57,7 +57,12 @@ const handleSubmit = async () => {
       </VCardItem>
 
       <VCardText class="mt-6">
-        <VForm ref="smsForm" @submit.prevent="handleSubmit">
+        <VAlert border="start" color="info" variant="tonal">
+          Sending alert with name
+          {{ store.selectedLead.lead_generator.sender_id }}
+        </VAlert>
+
+        <VForm class="mt-4" ref="smsForm" @submit.prevent="handleSubmit">
           <VRow>
             <VCol cols="12">
               <VTextarea
