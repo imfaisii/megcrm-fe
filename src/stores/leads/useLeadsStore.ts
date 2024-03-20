@@ -3,7 +3,6 @@ import useApiFetch from '@/composables/useApiFetch'
 import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
 import { LeadStatus } from '@/stores/leads/useLeadStatusesStore'
-import { EventBus } from '@/utils/useEventBus'
 import { getExceptionMessage, handleError, reshapeParams, setQueryParams } from '@/utils/useHelper'
 import { omit } from 'lodash'
 import { defineStore } from 'pinia'
@@ -133,10 +132,9 @@ export const useLeadsStore = defineStore('leads', () => {
         data: payload,
         ...options,
       })
-      await fetchLeads({ include: "leadGenerator" })
       $toast.success('Lead was saved successfully.')
-      EventBus.$emit('hide-lead-dialog')
       router.push({ name: "leads-edit-id-tab", params: { id: data.lead.id, tab: 'customer-details' } });
+      errors.value = {}
     } catch (error: any) {
       if (error?.response?.status === 422) {
         errors.value = error?.response?.data?.errors

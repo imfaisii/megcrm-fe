@@ -52,7 +52,6 @@ const props = defineProps({
 
 const $toast = useToast();
 const store = useLeadsStore();
-const router = useRouter();
 
 const steps = [
   {
@@ -538,6 +537,9 @@ onMounted(async () => await store.getExtras());
                         additionalInformationForm.has_second_receipent &&
                           requiredValidator,
                       ]"
+                      :error-messages="
+                        store?.errors?.['second_receipent.first_name']?.[0]
+                      "
                       label="First Name"
                       placeholder="John"
                       clearable
@@ -550,6 +552,9 @@ onMounted(async () => await store.getExtras());
                       v-model="
                         additionalInformationForm.second_receipent.middle_name
                       "
+                      :error-messages="
+                        store?.errors?.['second_receipent.middle_name']?.[0]
+                      "
                       label="Middle Name"
                       placeholder="-"
                       clearable
@@ -561,10 +566,9 @@ onMounted(async () => await store.getExtras());
                       v-model="
                         additionalInformationForm.second_receipent.last_name
                       "
-                      :rules="[
-                        additionalInformationForm.has_second_receipent &&
-                          requiredValidator,
-                      ]"
+                      :error-messages="
+                        store?.errors?.['second_receipent.last_name']?.[0]
+                      "
                       label="Last Name"
                       placeholder="Doe"
                       clearable
@@ -575,10 +579,9 @@ onMounted(async () => await store.getExtras());
                   <VCol cols="12" lg="3">
                     <AppDateTimePicker
                       v-model="additionalInformationForm.second_receipent.dob"
-                      :rules="[
-                        additionalInformationForm.has_second_receipent &&
-                          requiredValidator,
-                      ]"
+                      :error-messages="
+                        store?.errors?.['second_receipent.dob']?.[0]
+                      "
                       :config="{
                         altInput: true,
                         altFormat: 'F j, Y',
