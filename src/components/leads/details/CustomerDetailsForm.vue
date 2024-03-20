@@ -303,6 +303,73 @@ onMounted(async () => {
       </VRow>
 
       <transition name="fade" mode="out-in">
+        <VRow v-show="store.selectedLead.has_second_receipent">
+          <VCardItem>
+            <template #prepend>
+              <VIcon icon="mdi-account-outline" class="text-disabled" />
+            </template>
+
+            <VCardTitle>Second Receipent Details</VCardTitle>
+          </VCardItem>
+
+          <VDivider class="mb-3" />
+
+          <VCol cols="12" lg="3">
+            <VTextField
+              v-model="store.selectedLead.second_receipent.first_name"
+              :error-messages="
+                store?.errors?.['second_receipent.first_name']?.[0]
+              "
+              label="First Name"
+              placeholder="John"
+              clearable
+              required
+            />
+          </VCol>
+
+          <VCol cols="12" lg="3">
+            <VTextField
+              v-model="store.selectedLead.second_receipent.middle_name"
+              :error-messages="
+                store?.errors?.['second_receipent.middle_name']?.[0]
+              "
+              label="Middle Name"
+              placeholder="-"
+              clearable
+            />
+          </VCol>
+
+          <VCol cols="12" lg="3">
+            <VTextField
+              v-model="store.selectedLead.second_receipent.last_name"
+              :error-messages="
+                store?.errors?.['second_receipent.last_name']?.[0]
+              "
+              label="Last Name"
+              placeholder="Doe"
+              clearable
+              required
+            />
+          </VCol>
+
+          <VCol cols="12" lg="3">
+            <AppDateTimePicker
+              v-model="store.selectedLead.second_receipent.dob"
+              :config="{
+                altInput: true,
+                altFormat: 'F j, Y',
+                dateFormat: 'Y-m-d',
+              }"
+              label="Date of Birth"
+              placeholder="Select date"
+              required
+            >
+            </AppDateTimePicker>
+          </VCol>
+        </VRow>
+      </transition>
+
+      <transition name="fade" mode="out-in">
         <VRow
           v-show="
             store.selectedLead.lead_customer_additional_detail

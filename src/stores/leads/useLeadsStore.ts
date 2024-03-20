@@ -86,7 +86,8 @@ export const useLeadsStore = defineStore('leads', () => {
     "installationBookings",
     "comments.commentator",
     "leadAdditional",
-    'notifications'
+    "secondReceipent",
+    "notifications"
   ];
   const router = useRouter()
 
@@ -206,6 +207,15 @@ export const useLeadsStore = defineStore('leads', () => {
         }
       }
 
+      if (selectedLead.value.second_receipent === null) {
+        selectedLead.value.second_receipent = {
+          first_name: null,
+          middle_name: null,
+          last_name: null,
+          dob: null,
+        }
+      }
+
       selectedLead.value.benefits = data.lead?.benefits.map((i: any) => i.id)
       selectedLead.value.measures = data.lead?.measures.map((i: any) => i.id)
       selectedLeadCopy.value = JSON.parse(JSON.stringify(selectedLead.value))
@@ -243,6 +253,7 @@ export const useLeadsStore = defineStore('leads', () => {
       })
 
       $toast.success('Lead was updated successfully.')
+      errors.value = {}
     } catch (error) {
       handleError(error, errors)
     } finally {
