@@ -46,6 +46,10 @@ const handleSubmit = async () => {
         nameWithExtension
       );
 
+      store.folderImages = store.folderImages.filter(
+        (image: any) => image.name !== oldName.value.split(".")[0]
+      );
+
       EventBus.$emit("refresh-survey-pictures");
       closeDialog();
     }
