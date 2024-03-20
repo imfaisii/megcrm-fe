@@ -20,7 +20,7 @@ export const ADDITIONAL = {
       "Survey form",
       "Proof of ownership",
       "Proof of benefit",
-      "Proof of address/utility bill",
+      "Proof of address or utility bill",
       "Relationship declaration",
       "Bedroom picture 1",
       "Bedroom picture 2",

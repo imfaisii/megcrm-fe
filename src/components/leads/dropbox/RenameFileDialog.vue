@@ -36,7 +36,12 @@ const handleSubmit = async () => {
         path.value,
         path.value.replace(
           oldName.value,
-          `${leadsStore.selectedLead.reference_number} - ${nameWithExtension}`
+          `${
+            leadsStore.selectedLead.reference_number
+          } - ${nameWithExtension.replace(
+            `${leadsStore.selectedLead.reference_number} - `,
+            ""
+          )}`
         ),
         nameWithExtension
       );

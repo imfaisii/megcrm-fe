@@ -13,6 +13,17 @@ const leadsStore = useLeadsStore();
 const filesUploaded = ref(0);
 const selectedFilesLength = ref(0);
 const isUploading = ref(false);
+const selectedTags = ref<string[]>([]);
+
+const selectTag = (v: string) => {
+  const index = selectedTags.value.indexOf(v);
+
+  if (index !== -1) {
+    selectedTags.value.splice(index, 1);
+  } else {
+    selectedTags.value.push(v);
+  }
+};
 
 const show = (image: any) => {
   if (isImageFileName(image.name)) {
@@ -151,6 +162,16 @@ onMounted(async () => {
 onUnmounted(() => {
   EventBus.$off("refresh-survey-pictures");
 });
+
+const filteredResults = computed(() => {
+  if (selectedTags.value.length < 1) {
+    return dbStore.folderImages;
+  }
+
+  return dbStore.folderImages.filter((image: any) =>
+    selectedTags.value.some((name) => image.name.includes(name))
+  );
+});
 </script>
 
 <template>
@@ -197,6 +218,8 @@ onUnmounted(() => {
           <VTooltip v-for="additional in ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS">
             <template #activator="{ props }">
               <VChip
+                @click="selectTag(additional)"
+                class="ring"
                 v-bind="props"
                 :color="
                   dbStore.surveyFileNames.includes(
@@ -205,7 +228,9 @@ onUnmounted(() => {
                     ? 'info'
                     : 'error'
                 "
-                variant="flat"
+                :variant="
+                  selectedTags.includes(additional) ? 'outlined' : 'flat'
+                "
               >
                 {{ additional }}
               </VChip>
@@ -226,7 +251,7 @@ onUnmounted(() => {
 
     <VRow class="pa-2 mt-4">
       <VCol
-        v-for="image in (dbStore.folderImages as any)"
+        v-for="image in (filteredResults as any)"
         :key="image.id"
         class="image-card"
         cols="12"
