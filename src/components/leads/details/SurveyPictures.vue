@@ -184,9 +184,6 @@ const filteredResults = computed(() => {
 
         <VCardTitle>
           Survey Pictures ( {{ dbStore.folderImages.length }} )
-          <span v-if="isUploading">
-            Uploaded {{ filesUploaded }} / {{ selectedFilesLength }}
-          </span>
         </VCardTitle>
 
         <template #append>
@@ -212,7 +209,13 @@ const filteredResults = computed(() => {
           </div>
         </template>
       </VCardItem>
+
+      <VCardTitle v-if="isUploading">
+        <span> Uploaded {{ filesUploaded }} / {{ selectedFilesLength }} </span>
+      </VCardTitle>
+
       <VDivider />
+
       <VCardItem>
         <div class="d-flex flex-wrap" :style="{ gap: '10px' }">
           <VTooltip v-for="additional in ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS">
@@ -249,11 +252,16 @@ const filteredResults = computed(() => {
       </VCardItem>
     </VCard>
 
-    <VRow class="pa-2 mt-4">
+    <VRow class="mt-4">
+      <VCol v-if="filteredResults.length < 1" cols="12">
+        <VCard title="No image(s) found." />
+      </VCol>
+
       <VCol
         v-for="image in (filteredResults as any)"
+        v-else
         :key="image.id"
-        class="image-card"
+        class="image-card px-3"
         cols="12"
         sm="6"
         md="3"
