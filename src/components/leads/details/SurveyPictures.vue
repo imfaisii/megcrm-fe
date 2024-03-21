@@ -3,7 +3,7 @@ import { ADDITIONAL } from "@/constants/general";
 import { useDropboxStore } from "@/stores/dropbox/useDropboxStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
-import { isImageFileName } from "@/utils/useHelper";
+import { isImageFileName, sleep } from "@/utils/useHelper";
 import errorimage from "@images/custom/404.jpg";
 import Compressor from "compressorjs";
 import { useDropzone } from "vue3-dropzone";
@@ -111,11 +111,52 @@ async function uploadFilesInChunks(files: any, chunkSize: number = 3) {
   }
 }
 
+async function uploadFilesSequentially(files: any) {
+  for (const file of files) {
+    if (!file) {
+      continue;
+    }
+
+    // Check if the file is an image
+    if (file.type.startsWith("image/")) {
+      new Promise((resolve, reject) => {
+        new Compressor(file, {
+          quality: 0.4,
+          async success(result) {
+            try {
+              await dbStore.store(dbStore.folder, "Survey", result);
+              filesUploaded.value++;
+              resolve(result);
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error(err) {
+            console.log(err.message);
+            reject(err);
+          },
+        });
+      });
+
+      await sleep(1000);
+    } else {
+      try {
+        dbStore.store(dbStore.folder, "Survey", file);
+        filesUploaded.value++;
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+
+      await sleep(1000);
+    }
+  }
+}
+
 const saveFiles = async (files: any) => {
   isUploading.value = true;
   selectedFilesLength.value = files.length;
 
-  uploadFilesInChunks(files)
+  uploadFilesSequentially(files)
     .then(async () => {
       await leadsStore.updateStatus({
         leadId: leadsStore.selectedLead.id,
