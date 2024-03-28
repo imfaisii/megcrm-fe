@@ -333,17 +333,26 @@ const filteredResults = computed(() => {
                   </VCol>
 
                   <VCol
-                    class="d-flex justify-space-between align-center pa-3 mb-2"
+                    class="d-flex justify-start align-center pa-3"
                     cols="12"
+                    @click.stop
                   >
+                    <div style="flex-basis: 100%">
+                      <rename-select-file-dialog
+                        :imageData="{
+                          fileName: image.name,
+                          filePath: image.path_display,
+                        }"
+                      ></rename-select-file-dialog>
+                    </div>
                     <!-- Name -->
-                    <VCardSubtitle :style="{ width: '250px' }">
+                    <!-- <VCardSubtitle :style="{ width: '250px' }">
                       {{ image.name }}
-                    </VCardSubtitle>
+                    </VCardSubtitle> -->
 
                     <!-- Edit Button -->
 
-                    <IconBtn
+                    <!-- <IconBtn
                       size="x-small"
                       class="mr-2"
                       @click.stop="
@@ -361,7 +370,7 @@ const filteredResults = computed(() => {
                         </template>
                         <span>Rename file</span>
                       </VTooltip>
-                    </IconBtn>
+                    </IconBtn> -->
                   </VCol>
                 </VRow>
               </div>
@@ -384,7 +393,7 @@ const filteredResults = computed(() => {
   </div>
 
   <!-- Dialogs-->
-  <RenameFileDialog />
+  <!-- <RenameFileDialog /> -->
 </template>
 
 <style lang="scss" scoped>
