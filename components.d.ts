@@ -78,6 +78,7 @@ declare module '@vue/runtime-core' {
     PreCheckingDocumentsCard: typeof import('./src/components/leads/details/PreCheckingDocumentsCard.vue')['default']
     PreCheckingTab: typeof import('./src/components/leads/details/PreCheckingTab.vue')['default']
     RenameFileDialog: typeof import('./src/components/leads/dropbox/RenameFileDialog.vue')['default']
+    RenameSelectFileDialog: typeof import('./src/components/leads/dropbox/RenameSelectFileDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ScrollToTop: typeof import('./src/@core/components/ScrollToTop.vue')['default']
