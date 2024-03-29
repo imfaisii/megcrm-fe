@@ -319,14 +319,7 @@ const handleSwalCallback = (response: boolean) => {
           <VTooltip location="top">
             <template v-slot:activator="{ props: tooltip }">
               <VBtn
-                :class="
-                  (item.raw?.status_details?.name
-                    .toUpperCase()
-                    .includes('CANCELLED') ||
-                    item.raw?.status_details?.lead_status_model?.color ==
-                      '#FF0000') &&
-                  'text-white'
-                "
+                class="text-white"
                 size="x-small"
                 :color="
                   item.raw?.status_details?.lead_status_model?.color ??
