@@ -17,6 +17,14 @@ const props = defineProps({
     required: false,
     default: () => [],
   },
+  heading: {
+    required: false,
+    default: () => "Timeline",
+  },
+  isWithinCard: {
+    required: false,
+    default: () => true,
+  },
 });
 
 const store = useLeadsStore();
@@ -166,7 +174,7 @@ const getChanges = (i: any): any => {
         <VIcon icon="mdi-format-list-bulleted" class="text-disabled" />
       </template>
 
-      <VCardTitle>Timeline</VCardTitle>
+      <VCardTitle>{{ props.heading }}</VCardTitle>
     </VCardItem>
 
     <VDivider />

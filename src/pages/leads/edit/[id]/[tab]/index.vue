@@ -162,6 +162,24 @@ onUnmounted(() => {
                     </template>
                     <span> Lead reference number </span>
                   </VTooltip>
+                  <VTooltip>
+                    <template #activator="{ props }">
+                      <VChip
+                        v-bind="props"
+                        label
+                        size="x-large"
+                        class="text-capitalize mb-2 ml-0"
+                        color="error"
+                      >
+                        DataMatch Status:
+                        {{
+                          store.selectedLead.lead_customer_additional_detail
+                            .datamatch_progress
+                        }}
+                      </VChip>
+                    </template>
+                    <span> Lead reference number </span>
+                  </VTooltip>
 
                   <VTooltip>
                     <template #activator="{ props }">

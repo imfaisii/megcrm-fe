@@ -15,6 +15,7 @@ import {
 
 const permissionsStore = usePermissionsStore();
 const store = useLeadsStore();
+const DataMatchLogs = ref(null);
 const jobTypes = computed(() =>
   store.jobTypes.map((i: any) => {
     return { title: i.name, value: i.id };
@@ -28,6 +29,12 @@ const isDisabledBecauseDatamatch = computed(
 
 onMounted(async () => {
   await store.getExtras();
+  DataMatchLogs.value = store.selectedLead.logs.filter(function (log: any) {
+    return (
+      log?.event == "updated" &&
+      log?.properties?.attributes?.hasOwnProperty("datamatch_progress")
+    );
+  });
 });
 </script>
 
@@ -280,16 +287,11 @@ onMounted(async () => {
               label="Requires datamatch"
             />
 
-            <span
-              v-if="
-                store.selectedLead.lead_customer_additional_detail
-                  .is_datamatch_required
-              "
-            >
+            <span>
               <VChip
                 label
                 size="small"
-                class="text-capitalize blink-animate"
+                class="text-capitalize animate-pulse"
                 color="info"
               >
                 {{
@@ -370,12 +372,7 @@ onMounted(async () => {
       </transition>
 
       <transition name="fade" mode="out-in">
-        <VRow
-          v-show="
-            store.selectedLead.lead_customer_additional_detail
-              .is_datamatch_required
-          "
-        >
+        <VRow>
           <VCardItem>
             <template #prepend>
               <VIcon icon="mdi-bullseye-arrow" class="text-disabled" />
@@ -397,9 +394,8 @@ onMounted(async () => {
               :rules="[requiredValidator]"
               :label="`Datamatch progress for ${store.selectedLead.full_name}`"
               placeholder="Select an option"
-              clearable
               required
-              :disabled="true"
+              :readonly="true"
             />
           </VCol>
 
@@ -413,9 +409,16 @@ onMounted(async () => {
               :rules="[requiredValidator]"
               label="Date processed by DWP"
               placeholder="Date processed"
-              clearable
               required
-              disabled
+              :readonly="true"
+            />
+          </VCol>
+          <VDivider class="mb-3" />
+          <!-- Datamatch History -->
+          <VCol cols="12" lg="12" v-if="DataMatchLogs">
+            <ActivityTimeline
+              :logs="DataMatchLogs ?? []"
+              heading="DataMatch History"
             />
           </VCol>
         </VRow>
