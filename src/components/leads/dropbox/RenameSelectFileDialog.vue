@@ -23,7 +23,7 @@ const handleSubmit = async (selectedName: string) => {
 
   const nameWithExtension = `${name.value}.${ext.value}`;
 
-  await store.renameFile(
+  const response = await store.renameFile(
     path.value,
     path.value.replace(
       oldName.value,
@@ -37,9 +37,13 @@ const handleSubmit = async (selectedName: string) => {
     nameWithExtension
   );
 
-  store.folderImages = store.folderImages.filter(
-    (entry: any) => entry.id !== props.imageData.id
+  const entryIndex = store.folderImages.findIndex(
+    (i: any) => i.id === props.imageData.id
   );
+
+  if (entryIndex !== -1) {
+    store.folderImages[entryIndex] = response;
+  }
 
   EventBus.$emit("refresh-survey-pictures");
 };
@@ -66,7 +70,6 @@ onMounted(() => {
         "
         label="Name"
         placeholder="File Name"
-        clearable
         required
       >
         <template v-slot:item="{ item, props }">

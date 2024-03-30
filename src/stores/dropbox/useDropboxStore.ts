@@ -220,7 +220,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
     try {
       loading.value = true
 
-      await axios.post(`${renameEndpoint}`, {
+      const { data } = await axios.post(`${renameEndpoint}`, {
         "allow_ownership_transfer": false,
         "allow_shared_folder": false,
         "autorename": true,
@@ -231,6 +231,8 @@ export const useDropboxStore = defineStore('dropbox', () => {
       })
 
       $toast.success('File was renamed.')
+
+      return data.metadata;
     }
     catch (e: any) {
       $toast.error(e?.message ?? 'Failed to rename, please try again.')

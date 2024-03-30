@@ -284,7 +284,7 @@ const filteredResults = computed(() => {
         </VCard>
       </VCol>
 
-      <VCol v-if="dbStore.loading" cols="12" sm="6" md="3">
+      <!-- <VCol v-if="dbStore.loading" cols="12" sm="6" md="3">
         <Skeleton height="2rem" class="mb-2" borderRadius="16px" />
 
         <VCardText class="position-relative">
@@ -292,7 +292,7 @@ const filteredResults = computed(() => {
             <Skeleton width="5rem" borderRadius="16px" class="mb-2" />
           </VCardTitle>
         </VCardText>
-      </VCol>
+      </VCol> -->
     </VRow>
   </div>
 </template>
