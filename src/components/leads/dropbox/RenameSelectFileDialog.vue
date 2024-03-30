@@ -3,7 +3,7 @@ import { ADDITIONAL } from "@/constants/general";
 import { useDropboxStore } from "@/stores/dropbox/useDropboxStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
-import { generateRandomString, getExtension } from "@/utils/useHelper";
+import { getExtension } from "@/utils/useHelper";
 import { requiredValidator } from "@validators";
 
 const props = defineProps(["imageData"]);
@@ -20,10 +20,6 @@ const ext: any = ref("");
 const handleSubmit = async (selectedName: string) => {
   name.value = selectedName;
   isLoading.value = true;
-
-  if (name.value.toLowerCase() === "extras") {
-    name.value += `- ${generateRandomString(4)}`;
-  }
 
   const nameWithExtension = `${name.value}.${ext.value}`;
 
@@ -63,7 +59,11 @@ onMounted(() => {
       <VSelect
         v-model="name"
         :rules="[requiredValidator]"
-        :items="ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS"
+        :items="
+          ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS.sort((a, b) =>
+            a.toLowerCase().localeCompare(b.toLowerCase())
+          )
+        "
         label="Name"
         placeholder="File Name"
         clearable

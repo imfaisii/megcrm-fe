@@ -198,8 +198,6 @@ const filteredResults = computed(() => {
                     `${leadsStore.selectedLead.reference_number} - ${additional}`
                   )
                     ? 'info'
-                    : additional === 'Extras'
-                    ? 'secondary'
                     : 'error'
                 "
                 :variant="
@@ -215,8 +213,6 @@ const filteredResults = computed(() => {
                   `${leadsStore.selectedLead.reference_number} - ${additional}`
                 )
                   ? "Uploaded"
-                  : additional === "Extras"
-                  ? ""
                   : "Not uploaded"
               }}
             </span>
