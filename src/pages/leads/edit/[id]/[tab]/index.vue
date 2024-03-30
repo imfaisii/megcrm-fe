@@ -402,6 +402,31 @@ onUnmounted(() => {
             </template>
             Click to update lead details.
           </VTooltip>
+          <VTooltip position="top" v-model="showTooltip">
+            <template #activator="{ props }">
+              <VFadeTransition leave-absolute>
+                <VProgressCircular
+                  v-if="store.isLoading"
+                  size="24"
+                  color="info"
+                  indeterminate
+                />
+
+                <VBtn
+                  v-else-if="store.showEditButton"
+                  @click="handleLeadUpdate"
+                  v-bind="props"
+                  size="x-large"
+                  color="warning"
+                  elevation="8"
+                >
+                  <VIcon start icon="mdi-content-save-edit-outline" />
+                  Save
+                </VBtn>
+              </VFadeTransition>
+            </template>
+            Click to update lead details.
+          </VTooltip>
         </div>
       </VLayoutItem>
     </VScaleTransition>

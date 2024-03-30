@@ -39,78 +39,6 @@ const show = (image: any) => {
   }
 };
 
-async function uploadFiles(files: any) {
-  for (const file of files) {
-    if (!file) {
-      continue;
-    }
-
-    await new Promise((resolve, reject) => {
-      new Compressor(file, {
-        quality: 0.4,
-        async success(result) {
-          try {
-            await dbStore.store(dbStore.folder, "Survey", result);
-            filesUploaded.value++;
-            resolve();
-          } catch (error) {
-            reject(error);
-          }
-        },
-        error(err) {
-          console.log(err.message);
-          reject(err);
-        },
-      });
-    });
-  }
-}
-
-async function uploadFilesInChunks(files: any, chunkSize: number = 3) {
-  for (let i = 0; i < files.length; i += chunkSize) {
-    const chunk = files.slice(i, i + chunkSize);
-    await Promise.all(
-      chunk.map(async (file: any) => {
-        if (!file) {
-          return;
-        }
-
-        // Check if the file is an image
-        if (file.type.startsWith("image/")) {
-          // If it's an image, compress it
-          await new Promise((resolve, reject) => {
-            new Compressor(file, {
-              quality: 0.4,
-              async success(result) {
-                try {
-                  await dbStore.store(dbStore.folder, "Survey", result);
-                  filesUploaded.value++;
-
-                  resolve();
-                } catch (error) {
-                  reject(error);
-                }
-              },
-              error(err) {
-                console.log(err.message);
-                reject(err);
-              },
-            });
-          });
-        } else {
-          // If it's not an image, upload it directly
-          try {
-            await dbStore.store(dbStore.folder, "Survey", file);
-            filesUploaded.value++;
-          } catch (error) {
-            console.error("Error uploading file:", error);
-          }
-        }
-      })
-    );
-  }
-}
-
 async function uploadFilesSequentially(files: any) {
   for (const file of files) {
     if (!file) {
@@ -270,6 +198,8 @@ const filteredResults = computed(() => {
                     `${leadsStore.selectedLead.reference_number} - ${additional}`
                   )
                     ? 'info'
+                    : additional === 'Extras'
+                    ? 'secondary'
                     : 'error'
                 "
                 :variant="
@@ -285,6 +215,8 @@ const filteredResults = computed(() => {
                   `${leadsStore.selectedLead.reference_number} - ${additional}`
                 )
                   ? "Uploaded"
+                  : additional === "Extras"
+                  ? ""
                   : "Not uploaded"
               }}
             </span>
@@ -316,11 +248,11 @@ const filteredResults = computed(() => {
             </VCardTitle>
           </VCardText>
         </div>
-        <VCard @click="show(image)" v-else>
+        <VCard v-else>
           <VTooltip>
             <template #activator="{ props }">
               <div v-bind="props">
-                <VRow>
+                <VRow @click="show(image)">
                   <VCol cols="12">
                     <!-- Image -->
                     <VImg
@@ -331,52 +263,28 @@ const filteredResults = computed(() => {
                       loading="lazy"
                     />
                   </VCol>
-
-                  <VCol
-                    class="d-flex justify-start align-center pa-3"
-                    cols="12"
-                    @click.stop
-                  >
-                    <div style="flex-basis: 100%">
-                      <rename-select-file-dialog
-                        :imageData="{
-                          fileName: image.name,
-                          filePath: image.path_display,
-                        }"
-                      ></rename-select-file-dialog>
-                    </div>
-                    <!-- Name -->
-                    <!-- <VCardSubtitle :style="{ width: '250px' }">
-                      {{ image.name }}
-                    </VCardSubtitle> -->
-
-                    <!-- Edit Button -->
-
-                    <!-- <IconBtn
-                      size="x-small"
-                      class="mr-2"
-                      @click.stop="
-                        showRenameDialog(image.name, image.path_display)
-                      "
-                    >
-                      <VTooltip>
-                        <template #activator="{ props }">
-                          <VIcon
-                            v-bind:="props"
-                            size="large"
-                            color="secondary"
-                            icon="mdi-pencil-outline"
-                          />
-                        </template>
-                        <span>Rename file</span>
-                      </VTooltip>
-                    </IconBtn> -->
-                  </VCol>
                 </VRow>
               </div>
             </template>
             <span>Click to preview</span>
           </VTooltip>
+          <VRow>
+            <VCol
+              class="d-flex justify-start align-center pa-3"
+              cols="12"
+              @click.stop
+            >
+              <div style="flex-basis: 100%">
+                <rename-select-file-dialog
+                  :imageData="{
+                    id: image.id,
+                    fileName: image.name,
+                    filePath: image.path_display,
+                  }"
+                />
+              </div>
+            </VCol>
+          </VRow>
         </VCard>
       </VCol>
 
@@ -391,9 +299,6 @@ const filteredResults = computed(() => {
       </VCol>
     </VRow>
   </div>
-
-  <!-- Dialogs-->
-  <!-- <RenameFileDialog /> -->
 </template>
 
 <style lang="scss" scoped>

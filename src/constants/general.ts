@@ -14,7 +14,7 @@ export const ADDITIONAL = {
       "Gas meter",
       "Electric meter",
       "Eletric meter fuse box",
-      "Fllor plan",
+      "Floor plan",
       "EST form",
       "EPC form",
       "Survey form",
@@ -57,6 +57,7 @@ export const ADDITIONAL = {
       "Windows thickness",
       "Evidence of ventilation",
       "Survey coordinates",
+      "Extras"
     ]
   }
 }

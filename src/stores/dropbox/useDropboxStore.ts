@@ -52,17 +52,22 @@ export const useDropboxStore = defineStore('dropbox', () => {
         headers
       })
 
+      const folderImageIds = new Set(folderImages.value.map((entry: any) => entry.id));
 
-      surveyFileNames.value = data.entries.map((i: any) => i.name.split('.')[0])
-      folderImages.value = folderImages.value.filter((image: any) => {
-        return surveyFileNames.value.includes(image.name.split('.')[0]);
+      // Filter data.entries to remove entries with IDs present in folderImageIds
+      data.entries = data.entries.filter((entry: any) => !folderImageIds.has(entry.id));
+      const combined = [
+        ...folderImages.value,
+        ...data.entries
+      ]
+
+      folderImages.value = combined.sort((a, b) => {
+        const timestampA: any = new Date(a.client_modified);
+        const timestampB: any = new Date(b.client_modified);
+
+        // Compare timestamps
+        return timestampB - timestampA;
       });
-
-      const filteredEntries = data.entries.filter((entry: any) => {
-        return !folderImages.value.some((image: any) => image.path_display === entry.path_display);
-      });
-
-      folderImages.value = [...folderImages.value, ...filteredEntries];
 
       if (fetchLinks) {
         getTemporaryLinks(folderImages)
@@ -224,13 +229,6 @@ export const useDropboxStore = defineStore('dropbox', () => {
       }, {
         headers
       })
-
-      const entry = folderImages.value.find((i: any) => i.path_display = oldPath)
-
-      if (entry) {
-        entry.name = newFileName;
-        entry.path_display = newPath;
-      }
     }
     catch (e: any) {
       $toast.error(e?.message ?? 'Failed to rename, please try again.')
@@ -238,6 +236,10 @@ export const useDropboxStore = defineStore('dropbox', () => {
       loading.value = false
     }
   }
+
+  watch(() => folderImages.value, (n, o) => {
+    surveyFileNames.value = n.map((i: any) => i.name.split('.')[0])
+  }, { deep: true })
 
 
   return {

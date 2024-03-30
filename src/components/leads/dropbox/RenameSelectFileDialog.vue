@@ -3,10 +3,13 @@ import { ADDITIONAL } from "@/constants/general";
 import { useDropboxStore } from "@/stores/dropbox/useDropboxStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
-import { getExtension } from "@/utils/useHelper";
+import { generateRandomString, getExtension } from "@/utils/useHelper";
 import { requiredValidator } from "@validators";
+
 const props = defineProps(["imageData"]);
 
+const enableSaveButton = ref(false);
+const isLoading = ref(false);
 const store = useDropboxStore();
 const leadsStore = useLeadsStore();
 const name: any = ref(null);
@@ -25,15 +28,16 @@ const reset = () => {
 
 watch(name, (newValue, oldValue) => {
   if (newValue !== null && newValue !== firstName.value) {
-    console.log(`output->inside`);
-    handleSubmit();
+    enableSaveButton.value = true;
   }
 });
 
 const handleSubmit = async () => {
-  // formRef.value.validate().then(async (v: any) => {
-  //   if (v.valid) {
-  console.log(`output->inside foirn`);
+  isLoading.value = true;
+
+  if (name.value.toLowerCase() === "extras") {
+    name.value += `- ${generateRandomString(4)}`;
+  }
 
   const nameWithExtension = `${name.value}.${ext.value}`;
 
@@ -52,12 +56,12 @@ const handleSubmit = async () => {
   );
 
   store.folderImages = store.folderImages.filter(
-    (image: any) => image.name !== oldName.value.split(".")[0]
+    (entry: any) => entry.id !== props.imageData.id
   );
 
+  enableSaveButton.value = false;
+  isLoading.value = false;
   EventBus.$emit("refresh-survey-pictures");
-  //   }
-  // });
 };
 
 onMounted(() => {
@@ -70,14 +74,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- <VCombobox
-    v-model="name"
-    :items="ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS"
-    label="Name"
-    placeholder="File Name"
-    clearable
-    required
-  /> -->
   <VForm ref="formRef" @submit.prevent="handleSubmit">
     <VCol cols="12">
       <VCombobox
@@ -90,13 +86,13 @@ onMounted(() => {
         required
       />
     </VCol>
-
-    <!-- <VCol cols="12">
-      <div class="d-flex align-center gap-3 mt-6">
-        <VBtn type="submit" :disabled="store.loading" :loading="store.loading">
-          Rename File
-        </VBtn>
-      </div>
-    </VCol> -->
+    <VCol>
+      <VBtn
+        @click="handleSubmit"
+        :disabled="!enableSaveButton"
+        :loading="isLoading"
+        >Save</VBtn
+      >
+    </VCol>
   </VForm>
 </template>
