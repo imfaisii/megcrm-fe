@@ -8,7 +8,6 @@ import { requiredValidator } from "@validators";
 
 const props = defineProps(["imageData"]);
 
-const enableSaveButton = ref(false);
 const isLoading = ref(false);
 const store = useDropboxStore();
 const leadsStore = useLeadsStore();
@@ -17,22 +16,9 @@ const firstName: any = ref(null);
 const oldName: any = ref(null);
 const path: any = ref(null);
 const ext: any = ref("");
-const formRef = ref();
 
-const reset = () => {
-  name.value = null;
-  path.value = null;
-  oldName.value = null;
-  ext.value = "";
-};
-
-watch(name, (newValue, oldValue) => {
-  if (newValue !== null && newValue !== firstName.value) {
-    enableSaveButton.value = true;
-  }
-});
-
-const handleSubmit = async () => {
+const handleSubmit = async (selectedName: string) => {
+  name.value = selectedName;
   isLoading.value = true;
 
   if (name.value.toLowerCase() === "extras") {
@@ -59,8 +45,6 @@ const handleSubmit = async () => {
     (entry: any) => entry.id !== props.imageData.id
   );
 
-  enableSaveButton.value = false;
-  isLoading.value = false;
   EventBus.$emit("refresh-survey-pictures");
 };
 
@@ -74,9 +58,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <VForm ref="formRef" @submit.prevent="handleSubmit">
+  <VForm>
     <VCol cols="12">
-      <VCombobox
+      <VSelect
         v-model="name"
         :rules="[requiredValidator]"
         :items="ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS"
@@ -84,15 +68,25 @@ onMounted(() => {
         placeholder="File Name"
         clearable
         required
-      />
-    </VCol>
-    <VCol>
-      <VBtn
-        @click="handleSubmit"
-        :disabled="!enableSaveButton"
-        :loading="isLoading"
-        >Save</VBtn
       >
+        <template v-slot:item="{ item, props }">
+          <div
+            @click="handleSubmit(item.title)"
+            v-bind="props"
+            class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line v-list-item--variant-text"
+            tabindex="0"
+          >
+            <span class="v-list-item__overlay"></span
+            ><span class="v-list-item__underlay"></span>
+            <div class="v-list-item__prepend"><!----></div>
+            <div class="v-list-item__content" data-no-activator="">
+              <div class="v-list-item-title">
+                {{ item.title }}
+              </div>
+            </div>
+          </div>
+        </template>
+      </VSelect>
     </VCol>
   </VForm>
 </template>
