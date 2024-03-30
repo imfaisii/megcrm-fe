@@ -16,7 +16,9 @@ export default async function useApiFetch(uri: string, options: AxiosRequestConf
       Accept: 'application/json',
       ...options.headers,
     },
+    withCredentials: true, // Include cookies in the request
     ...options,
+
   }
 
   const token = auth.accessToken || localStorage.getItem('access_token')
