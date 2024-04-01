@@ -20,6 +20,7 @@ const headers = [
   { title: "Phone", key: "phone_no" },
   { title: "Post Code", key: "post_code" },
   { title: "Lead Generator", key: "lead_generator_id", sortable: false },
+  { title: "Survey Booked By", key: "id", sortable: false },
   { title: "Status", key: "status_details", sortable: false },
   { title: "Date", key: "created_at" },
   { title: "Actions", key: "actions", sortable: false },
@@ -242,6 +243,14 @@ onMounted(async () => {
       </VTooltip>
     </template>
 
+    <!-- Lead Generator -->
+    <!-- @vue-expect-error -->
+    <template #item.lead_generator_id="{ item }">
+      <div class="font-italic">
+        {{ item.raw?.lead_generator?.name ?? "No lead generator" }}
+      </div>
+    </template>
+
     <!-- Survey Booked By -->
     <!-- @vue-expect-error -->
     <template #item.id="{ item }">
@@ -256,14 +265,6 @@ onMounted(async () => {
       >
         {{ store.getNameOfSurveyBookers(item) }}
       </VBtn>
-    </template>
-
-    <!-- Lead Generator -->
-    <!-- @vue-expect-error -->
-    <template #item.lead_generator_id="{ item }">
-      <div class="font-italic">
-        {{ item.raw?.lead_generator?.name ?? "No lead generator" }}
-      </div>
     </template>
 
     <!-- Status -->
