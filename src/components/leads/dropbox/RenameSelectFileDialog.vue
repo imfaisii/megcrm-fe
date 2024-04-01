@@ -6,7 +6,16 @@ import { EventBus } from "@/utils/useEventBus";
 import { getExtension } from "@/utils/useHelper";
 import { requiredValidator } from "@validators";
 
-const props = defineProps(["imageData"]);
+const props = defineProps({
+  type: {
+    type: String,
+    default: () => "Survey Pictures",
+  },
+  imageData: {
+    type: Object,
+    required: true,
+  },
+});
 
 const isLoading = ref(false);
 const store = useDropboxStore();
@@ -37,15 +46,27 @@ const handleSubmit = async (selectedName: string) => {
     nameWithExtension
   );
 
-  const entryIndex = store.folderImages.findIndex(
-    (i: any) => i.id === props.imageData.id
-  );
+  if (props.type === "Survey Pictures") {
+    const entryIndex = store.folderImages.findIndex(
+      (i: any) => i.id === props.imageData.id
+    );
 
-  if (entryIndex !== -1) {
-    store.folderImages[entryIndex] = response;
+    if (entryIndex !== -1) {
+      store.folderImages[entryIndex] = response;
+    }
+
+    EventBus.$emit("refresh-survey-pictures");
+  } else {
+    const entryIndex = store.installationImages.findIndex(
+      (i: any) => i.id === props.imageData.id
+    );
+
+    if (entryIndex !== -1) {
+      store.installationImages[entryIndex] = response;
+    }
+
+    EventBus.$emit("refresh-installation-pictures");
   }
-
-  EventBus.$emit("refresh-survey-pictures");
 };
 
 onMounted(() => {
@@ -64,7 +85,7 @@ onMounted(() => {
         v-model="name"
         :rules="[requiredValidator]"
         :items="
-          ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS.sort((a, b) =>
+          ADDITIONAL.LEADS.INSTALLATION_IMAGE_LABELS.sort((a, b) =>
             a.toLowerCase().localeCompare(b.toLowerCase())
           )
         "

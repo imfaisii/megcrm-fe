@@ -112,13 +112,6 @@ const { getRootProps, getInputProps, ...rest } = useDropzone({
   accept: ["image/*", "video/*", "application/pdf"],
 });
 
-const showRenameDialog = (fileName: string, filePath: string) => {
-  EventBus.$emit("show-dropbox-rename-dialog", {
-    fileName,
-    filePath,
-  });
-};
-
 onMounted(async () => {
   EventBus.$on("refresh-survey-pictures", () => {
     dbStore.index(dbStore.folder);
@@ -197,11 +190,11 @@ const filteredResults = computed(() => {
                   dbStore.surveyFileNames.includes(
                     `${leadsStore.selectedLead.reference_number} - ${additional}`
                   )
-                    ? 'info'
+                    ? 'secondary'
                     : 'error'
                 "
                 :variant="
-                  selectedTags.includes(additional) ? 'outlined' : 'flat'
+                  selectedTags.includes(additional) ? 'flat' : 'outlined'
                 "
               >
                 {{ additional }}
@@ -283,16 +276,6 @@ const filteredResults = computed(() => {
           </VRow>
         </VCard>
       </VCol>
-
-      <!-- <VCol v-if="dbStore.loading" cols="12" sm="6" md="3">
-        <Skeleton height="2rem" class="mb-2" borderRadius="16px" />
-
-        <VCardText class="position-relative">
-          <VCardTitle>
-            <Skeleton width="5rem" borderRadius="16px" class="mb-2" />
-          </VCardTitle>
-        </VCardText>
-      </VCol> -->
     </VRow>
   </div>
 </template>

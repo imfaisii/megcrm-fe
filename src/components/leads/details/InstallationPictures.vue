@@ -1,13 +1,29 @@
 <script lang="ts" setup>
+import { ADDITIONAL } from "@/constants/general";
 import { useDropboxStore } from "@/stores/dropbox/useDropboxStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
-import { isImageFileName } from "@/utils/useHelper";
+import { isImageFileName, sleep } from "@/utils/useHelper";
 import errorimage from "@images/custom/404.jpg";
 import { useDropzone } from "vue3-dropzone";
 
 const dbStore = useDropboxStore();
+const filesUploaded = ref(0);
+const selectedFilesLength = ref(0);
+const isUploading = ref(false);
 const leadsStore = useLeadsStore();
+
+const selectedTags = ref<string[]>([]);
+
+const selectTag = (v: string) => {
+  const index = selectedTags.value.indexOf(v);
+
+  if (index !== -1) {
+    selectedTags.value.splice(index, 1);
+  } else {
+    selectedTags.value.push(v);
+  }
+};
 
 const show = (image: any) => {
   if (isImageFileName(image.name)) {
@@ -23,19 +39,70 @@ const show = (image: any) => {
   }
 };
 
-const saveFiles = async (files: any) => {
-  for await (const file of files) {
-    await dbStore.store(dbStore.folder, "Installation", file);
+async function uploadFilesSequentially(files: any) {
+  for (const file of files) {
+    if (!file) {
+      continue;
+    }
+
+    // Check if the file is an image
+    if (file.type.startsWith("image/")) {
+      new Promise((resolve, reject) => {
+        new Compressor(file, {
+          quality: 0.4,
+          async success(result) {
+            try {
+              await dbStore.store(dbStore.folder, "Installation", result);
+              filesUploaded.value++;
+              resolve(result);
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error(err) {
+            console.log(err.message);
+            reject(err);
+          },
+        });
+      });
+
+      await sleep(1000);
+    } else {
+      try {
+        dbStore.store(dbStore.folder, "Installation", file);
+        filesUploaded.value++;
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+
+      await sleep(1000);
+    }
   }
+}
 
-  // await leadsStore.updateStatus({
-  //   leadId: leadsStore.selectedLead.id,
-  //   status: "Survey Done",
-  //   comments: "All files were uploaded to dropbox.",
-  // });
+const saveFiles = async (files: any) => {
+  isUploading.value = true;
+  selectedFilesLength.value = files.length;
 
-  dbStore.index(dbStore.folder);
-  EventBus.$emit("refresh-lead-data");
+  uploadFilesSequentially(files)
+    .then(async () => {
+      // await leadsStore.updateStatus({
+      //   leadId: leadsStore.selectedLead.id,
+      //   status: "Survey Done",
+      //   comments: "All files were uploaded to dropbox.",
+      // });
+
+      setTimeout(() => {
+        dbStore.getInstallationPictures(dbStore.folder);
+        EventBus.$emit("refresh-lead-data");
+      }, 2000);
+    })
+    .catch((error) => {
+      console.error("Error uploading files:", error);
+    })
+    .finally(() => {
+      //
+    });
 };
 
 const onDrop = (acceptFiles: any, rejectReasons: any) => saveFiles(acceptFiles);
@@ -45,16 +112,23 @@ const { getRootProps, getInputProps, ...rest } = useDropzone({
   accept: ["image/*", "video/*", "application/pdf"],
 });
 
-const showRenameDialog = (fileName: string, filePath: string) => {
-  EventBus.$emit("show-dropbox-rename-dialog", {
-    fileName,
-    filePath,
-  });
-};
-
 onMounted(async () => {
+  EventBus.$on("refresh-installation-pictures", () => {
+    dbStore.getInstallationPictures(dbStore.folder);
+  });
+
   await dbStore.create(`${dbStore.folder}/Installation`);
   dbStore.getInstallationPictures(dbStore.folder);
+});
+
+const filteredResults = computed(() => {
+  if (selectedTags.value.length < 1) {
+    return dbStore.installationImages;
+  }
+
+  return dbStore.installationImages.filter((image: any) =>
+    selectedTags.value.some((name) => image.name.includes(name))
+  );
 });
 </script>
 
@@ -93,13 +167,61 @@ onMounted(async () => {
           </div>
         </template>
       </VCardItem>
+
+      <VCardTitle v-if="isUploading">
+        <span> Uploaded {{ filesUploaded }} / {{ selectedFilesLength }} </span>
+      </VCardTitle>
+
+      <VDivider />
+
+      <VCardItem>
+        <div class="d-flex flex-wrap" :style="{ gap: '10px' }">
+          <VTooltip
+            v-for="additional in ADDITIONAL.LEADS.INSTALLATION_IMAGE_LABELS"
+          >
+            <template #activator="{ props }">
+              <VChip
+                @click="selectTag(additional)"
+                class="ring"
+                v-bind="props"
+                :color="
+                  dbStore.installationFileNames.includes(
+                    `${leadsStore.selectedLead.reference_number} - ${additional}`
+                  )
+                    ? 'secondary'
+                    : 'error'
+                "
+                :variant="
+                  selectedTags.includes(additional) ? 'flat' : 'outlined'
+                "
+              >
+                {{ additional }}
+              </VChip>
+            </template>
+            <span>
+              {{
+                dbStore.installationFileNames.includes(
+                  `${leadsStore.selectedLead.reference_number} - ${additional}`
+                )
+                  ? "Uploaded"
+                  : "Not uploaded"
+              }}
+            </span>
+          </VTooltip>
+        </div>
+      </VCardItem>
     </VCard>
 
-    <VRow class="pa-2 mt-4">
+    <VRow class="mt-4">
+      <VCol v-if="filteredResults.length < 1" cols="12">
+        <VCard title="No image(s) found." />
+      </VCol>
+
       <VCol
-        v-for="image in (dbStore.installationImages as any)"
+        v-for="image in (filteredResults as any)"
+        v-else
         :key="image.id"
-        class="image-card"
+        class="image-card px-3"
         cols="12"
         sm="6"
         md="3"
@@ -113,11 +235,12 @@ onMounted(async () => {
             </VCardTitle>
           </VCardText>
         </div>
-        <VCard @click="show(image)" v-else>
+
+        <VCard v-else>
           <VTooltip>
             <template #activator="{ props }">
               <div v-bind="props">
-                <VRow>
+                <VRow @click="show(image)">
                   <VCol cols="12">
                     <!-- Image -->
                     <VImg
@@ -128,52 +251,30 @@ onMounted(async () => {
                       loading="lazy"
                     />
                   </VCol>
-
-                  <VCol
-                    class="d-flex justify-space-between align-center pa-3 mb-2"
-                    cols="12"
-                  >
-                    <!-- Name -->
-                    <VCardSubtitle>{{ image.name }}</VCardSubtitle>
-
-                    <!-- Edit Button -->
-
-                    <IconBtn
-                      size="x-small"
-                      class="mr-2"
-                      @click.stop="
-                        showRenameDialog(image.name, image.path_display)
-                      "
-                    >
-                      <VTooltip>
-                        <template #activator="{ props }">
-                          <VIcon
-                            v-bind:="props"
-                            size="large"
-                            color="secondary"
-                            icon="mdi-pencil-outline"
-                          />
-                        </template>
-                        <span>Rename file</span>
-                      </VTooltip>
-                    </IconBtn>
-                  </VCol>
                 </VRow>
               </div>
             </template>
             <span>Click to preview</span>
           </VTooltip>
+          <VRow>
+            <VCol
+              class="d-flex justify-start align-center pa-3"
+              cols="12"
+              @click.stop
+            >
+              <div style="flex-basis: 100%">
+                <rename-select-file-dialog
+                  type="Installation Pictures"
+                  :imageData="{
+                    id: image.id,
+                    fileName: image.name,
+                    filePath: image.path_display,
+                  }"
+                />
+              </div>
+            </VCol>
+          </VRow>
         </VCard>
-      </VCol>
-
-      <VCol v-if="dbStore.loading" cols="12" sm="6" md="3">
-        <Skeleton height="2rem" class="mb-2" borderRadius="16px" />
-
-        <VCardText class="position-relative">
-          <VCardTitle>
-            <Skeleton width="5rem" borderRadius="16px" class="mb-2" />
-          </VCardTitle>
-        </VCardText>
       </VCol>
     </VRow>
   </div>

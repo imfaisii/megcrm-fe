@@ -27,6 +27,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
 
   const folderImages: any = ref([])
   const surveyFileNames: any = ref([])
+  const installationFileNames: any = ref([])
   const installationImages: any = ref([])
   const precheckingDocuments: any = ref([])
 
@@ -96,11 +97,22 @@ export const useDropboxStore = defineStore('dropbox', () => {
         headers
       })
 
-      const filteredEntries = data.entries.filter((entry: any) => {
-        return !installationImages.value.some((image: any) => image.path_display === entry.path_display);
-      });
+      const installationImageIds = new Set(installationImages.value.map((entry: any) => entry.id));
 
-      installationImages.value = [...installationImages.value, ...filteredEntries];
+      // Filter data.entries to remove entries with IDs present in folderImageIds
+      data.entries = data.entries.filter((entry: any) => !installationImageIds.has(entry.id));
+      const combined = [
+        ...installationImages.value,
+        ...data.entries
+      ]
+
+      installationImages.value = combined.sort((a, b) => {
+        const timestampA: any = new Date(a.client_modified);
+        const timestampB: any = new Date(b.client_modified);
+
+        // Compare timestamps
+        return timestampB - timestampA;
+      });
 
       if (fetchLinks) {
         getTemporaryLinks(installationImages)
@@ -245,6 +257,9 @@ export const useDropboxStore = defineStore('dropbox', () => {
     surveyFileNames.value = n.map((i: any) => i.name.split('.')[0])
   }, { deep: true })
 
+  watch(() => installationImages.value, (n, o) => {
+    installationFileNames.value = n.map((i: any) => i.name.split('.')[0])
+  }, { deep: true })
 
   return {
     loading,
@@ -253,6 +268,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
     folder,
     precheckingDocuments,
     surveyFileNames,
+    installationFileNames,
 
     renameFile,
     getInstallationPictures,
