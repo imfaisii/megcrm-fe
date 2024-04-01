@@ -514,7 +514,7 @@ onMounted(async () => {
                     cols="12"
                     lg="4"
                   >
-                    <InstallerDocument v-bind="document" />
+                    <CompanyDocument v-bind="document" />
                   </VCol>
                 </VRow>
               </VCol>

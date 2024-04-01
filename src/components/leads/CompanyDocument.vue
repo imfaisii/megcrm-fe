@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useUsersStore } from "@/stores/users/useUsersStore";
+import { useCompaniesStore } from "@/stores/companies/useCompaniesStore";
 import { useDropzone } from "vue3-dropzone";
 
 interface Props {
@@ -13,9 +13,8 @@ const props = withDefaults(defineProps<Props>(), {
   color: "primary",
 });
 
-const usersStore = useUsersStore();
+const store: any = useCompaniesStore();
 const expiry = ref(null);
-const loading = ref(false);
 const selectedFile = ref("");
 const onDrop = (acceptFiles: any, rejectReasons: any) => saveFiles(acceptFiles);
 const { getRootProps, getInputProps, ...rest } = useDropzone({
@@ -25,7 +24,7 @@ const { getRootProps, getInputProps, ...rest } = useDropzone({
 });
 
 const link: any = computed(() => {
-  const record = usersStore.selected.installer_documents.find(
+  const record: any = store.selected.documents.find(
     (i: any) => i.name === props.title
   );
 
@@ -44,15 +43,15 @@ const onButtonClick = (type: string) => (selectedFile.value = type);
 
 const saveFiles = async (files: any) => {
   if (Array.isArray(files) && files.length > 0) {
-    await usersStore.saveDocumentToCollection(
-      usersStore.selectedId,
-      "installer-documents",
+    await store.saveDocumentToCollection(
+      store.selected.id,
+      "documents",
       files[0],
       props.title,
       expiry.value
     );
 
-    await usersStore.update(usersStore.selectedId, usersStore.selected);
+    await store.get(store.selected.id);
   }
 };
 
@@ -64,7 +63,7 @@ watch(
         link?.value?.custom_properties?.expiry &&
         link.value.custom_properties.expiry !== n
       ) {
-        await usersStore.updateExpiryDate(link.value.id, n);
+        await store.updateExpiryDate(link.value.id, n);
       }
     }
   }
@@ -102,8 +101,8 @@ watch(
                     size="small"
                     color="info"
                     icon="mdi-download-outline"
-                    :loading="usersStore.isLoading"
-                    :disabled="usersStore.isLoading"
+                    :loading="store.isLoading"
+                    :disabled="store.isLoading"
                   />
                 </template>
                 <span> Click to download file </span>
@@ -119,8 +118,8 @@ watch(
                       size="small"
                       color="primary"
                       icon="mdi-upload-outline"
-                      :loading="usersStore.isLoading"
-                      :disabled="usersStore.isLoading || (hasExpiry && !expiry)"
+                      :loading="store.isLoading"
+                      :disabled="store.isLoading || (hasExpiry && !expiry)"
                     />
                   </template>
                   <span>
