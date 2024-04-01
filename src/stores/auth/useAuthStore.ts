@@ -34,6 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const isLoading = ref<boolean>(false)
   const errors = ref<any>({})
+  const isOtpVerified = ref(false);
   const success = ref<boolean>(false)
   const message = ref<string>('')
   const isLoggedIn = computed(() => !!user.value)
@@ -73,7 +74,7 @@ export const useAuthStore = defineStore('auth', () => {
 
       await setToken(loginData.access_token)
       await setUser(loginData.user)
-      redirectToDashboard()
+      redirectToTwoStep()
     }
     catch (error: any) {
       handleError(error, errors)
@@ -131,6 +132,8 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  const setOtpTpVerified = () => isOtpVerified.value = true;
+
   const setUser = async (userData: User | any) => {
     user.value = userData
 
@@ -169,6 +172,12 @@ export const useAuthStore = defineStore('auth', () => {
     $toast.success('Redirecting to dashboard')
     router.push('/dashboard')
   }
+  const redirectToTwoStep = () => {
+    router.push('/two-step')
+  }
+
+
+
 
   const reset = () => {
     errors.value = {}
@@ -196,8 +205,10 @@ export const useAuthStore = defineStore('auth', () => {
     message,
     errors,
     accessToken,
+    isOtpVerified,
 
     login,
+    setOtpTpVerified,
     logout,
     fetchUser,
     forgotPassword,
@@ -208,6 +219,7 @@ export const useAuthStore = defineStore('auth', () => {
     setUser,
     destroyUser,
     destroyToken,
-    $reset
+    $reset,
+    redirectToTwoStep
   }
 })

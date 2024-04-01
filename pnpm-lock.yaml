@@ -77,6 +77,9 @@ dependencies:
   nprogress:
     specifier: ^0.2.0
     version: 0.2.0
+  phone:
+    specifier: ^3.1.42
+    version: 3.1.42
   pinia:
     specifier: 2.1.3
     version: 2.1.3(typescript@5.0.4)(vue@3.4.10)
@@ -3884,6 +3887,11 @@ packages:
 
   /perfect-scrollbar@1.5.5:
     resolution: {integrity: sha512-dzalfutyP3e/FOpdlhVryN4AJ5XDVauVWxybSkLZmakFE2sS3y3pc4JnSprw8tGmHvkaG5Edr5T7LBTZ+WWU2g==}
+    dev: false
+
+  /phone@3.1.42:
+    resolution: {integrity: sha512-J+cbZtGcN/ph10TRxwCLYZx9/k4WOU1wImMiUiUjr/2sWnY7bR7CadehbsM8E9UyG+/shgmH++eKbhD0kR4EZA==}
+    engines: {node: '>=12'}
     dev: false
 
   /picocolors@1.0.0:

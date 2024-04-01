@@ -2,6 +2,7 @@
 import { useGenerateImageVariant } from "@/@core/composable/useGenerateImageVariant";
 import useApiFetch from "@/composables/useApiFetch";
 import { useToast } from "@/plugins/toastr";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
 
 import authV1RegisterMaskDark from "@images/pages/auth-v1-register-mask-dark.png";
 import authV1RegisterMaskLight from "@images/pages/auth-v1-register-mask-light.png";
@@ -15,7 +16,11 @@ const authV1ThemeTwoStepMask = useGenerateImageVariant(
 );
 const toast = useToast();
 const OTPCODE = ref(null);
+const responseCode = ref(null);
+const router = useRouter();
+
 const loader = ref(false);
+const authStore: any = useAuthStore();
 const resendOTP = async () => {
   try {
     loader.value = true;
@@ -24,8 +29,9 @@ const resendOTP = async () => {
       data: {},
       method: "POST",
     });
+    responseCode.value = data;
   } catch (err: any) {
-    toast.error(err.message);
+    toast.error(err?.response?.data?.message ?? err.message);
   } finally {
     loader.value = false;
   }
@@ -41,12 +47,32 @@ const OTPCheck = async () => {
       },
       method: "POST",
     });
+    authStore.setOtpTpVerified();
+    router.push("/dashboard");
   } catch (err: any) {
-    toast.error(err.message);
+    toast.error("Otp Could not be verified");
   } finally {
     loader.value = false;
   }
 };
+
+const scramledPhoneNumber = computed(() => {
+  const whereSent = authStore?.user?.phone_no
+    ? authStore?.user?.phone_no
+    : authStore?.user?.email;
+  const digitsLimit = authStore?.user?.phone_no ? 3 : 9;
+  if (whereSent?.length <= 3) {
+    return whereSent; // If string length is 3 or less, no masking required
+  } else {
+    // Get the last three characters
+    let lastThreeChars = whereSent?.slice(digitsLimit);
+
+    // Replace all characters except the last three with asterisks
+    let masked = "*".repeat(whereSent?.length - digitsLimit) + lastThreeChars;
+
+    return masked != "undefined" ? masked : "*****************";
+  }
+});
 </script>
 
 <template>
@@ -68,9 +94,12 @@ const OTPCheck = async () => {
         <h5 class="text-h5 mb-1">Two Step Verification 💬</h5>
         <p class="mb-2">
           We sent a verification code to your mobile and the email. Enter the
-          code from the mobile in the field below.
+          code <strong>{{ responseCode ?? "" }}</strong> from the mobile in the
+          field below.
         </p>
-        <h6 class="text-base font-weight-medium">············1234</h6>
+        <h6 class="text-base font-weight-medium">
+          {{ scramledPhoneNumber }}
+        </h6>
       </VCardText>
 
       <VCardText>

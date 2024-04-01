@@ -9,6 +9,8 @@ const { VITE_APP_API_URL: BASE_URL } = env
 export default async function useApiFetch(uri: string, options: AxiosRequestConfig = {}): Promise<any> {
   const auth = useAuthStore()
   const $toast = useToast()
+  const router = useRouter();
+
 
   const config: AxiosRequestConfig = {
     url: `${BASE_URL}${uri}`,
@@ -37,6 +39,12 @@ export default async function useApiFetch(uri: string, options: AxiosRequestConf
         if ($toast) { $toast.error('You have been logged out. Token expired') }
 
         auth.logout()
+      }
+      else if (error.response && error.response.status === 423) {
+        if ($toast) { $toast.error('OTP Verification Required') }
+        console.log(`otp fialee`);
+        auth.redirectToTwoStep()
+
       }
       else if (error?.response?.data?.message === 'The route dashboard could not be found.') {
         auth.redirectToDashboard()

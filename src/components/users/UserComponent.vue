@@ -3,8 +3,8 @@ import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { useUsersStore } from "@/stores/users/useUsersStore";
 import { emailValidator, requiredValidator } from "@core/utils/validators";
+import { phone } from "phone";
 import { VForm } from "vuetify/components/VForm";
-
 const documents: any = ref([
   {
     title: "Gas Safe Card",
@@ -111,6 +111,16 @@ const handleSubmit = () => {
   refAccountForm.value?.validate().then(async (valid) => {
     if (valid.valid) {
       try {
+        if (currentStep.value == 1) {
+          console.log(`output->inside`);
+          const response = phone(store.selected.additional.phone_no);
+          if (response?.isValid) {
+            store.selected.additional.phone_no = response.phoneNumber;
+          } else {
+            store.errors.phone_no = ["please enter a valid phone number"];
+            return false;
+          }
+        }
         if (store.shouldRefresh) {
           if (!store.selectedId) {
             await store.store(store.selected);
@@ -305,10 +315,11 @@ onMounted(async () => {
             <VCol cols="12" lg="6">
               <VTextField
                 v-model="store.selected.additional.phone_no"
-                label="Phone"
-                placeholder="XXX-XXXXXXX"
-                type="number"
+                label="Phone Number"
+                placeholder="+18175698900"
+                type="text"
                 clearable
+                :error-messages="store?.errors?.phone_no?.[0]"
               />
             </VCol>
 
