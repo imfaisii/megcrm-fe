@@ -76,6 +76,14 @@ onMounted(() => {
   firstName.value = name.value;
   path.value = props?.imageData?.filePath;
 });
+
+const dropdownOptions = computed(() => {
+  if (props.type === "Survey Pictures") {
+    return ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS;
+  }
+
+  return ADDITIONAL.LEADS.INSTALLATION_IMAGE_LABELS;
+});
 </script>
 
 <template>
@@ -85,7 +93,7 @@ onMounted(() => {
         v-model="name"
         :rules="[requiredValidator]"
         :items="
-          ADDITIONAL.LEADS.INSTALLATION_IMAGE_LABELS.sort((a, b) =>
+          dropdownOptions.sort((a, b) =>
             a.toLowerCase().localeCompare(b.toLowerCase())
           )
         "
