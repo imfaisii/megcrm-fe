@@ -2,6 +2,7 @@ import useApiFetch from '@/composables/useApiFetch'
 import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
 import { handleError, renameFile, reshapeParams } from '@/utils/useHelper'
+// @ts-ignore
 import { omit } from 'lodash'
 import { defineStore } from 'pinia'
 
@@ -30,7 +31,6 @@ export const useUsersStore = defineStore('users', () => {
     roles: [],
     aircall_email_address: null,
     documents: [],
-    installer_documents: [],
     additional: {
       dob: null,
       gender: GENDERS[0],
@@ -41,12 +41,6 @@ export const useUsersStore = defineStore('users', () => {
       nin: null,
       visa_expiry: null
     },
-    installer_company: {
-      name: null,
-      address: null,
-      company_number: null,
-      vat_number: null,
-    }
   }
   const endPoint = '/users'
   const entity = 'User'
@@ -80,10 +74,6 @@ export const useUsersStore = defineStore('users', () => {
       selected.value.additional = defaultModel.additional
     }
 
-    if (selected.value.installer_company === null) {
-      selected.value.installer_company = defaultModel.installer_company
-    }
-
     selected.value.additional.bank = selected.value?.additional?.bank?.name ?? null;
   }
 
@@ -91,7 +81,7 @@ export const useUsersStore = defineStore('users', () => {
     isLoading.value = true
     selectedId.value = userId
 
-    const { data } = await useApiFetch(`${endPoint}/${userId}?include=additional.bank,installerCompany`)
+    const { data } = await useApiFetch(`${endPoint}/${userId}?include=additional.bank`)
 
     setFetchedUser(data.user)
 
@@ -137,7 +127,7 @@ export const useUsersStore = defineStore('users', () => {
       isLoading.value = true
       await useApiFetch(`${endPoint}/${id}`, {
         data: omit(payload, [
-          'media', 'installer_documents', 'dropbox'
+          'media', 'dropbox'
         ]),
         ...options
       })

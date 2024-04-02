@@ -1,42 +1,10 @@
 <script setup lang="ts">
+import { useCompaniesStore } from "@/stores/companies/useCompaniesStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { useUsersStore } from "@/stores/users/useUsersStore";
 import { emailValidator, requiredValidator } from "@core/utils/validators";
 import { VForm } from "vuetify/components/VForm";
-
-const documents: any = ref([
-  {
-    title: "Gas Safe Card",
-    color: "primary",
-    icon: "mdi-document",
-    hasExpiry: true,
-  },
-  {
-    title: "Public Liability Insurance",
-    color: "primary",
-    icon: "mdi-document",
-    hasExpiry: true,
-  },
-  {
-    title: "Anamizer Callibration Cert",
-    color: "primary",
-    icon: "mdi-document",
-    hasExpiry: true,
-  },
-  {
-    title: "SS of company no. from company house",
-    color: "primary",
-    icon: "mdi-document",
-    hasExpiry: false,
-  },
-  {
-    title: "Gas Safe Certificate",
-    color: "primary",
-    icon: "mdi-document",
-    hasExpiry: false,
-  },
-]);
 
 const numberedSteps = [
   {
@@ -70,6 +38,7 @@ const statuses = [
 
 const permissionsStore = usePermissionsStore();
 const leadsStore = useLeadsStore();
+const companiesStore = useCompaniesStore();
 const store = useUsersStore();
 const currentStep = ref(0);
 const isPasswordVisible = ref(false);
@@ -135,6 +104,9 @@ const handleSubmit = () => {
 onMounted(async () => {
   await permissionsStore.getRoles();
   await leadsStore.getExtras();
+  await companiesStore.index({
+    all: true,
+  });
 });
 </script>
 
@@ -445,76 +417,19 @@ onMounted(async () => {
                     <VDivider class="mt-1 mb-6" />
                   </VCol>
 
-                  <VCol cols="12" md="6">
-                    <VTextField
-                      v-model="store.selected.installer_company.name"
-                      label="Enter Company Name"
-                      placeholder="MEG"
-                      :error-messages="
-                        store?.errors?.installer_company?.name?.[0]
-                      "
-                      clearable
-                    />
-                  </VCol>
-
-                  <VCol cols="12" md="6">
-                    <VTextField
-                      v-model="store.selected.installer_company.address"
-                      label="Enter Company Address"
-                      placeholder="MEG"
-                      :error-messages="
-                        store?.errors?.installer_company?.address?.[0]
-                      "
-                      clearable
-                    />
-                  </VCol>
-
-                  <VCol cols="12" md="6">
-                    <VTextField
-                      v-model="store.selected.installer_company.company_number"
-                      label="Enter Company Number"
-                      placeholder="AB112233"
-                      :error-messages="
-                        store?.errors?.installer_company?.company_number?.[0]
-                      "
-                      clearable
-                    />
-                  </VCol>
-
-                  <VCol cols="12" md="6">
-                    <VTextField
-                      v-model="store.selected.installer_company.vat_number"
-                      label="Enter Company VAT Number"
-                      placeholder="AB112233"
-                      :error-messages="
-                        store?.errors?.installer_company?.vat_number?.[0]
-                      "
-                      clearable
-                    />
-                  </VCol>
-
                   <VCol cols="12">
-                    <VCardItem class="px-0">
-                      <template #prepend>
-                        <VIcon
-                          icon="mdi-file-document-multiple-outline"
-                          class="text-disabled"
-                        />
-                      </template>
-
-                      <VCardTitle>Company Documents</VCardTitle>
-                    </VCardItem>
-                  </VCol>
-
-                  <VDivider class="mt-1 mb-6" />
-
-                  <VCol
-                    v-for="document in documents"
-                    :key="document.title"
-                    cols="12"
-                    lg="4"
-                  >
-                    <InstallerDocument v-bind="document" />
+                    <VSelect
+                      v-model="store.selected.company_id"
+                      label="Select Company"
+                      placeholder="MEG"
+                      :rules="[requiredValidator]"
+                      :items="companiesStore.entries"
+                      :error-messages="store?.errors?.company_id?.[0]"
+                      item-title="name"
+                      item-value="id"
+                      required
+                      clearable
+                    />
                   </VCol>
                 </VRow>
               </VCol>

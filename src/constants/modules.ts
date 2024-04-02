@@ -13,6 +13,7 @@ export const modules = {
   ROLES: 'roles',
   SURVEYORS: 'surveyors',
   USERS: 'users',
+  COMPANIES: 'companies',
   CALL_CENTER: 'call-center',
   LEAD_JOBS: 'lead-jobs',
   BOILERS: 'boilers',

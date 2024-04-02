@@ -15,6 +15,12 @@ export default [
     permissions: [modules.USERS + '.*'],
   },
   {
+    title: 'Companies',
+    icon: { icon: 'mdi-domain' },
+    to: 'companies',
+    permissions: [modules.COMPANIES + '.*'],
+  },
+  {
     title: 'Roles & Permissions',
     icon: { icon: 'mdi-shield-account-outline' },
     to: 'users-roles',

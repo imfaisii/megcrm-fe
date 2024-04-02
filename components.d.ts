@@ -45,6 +45,8 @@ declare module '@vue/runtime-core' {
     CardStatisticsVertical: typeof import('./src/@core/components/cards/CardStatisticsVertical.vue')['default']
     CardStatisticsWithImages: typeof import('./src/@core/components/cards/CardStatisticsWithImages.vue')['default']
     CommentsDialog: typeof import('./src/components/CommentsDialog.vue')['default']
+    CompaniesTable: typeof import('./src/components/companies/CompaniesTable.vue')['default']
+    CompanyDocument: typeof import('./src/components/leads/CompanyDocument.vue')['default']
     ConfirmDialog: typeof import('./src/components/ConfirmDialog.vue')['default']
     CreateForm: typeof import('./src/components/leads/CreateForm.vue')['default']
     CreateLeadStatusForm: typeof import('./src/components/leads/CreateLeadStatusForm.vue')['default']

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { requiredValidator } from "@/@core/utils/validators";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
-import { requiredValidator } from "@validators";
 
 const store = useLeadsStore();
 const panel = ref(0);
@@ -38,7 +38,10 @@ onMounted(async () => {
               :items="store.installers"
               :rules="[requiredValidator]"
               label="Installer"
-              item-title="name"
+              :item-title="
+                (item) =>
+                  `${item.name} ( ${item?.company?.name ?? 'No company'} )`
+              "
               item-value="id"
               clearable
               required

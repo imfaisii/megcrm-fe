@@ -161,8 +161,6 @@ const handleAirCall = async (lead: any) => {
 
 const makeDialCall = async (phone_no: string) => {
   try {
-    console.log("inside making call ");
-    console.log(`output->phone_no`, phone_no);
     airCallLoader.value = true;
     const { data, message } = await useApiFetch("/aircall/dial-call", {
       data: {

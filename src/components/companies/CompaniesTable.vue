@@ -1,39 +1,55 @@
 <script lang="ts" setup>
 import useDataTable from "@/composables/useDatatable";
-import { useFuelTypesStore } from "@/stores/fuel-types/useFuelTypesStore";
-import { EventBus } from "@/utils/useEventBus";
+import { useCompaniesStore } from "@/stores/companies/useCompaniesStore";
+
+const router = useRouter();
 
 // Headers
 const headers = [
   { title: "Name", key: "name" },
+  { title: "Address", key: "address" },
+  { title: "VAT Number", key: "vat_number" },
   { title: "Added by", key: "created_by.name", sortable: false },
   { title: "Actions", key: "actions", sortable: false },
 ];
 
 const filters = ref({
   name: "",
+  address: "",
+  vat_number: "",
 });
 
 const includes = ["createdBy"];
 
 // composables
-const store: any = useFuelTypesStore();
+const store: any = useCompaniesStore();
 const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
   store.fetchAll({ include: includes.join(",") })
 );
 
-const handleView = (item: any) => {
-  store.selected = item;
-
-  EventBus.$emit("item-selected");
+const handleView = (company: any) => {
+  router.push({
+    name: "companies-id-edit",
+    params: {
+      id: company.id,
+    },
+  });
 };
 </script>
 
 <template>
   <!-- Filters -->
   <VRow class="pa-4">
-    <VCol cols="12" lg="3">
+    <VCol cols="12" lg="4">
       <VTextField v-model="filters.name" label="Name" clearable />
+    </VCol>
+
+    <VCol cols="12" lg="4">
+      <VTextField v-model="filters.address" label="Address" clearable />
+    </VCol>
+
+    <VCol cols="12" lg="4">
+      <VTextField v-model="filters.vat_number" label="VAT Number" clearable />
     </VCol>
   </VRow>
 
@@ -49,8 +65,10 @@ const handleView = (item: any) => {
   >
     <!-- Color -->
     <!-- @vue-expect-error -->
-    <template #item.color="{ item }">
-      <VBadge :color="item.raw.color" />
+    <template #item.vat_number="{ item }">
+      <VBtn size="x-small" color="primary">
+        {{ item.raw?.vat_number ?? "NULL" }}
+      </VBtn>
     </template>
 
     <!-- Actions -->
@@ -75,7 +93,7 @@ const handleView = (item: any) => {
             <VIcon v-else color="error" icon="tabler-trash" />
           </IconBtn>
         </template>
-        <span>Are you sure you want to delete this fuel type?</span>
+        <span>Are you sure you want to delete this company?</span>
       </VTooltip>
     </template>
   </DataTable>
