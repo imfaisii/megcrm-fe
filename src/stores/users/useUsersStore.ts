@@ -31,6 +31,7 @@ export const useUsersStore = defineStore('users', () => {
     roles: [],
     aircall_email_address: null,
     documents: [],
+    company_documents: [],
     additional: {
       dob: null,
       gender: GENDERS[0],

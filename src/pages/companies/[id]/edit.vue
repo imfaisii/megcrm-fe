@@ -176,7 +176,7 @@ onMounted(async () => {
             cols="12"
             lg="4"
           >
-            <CompanyDocument v-bind="document" />
+            <CompanyDocument v-bind="document" :store="store" />
           </VCol>
 
           <VCol cols="12">
