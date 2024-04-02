@@ -9,8 +9,6 @@ const { VITE_APP_API_URL: BASE_URL } = env
 export default async function useApiFetch(uri: string, options: AxiosRequestConfig = {}): Promise<any> {
   const auth = useAuthStore()
   const $toast = useToast()
-  const router = useRouter();
-
 
   const config: AxiosRequestConfig = {
     url: `${BASE_URL}${uri}`,
@@ -20,7 +18,6 @@ export default async function useApiFetch(uri: string, options: AxiosRequestConf
     },
     withCredentials: true, // Include cookies in the request
     ...options,
-
   }
 
   const token = auth.accessToken || localStorage.getItem('access_token')
