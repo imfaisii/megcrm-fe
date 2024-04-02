@@ -20,6 +20,7 @@ const headers = [
   { title: "Phone", key: "phone_no" },
   { title: "Post Code", key: "post_code" },
   { title: "Lead Generator", key: "lead_generator_id", sortable: false },
+  { title: "Survey Booked By", key: "id", sortable: false },
   { title: "Status", key: "status_details", sortable: false },
   { title: "Date", key: "created_at" },
   { title: "Actions", key: "actions", sortable: false },
@@ -44,6 +45,7 @@ const filters = ref({
   timestamp: "",
   address: "",
   reference_number: "",
+  survey_booked_by: [],
   ...props.filters,
 });
 
@@ -148,6 +150,21 @@ onMounted(async () => {
 
     <VCol cols="12" lg="4">
       <VAutocomplete
+        v-model="filters.survey_booked_by"
+        :items="store.csrs"
+        label="Survey Booked By"
+        placeholder="Select User"
+        item-title="name"
+        item-value="id"
+        chips
+        multiple
+        clearable
+        :return-object="false"
+      />
+    </VCol>
+
+    <VCol cols="12" lg="6">
+      <VAutocomplete
         v-model="filters.surveyor_id"
         :items="store.surveyors"
         label="Surveyor"
@@ -162,7 +179,7 @@ onMounted(async () => {
       />
     </VCol>
 
-    <VCol cols="12" lg="4">
+    <VCol cols="12" lg="6">
       <AppDateTimePicker
         v-model="filters.timestamp"
         :config="{
@@ -177,11 +194,11 @@ onMounted(async () => {
       />
     </VCol>
 
-    <VCol cols="12" lg="4">
+    <VCol cols="12" lg="6">
       <VTextField v-model="filters.address" label="Address" clearable />
     </VCol>
 
-    <VCol cols="12" lg="4">
+    <VCol cols="12" lg="6">
       <VTextField
         v-model="filters.reference_number"
         label="Reference Number"
@@ -202,11 +219,13 @@ onMounted(async () => {
     @update:on-sort-change="onSortChange"
   >
     <!-- Name -->
+    <!-- @vue-expect-error -->
     <template #item.first_name="{ item }">
       {{ item.raw.full_name }}
     </template>
 
     <!-- Email -->
+    <!-- @vue-expect-error -->
     <template #item.email="{ item }">
       <a class="email-color" :href="`mailto:${item.raw.email}`">
         {{ item.raw.email }}
@@ -214,6 +233,7 @@ onMounted(async () => {
     </template>
 
     <!-- Post code -->
+    <!-- @vue-expect-error -->
     <template #item.post_code="{ item }">
       <VTooltip>
         <template #activator="{ props }">
@@ -224,13 +244,31 @@ onMounted(async () => {
     </template>
 
     <!-- Lead Generator -->
+    <!-- @vue-expect-error -->
     <template #item.lead_generator_id="{ item }">
       <div class="font-italic">
         {{ item.raw?.lead_generator?.name ?? "No lead generator" }}
       </div>
     </template>
 
+    <!-- Survey Booked By -->
+    <!-- @vue-expect-error -->
+    <template #item.id="{ item }">
+      <VBtn
+        class="text-white"
+        variant="elevated"
+        size="x-small"
+        :color="
+          store.getColorOfSurveyBookers(store.getNameOfSurveyBookers(item))
+        "
+        readonly
+      >
+        {{ store.getNameOfSurveyBookers(item) }}
+      </VBtn>
+    </template>
+
     <!-- Status -->
+    <!-- @vue-expect-error -->
     <template #item.status_details="{ item }">
       <VMenu>
         <template v-slot:activator="{ props: menu }">
@@ -272,11 +310,13 @@ onMounted(async () => {
     </template>
 
     <!-- Created At -->
+    <!-- @vue-expect-error -->
     <template #item.created_at="{ item }">
       <p>{{ time.formatDate(item.raw.created_at, "DD/MM/YYYY") }}</p>
     </template>
 
     <!-- Actions -->
+    <!-- @vue-expect-error -->
     <template #item.actions="{ item }">
       <VTooltip location="bottom">
         <template #activator="{ props }">

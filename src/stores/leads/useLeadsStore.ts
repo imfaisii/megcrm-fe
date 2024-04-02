@@ -72,6 +72,7 @@ export const useLeadsStore = defineStore('leads', () => {
   const installers: Ref<Installer[]> = ref([])
   const installation_types: Ref<InstallationType[]> = ref([])
   const banks: Ref<Bank[]> = ref([])
+  const csrs = ref([])
   const errors = ref({})
   const includes = [
     "leadGenerator",
@@ -120,6 +121,7 @@ export const useLeadsStore = defineStore('leads', () => {
       installers.value = data?.installers ?? []
       installation_types.value = data?.installation_types ?? []
       banks.value = data?.banks ?? []
+      csrs.value = data?.csrs ?? []
       isLoading.value = false
     }
   }
@@ -306,8 +308,29 @@ export const useLeadsStore = defineStore('leads', () => {
     }
   }
 
+  const getNameOfSurveyBookers = (item: any) => {
+    return item.raw?.status_details?.survey_booked?.user?.name ?? "Not booked";
+  };
+
+  const getColorOfSurveyBookers = (name: string) => {
+    if (name.toLowerCase().startsWith("samiya")) {
+      return "#FF0000";
+    }
+
+    if (name.toLowerCase().startsWith("amna")) {
+      return "#E4A11B";
+    }
+
+    if (name.toLowerCase().startsWith("hajar")) {
+      return "#14A44D";
+    }
+
+    return "secondary";
+  };
+
 
   return {
+    csrs,
     banks,
     installation_types,
     installers,
@@ -331,6 +354,8 @@ export const useLeadsStore = defineStore('leads', () => {
     includes,
     showEditButton,
 
+    getColorOfSurveyBookers,
+    getNameOfSurveyBookers,
     storeComments,
     checkIfCountryIsScotland,
     updateStatus,
