@@ -283,7 +283,7 @@ onMounted(async () => {
                 "
                 v-bind="mergeProps(menu, tooltip)"
               >
-                {{ item.raw?.status_details?.name.toUpperCase() }}
+                {{ item.raw?.status_details?.name?.toUpperCase() }}
               </VBtn>
             </template>
             <span>

@@ -10,8 +10,10 @@ export default defineComponent({
     onMounted(async () => {
       await auth.fetchUser();
 
-      if (auth.isLoggedIn) {
+      if (auth.isLoggedIn && auth.isOtpVerified) {
         router.push("/dashboard");
+      } else if (auth.isLoggedIn && !auth.isOtpVerified) {
+        router.push("/two-step");
       }
     });
 
