@@ -3,7 +3,7 @@ import { ADDITIONAL } from "@/constants/general";
 import { useDropboxStore } from "@/stores/dropbox/useDropboxStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
-import { isImageFileName, sleep } from "@/utils/useHelper";
+import { isImageFileName, sleep, strTruncated } from "@/utils/useHelper";
 import errorimage from "@images/custom/404.jpg";
 import Compressor from "compressorjs";
 import { useDropzone } from "vue3-dropzone";
@@ -179,38 +179,40 @@ const filteredResults = computed(() => {
       <VDivider />
 
       <VCardItem>
-        <div class="d-flex flex-wrap" :style="{ gap: '10px' }">
-          <VTooltip v-for="additional in ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS">
-            <template #activator="{ props }">
-              <VChip
-                @click="selectTag(additional)"
-                class="ring"
-                v-bind="props"
-                :color="
-                  dbStore.surveyFileNames.includes(
-                    `${leadsStore.selectedLead.reference_number} - ${additional}`
-                  )
-                    ? 'secondary'
-                    : 'error'
-                "
-                :variant="
-                  selectedTags.includes(additional) ? 'flat' : 'outlined'
-                "
-              >
+        <VRow>
+          <VCol
+            cols="12"
+            lg="2"
+            v-for="additional in ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS.sort(
+              (a, b) => a.length - b.length
+            )"
+          >
+            <VTooltip>
+              <template #activator="{ props }">
+                <VChip
+                  @click="selectTag(additional)"
+                  class="ring"
+                  v-bind="props"
+                  :color="
+                    dbStore.installationFileNames.includes(
+                      `${leadsStore.selectedLead.reference_number} - ${additional}`
+                    )
+                      ? 'secondary'
+                      : 'error'
+                  "
+                  :variant="
+                    selectedTags.includes(additional) ? 'flat' : 'outlined'
+                  "
+                >
+                  {{ strTruncated(additional) }}
+                </VChip>
+              </template>
+              <span>
                 {{ additional }}
-              </VChip>
-            </template>
-            <span>
-              {{
-                dbStore.surveyFileNames.includes(
-                  `${leadsStore.selectedLead.reference_number} - ${additional}`
-                )
-                  ? "Uploaded"
-                  : "Not uploaded"
-              }}
-            </span>
-          </VTooltip>
-        </div>
+              </span>
+            </VTooltip>
+          </VCol>
+        </VRow>
       </VCardItem>
     </VCard>
 

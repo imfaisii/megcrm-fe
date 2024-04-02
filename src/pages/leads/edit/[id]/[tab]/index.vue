@@ -280,21 +280,23 @@ onUnmounted(() => {
         </VCol>
       </VRow>
 
-      <VTabs v-model="activeTab" class="v-tabs-pill">
-        <VTab
-          v-for="tab in tabs"
-          :key="tab.icon"
-          :value="tab.tab"
-          :to="{
-            name: 'leads-edit-id-tab',
-            params: { id: route.params.id, tab: tab.tab },
-          }"
-          :disabled="tab?.tab ? false : true"
-        >
-          <VIcon start :size="24" :icon="tab.icon" />
-          <span>{{ tab.title }}</span>
-        </VTab>
-      </VTabs>
+      <VCard class="py-2">
+        <VTabs v-model="activeTab" class="v-tabs-pill">
+          <VTab
+            v-for="tab in tabs"
+            :key="tab.icon"
+            :value="tab.tab"
+            :to="{
+              name: 'leads-edit-id-tab',
+              params: { id: route.params.id, tab: tab.tab },
+            }"
+            :disabled="tab?.tab ? false : true"
+          >
+            <VIcon start :size="24" :icon="tab.icon" />
+            <span>{{ tab.title }}</span>
+          </VTab>
+        </VTabs>
+      </VCard>
       <VDivider />
 
       <VWindow
@@ -407,6 +409,12 @@ onUnmounted(() => {
     </VScaleTransition>
   </section>
 </template>
+
+<style lang="scss" scoped>
+:deep(.v-slide-group__container) {
+  align-items: center;
+}
+</style>
 
 <route lang="yaml">
 meta:

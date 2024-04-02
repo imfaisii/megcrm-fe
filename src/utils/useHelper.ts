@@ -166,3 +166,13 @@ export const generateRandomString = (length: number) => {
 
   return result;
 };
+
+export const strTruncated = (str: string, length: number = 20) => {
+  let truncatedString = str.substring(0, length);
+
+  if (str.length > length) {
+    truncatedString += "...";
+  }
+
+  return truncatedString;
+}
