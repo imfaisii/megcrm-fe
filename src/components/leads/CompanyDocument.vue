@@ -51,7 +51,7 @@ const saveFiles = async (files: any) => {
       expiry.value
     );
 
-    await store.get(store.selected.id);
+    await store.get(store.selected.id, true);
   }
 };
 

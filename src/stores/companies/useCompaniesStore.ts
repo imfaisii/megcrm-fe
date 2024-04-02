@@ -1,7 +1,6 @@
 import useApiFetch from '@/composables/useApiFetch'
 import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
-import { EventBus } from '@/utils/useEventBus'
 import { handleError, renameFile, reshapeParams } from '@/utils/useHelper'
 import { defineStore } from 'pinia'
 
@@ -28,6 +27,7 @@ export const useCompaniesStore = defineStore('companies', () => {
     const entity = 'Company'
     const selected = ref(defaultModel)
     const isLoading = ref(false)
+    const isUpdating = ref(false)
     const errors = ref({})
     const meta = ref(defaultPagination)
     const entries = ref([])
@@ -35,7 +35,7 @@ export const useCompaniesStore = defineStore('companies', () => {
 
     const isSelected = computed(() => !!selected.value.id)
 
-    const fetchAll = async (options = {}) => {
+    const index = async (options = {}) => {
         isLoading.value = true
         const { data, meta: serverMeta } = await useApiFetch(reshapeParams(endPoint, meta.value, options))
         entries.value = data.companies
@@ -46,8 +46,8 @@ export const useCompaniesStore = defineStore('companies', () => {
         isLoading.value = false
     }
 
-    const get = async (id: Number) => {
-        isLoading.value = true
+    const get = async (id: Number, isEdit: any = false) => {
+        isLoading.value = !isEdit
 
         const { data } = await useApiFetch(`${endPoint}/${id}`)
 
@@ -62,8 +62,6 @@ export const useCompaniesStore = defineStore('companies', () => {
                 data: payload,
                 ...options,
             })
-
-            EventBus.$emit('reset-name-only-dialog')
             $toast.success(`${entity} was saved successfully.`)
             return company;
         } catch (error) {
@@ -75,17 +73,16 @@ export const useCompaniesStore = defineStore('companies', () => {
 
     const update = async (id: number | string, payload: any, options = { method: 'PUT' }) => {
         try {
-            isLoading.value = true
+            isUpdating.value = true
             await useApiFetch(`${endPoint}/${id}`, {
                 data: payload,
                 ...options
             })
             $toast.success(`${entity} was updated successfully.`)
-            EventBus.$emit('reset-name-only-dialog')
         } catch (error) {
             handleError(error, errors)
         } finally {
-            isLoading.value = false
+            isUpdating.value = false
         }
     }
 
@@ -94,7 +91,7 @@ export const useCompaniesStore = defineStore('companies', () => {
             isLoading.value = true
             await useApiFetch(`${endPoint}/${id}`, options)
             $toast.success(`${entity} was deleted successfully.`)
-            await fetchAll({ include: "createdBy" })
+            await index({ include: "createdBy" })
         } catch (error) {
             handleError(error, errors)
         } finally {
@@ -143,13 +140,14 @@ export const useCompaniesStore = defineStore('companies', () => {
     }
 
 
-    const resetState = () => {
+    const reset = () => {
         selected.value = defaultModel
     }
 
     return {
         entries,
         isLoading,
+        isUpdating,
         isSelected,
         selected,
         meta,
@@ -157,8 +155,8 @@ export const useCompaniesStore = defineStore('companies', () => {
 
         updateExpiryDate,
         saveDocumentToCollection,
-        resetState,
-        fetchAll,
+        reset,
+        index,
         get,
         destroy,
         update,

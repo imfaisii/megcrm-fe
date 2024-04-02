@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { useCompaniesStore } from "@/stores/companies/useCompaniesStore';";
+import { useCompaniesStore } from "@/stores/companies/useCompaniesStore";
 import { requiredValidator } from "@validators";
 
 const router = useRouter();
-const store = useCompaniesStore();
+const store: any = useCompaniesStore();
 const form = ref();
 
 const handleSubmit = async () => {
@@ -22,6 +22,8 @@ const handleSubmit = async () => {
     }
   });
 };
+
+onUnmounted(() => store.reset());
 </script>
 
 <template>
@@ -29,6 +31,9 @@ const handleSubmit = async () => {
     <VForm ref="form" @submit.prevent="handleSubmit">
       <VCardItem>
         <template #prepend>
+          <VBtn class="pa-1 mr-2" to="/companies" size="x-small" rounded>
+            <VIcon icon="mdi-arrow-left" />
+          </VBtn>
           <VIcon icon="mdi-office-building-outline" class="text-disabled" />
         </template>
 
@@ -135,4 +140,3 @@ const handleSubmit = async () => {
     </VForm>
   </VCard>
 </template>
-@/stores/companies/useCompaniesStore

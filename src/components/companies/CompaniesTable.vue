@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import useDataTable from "@/composables/useDatatable";
 import { useCompaniesStore } from "@/stores/companies/useCompaniesStore";
-import { EventBus } from "@/utils/useEventBus";
+
+const router = useRouter();
 
 // Headers
 const headers = [
@@ -26,10 +27,13 @@ const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
   store.fetchAll({ include: includes.join(",") })
 );
 
-const handleView = (item: any) => {
-  store.selected = item;
-
-  EventBus.$emit("item-selected");
+const handleView = (company: any) => {
+  router.push({
+    name: "companies-id-edit",
+    params: {
+      id: company.id,
+    },
+  });
 };
 </script>
 
@@ -61,8 +65,10 @@ const handleView = (item: any) => {
   >
     <!-- Color -->
     <!-- @vue-expect-error -->
-    <template #item.color="{ item }">
-      <VBadge :color="item.raw.color" />
+    <template #item.vat_number="{ item }">
+      <VBtn size="x-small" color="primary">
+        {{ item.raw?.vat_number ?? "NULL" }}
+      </VBtn>
     </template>
 
     <!-- Actions -->
@@ -92,4 +98,3 @@ const handleView = (item: any) => {
     </template>
   </DataTable>
 </template>
-@/stores/companies/useCompaniesStore
