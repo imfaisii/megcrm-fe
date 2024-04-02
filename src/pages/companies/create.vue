@@ -47,7 +47,7 @@ onUnmounted(() => store.reset());
           </VBtn>
         </template>
 
-        <VCardTitle>New Company Details</VCardTitle>
+        <VCardTitle>Company Details</VCardTitle>
       </VCardItem>
 
       <VDivider />
