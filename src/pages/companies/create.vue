@@ -98,26 +98,6 @@ onUnmounted(() => store.reset());
 
           <VCol cols="12" md="6">
             <VTextField
-              v-model="store.selected.sort_code"
-              label="Sort Code"
-              placeholder="00-00-00"
-              :error-messages="store?.errors?.sort_code?.[0]"
-              clearable
-            />
-          </VCol>
-
-          <VCol cols="12" md="6">
-            <VTextField
-              v-model="store.selected.account_number"
-              label="Account Number"
-              placeholder="AB112233"
-              :error-messages="store?.errors?.account_number?.[0]"
-              clearable
-            />
-          </VCol>
-
-          <VCol cols="12" md="6">
-            <VTextField
               v-model="store.selected.policy_reference"
               label="Policy Reference"
               placeholder="000000"
@@ -129,7 +109,7 @@ onUnmounted(() => store.reset());
           <VCol cols="12" md="6">
             <VTextField
               v-model="store.selected.public_liability_number"
-              label="Sort Code"
+              label="Public Liability Number"
               placeholder="Public Liability Number"
               :error-messages="store?.errors?.public_liability_number?.[0]"
               clearable

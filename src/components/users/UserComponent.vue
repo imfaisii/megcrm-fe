@@ -6,6 +6,39 @@ import { useUsersStore } from "@/stores/users/useUsersStore";
 import { emailValidator, requiredValidator } from "@core/utils/validators";
 import { VForm } from "vuetify/components/VForm";
 
+const documents: any = ref([
+  {
+    title: "Gas Safe Card",
+    color: "primary",
+    icon: "mdi-document",
+    hasExpiry: true,
+  },
+  {
+    title: "Public Liability Insurance",
+    color: "primary",
+    icon: "mdi-document",
+    hasExpiry: true,
+  },
+  {
+    title: "Anamizer Callibration Cert",
+    color: "primary",
+    icon: "mdi-document",
+    hasExpiry: true,
+  },
+  {
+    title: "SS of company no. from company house",
+    color: "primary",
+    icon: "mdi-document",
+    hasExpiry: false,
+  },
+  {
+    title: "Gas Safe Certificate",
+    color: "primary",
+    icon: "mdi-document",
+    hasExpiry: false,
+  },
+]);
+
 const numberedSteps = [
   {
     title: "Account Details",
@@ -418,19 +451,40 @@ onMounted(async () => {
                   </VCol>
 
                   <VCol cols="12">
-                    <VSelect
-                      v-model="store.selected.company_id"
-                      label="Select Company"
-                      placeholder="MEG"
-                      :rules="[requiredValidator]"
-                      :items="companiesStore.entries"
-                      :error-messages="store?.errors?.company_id?.[0]"
-                      item-title="name"
-                      item-value="id"
-                      required
-                      clearable
+                    <VSwitch
+                      v-model="store.selected.is_associated_with_company"
+                      label="Is associated with a company?"
                     />
                   </VCol>
+
+                  <VRow class="mt-4">
+                    <VCol
+                      v-if="store.selected.is_associated_with_company"
+                      cols="12"
+                    >
+                      <VSelect
+                        v-model="store.selected.company_id"
+                        label="Select Company"
+                        placeholder="MEG"
+                        :items="companiesStore.entries"
+                        :error-messages="store?.errors?.company_id?.[0]"
+                        item-title="name"
+                        item-value="id"
+                        required
+                        clearable
+                      />
+                    </VCol>
+
+                    <VCol
+                      v-else
+                      v-for="document in documents"
+                      :key="document.title"
+                      cols="12"
+                      lg="4"
+                    >
+                      <InstallerDocuments v-bind="document" />
+                    </VCol>
+                  </VRow>
                 </VRow>
               </VCol>
             </VFadeTransition>
