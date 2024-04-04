@@ -183,9 +183,7 @@ const filteredResults = computed(() => {
           <VCol
             cols="12"
             lg="2"
-            v-for="additional in ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS.sort(
-              (a, b) => a.length - b.length
-            )"
+            v-for="additional in ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS.sort()"
           >
             <VTooltip>
               <template #activator="{ props }">
@@ -194,7 +192,7 @@ const filteredResults = computed(() => {
                   class="ring"
                   v-bind="props"
                   :color="
-                    dbStore.installationFileNames.includes(
+                    dbStore.surveyFileNames.includes(
                       `${leadsStore.selectedLead.reference_number} - ${additional}`
                     )
                       ? 'secondary'
