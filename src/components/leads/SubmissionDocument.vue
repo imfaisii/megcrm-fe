@@ -77,7 +77,7 @@ const saveFiles = async (files: any) => {
               v-bind="props"
               size="small"
               color="info"
-              icon="mdi-download-outline"
+              icon="mdi-eye-outline"
               :loading="store.isLoading"
               :disabled="store.isLoading"
             />
@@ -94,8 +94,8 @@ const saveFiles = async (files: any) => {
                 size="small"
                 color="primary"
                 icon="mdi-upload-outline"
-                :loading="store.isLoading"
-                :disabled="store.isLoading"
+                :loading="store.isLoading && selectedFile === `${title}-DRAFT`"
+                :disabled="store.isLoading && selectedFile === `${title}-DRAFT`"
               />
             </template>
             <span>
@@ -115,9 +115,9 @@ const saveFiles = async (files: any) => {
               v-bind="props"
               size="small"
               color="info"
-              icon="mdi-download-outline"
-              :loading="store.isLoading"
-              :disabled="store.isLoading"
+              icon="mdi-eye-outline"
+              :loading="store.isLoading && selectedFile === `${title}-LODGED`"
+              :disabled="store.isLoading && selectedFile === `${title}-LODGED`"
             />
           </template>
           <span> Click to download file </span>
