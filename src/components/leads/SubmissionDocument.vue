@@ -55,6 +55,7 @@ const saveFiles = async (files: any) => {
       selectedFile.value
     );
 
+    selectedFile.value = "";
     EventBus.$emit("refresh-lead-data");
   }
 };
