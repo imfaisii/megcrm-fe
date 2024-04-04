@@ -120,7 +120,13 @@ onMounted(async () => {
   await dbStore.create(`${dbStore.folder}/Survey`);
   dbStore.index(dbStore.folder);
 });
-
+const filteredSurveyImageLabels = computed(() => {
+  return ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS.sort().filter((additional) =>
+    dbStore.surveyFileNames.includes(
+      `${leadsStore.selectedLead.reference_number} - ${additional}`
+    )
+  );
+});
 onUnmounted(() => {
   EventBus.$off("refresh-survey-pictures");
 });
@@ -180,36 +186,45 @@ const filteredResults = computed(() => {
 
       <VCardItem>
         <VRow>
-          <VCol
-            cols="12"
-            lg="2"
+          <VCol cols="12" class="mt-2">
+            <VCombobox
+              v-model="selectedTags"
+              :items="filteredSurveyImageLabels"
+              label="Selected Filters"
+              clearable
+              multiple
+              chips
+            />
+          </VCol>
+        </VRow>
+        <VRow v-if="!dbStore.loading">
+          <template
             v-for="additional in ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS.sort()"
           >
-            <VTooltip>
-              <template #activator="{ props }">
-                <VChip
-                  @click="selectTag(additional)"
-                  class="ring"
-                  v-bind="props"
-                  :color="
-                    dbStore.surveyFileNames.includes(
-                      `${leadsStore.selectedLead.reference_number} - ${additional}`
-                    )
-                      ? 'secondary'
-                      : 'error'
-                  "
-                  :variant="
-                    selectedTags.includes(additional) ? 'flat' : 'outlined'
-                  "
-                >
-                  {{ strTruncated(additional) }}
-                </VChip>
-              </template>
-              <span>
-                {{ additional }}
-              </span>
-            </VTooltip>
-          </VCol>
+            <VCol
+              cols="12"
+              lg="2"
+              v-if="
+                !dbStore.surveyFileNames.includes(
+                  `${leadsStore.selectedLead.reference_number} - ${additional}`
+                )
+              "
+            >
+              <VTooltip>
+                <template #activator="{ props }">
+                  <VChip
+                    class="ring"
+                    v-bind="props"
+                    color="error"
+                    variant="flat"
+                  >
+                    {{ strTruncated(additional) }}
+                  </VChip>
+                </template>
+                <span> {{ additional }} Missing </span>
+              </VTooltip>
+            </VCol>
+          </template>
         </VRow>
       </VCardItem>
     </VCard>
