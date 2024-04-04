@@ -55,7 +55,6 @@ const saveFiles = async (files: any) => {
       selectedFile.value
     );
 
-    selectedFile.value = "";
     EventBus.$emit("refresh-lead-data");
   }
 };
@@ -95,8 +94,8 @@ const saveFiles = async (files: any) => {
                 size="small"
                 color="primary"
                 icon="mdi-upload-outline"
-                :loading="store.isLoading && selectedFile === `${title}-DRAFT`"
-                :disabled="store.isLoading && selectedFile === `${title}-DRAFT`"
+                :loading="store.isLoading"
+                :disabled="store.isLoading"
               />
             </template>
             <span>
@@ -117,8 +116,8 @@ const saveFiles = async (files: any) => {
               size="small"
               color="info"
               icon="mdi-eye-outline"
-              :loading="store.isLoading && selectedFile === `${title}-LODGED`"
-              :disabled="store.isLoading && selectedFile === `${title}-LODGED`"
+              :loading="store.isLoading"
+              :disabled="store.isLoading"
             />
           </template>
           <span> Click to download file </span>
