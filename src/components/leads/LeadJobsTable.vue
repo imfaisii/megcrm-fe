@@ -107,15 +107,30 @@ onMounted(async () => {
   <!-- Filters -->
   <VRow class="pa-4">
     <VCol cols="12" lg="4">
-      <VTextField v-model="filters.name" label="Name" clearable />
+      <VTextField
+        v-model="filters.name"
+        label="Name"
+        clearable
+        density="compact"
+      />
     </VCol>
 
     <VCol cols="12" lg="4">
-      <VTextField v-model="filters.phone_no" label="Phone No" clearable />
+      <VTextField
+        v-model="filters.post_code"
+        label="Post code"
+        clearable
+        density="compact"
+      />
     </VCol>
 
     <VCol cols="12" lg="4">
-      <VTextField v-model="filters.post_code" label="Post code" clearable />
+      <VTextField
+        v-model="filters.reference_number"
+        label="Reference Number"
+        clearable
+        density="compact"
+      />
     </VCol>
 
     <VCol cols="12" lg="4">
@@ -130,6 +145,7 @@ onMounted(async () => {
         multiple
         clearable
         :return-object="false"
+        density="compact"
       />
     </VCol>
 
@@ -145,6 +161,7 @@ onMounted(async () => {
         multiple
         clearable
         :return-object="false"
+        density="compact"
       />
     </VCol>
 
@@ -160,10 +177,11 @@ onMounted(async () => {
         multiple
         clearable
         :return-object="false"
+        density="compact"
       />
     </VCol>
 
-    <VCol cols="12" lg="6">
+    <VCol cols="12" lg="4">
       <VAutocomplete
         v-model="filters.surveyor_id"
         :items="store.surveyors"
@@ -176,10 +194,11 @@ onMounted(async () => {
         clearable
         :return-object="false"
         :disabled="permStore.isSurveyorOnly"
+        density="compact"
       />
     </VCol>
 
-    <VCol cols="12" lg="6">
+    <VCol cols="12" lg="4">
       <AppDateTimePicker
         v-model="filters.timestamp"
         :config="{
@@ -191,18 +210,16 @@ onMounted(async () => {
         }"
         label="Dated"
         placeholder="Select date"
+        density="compact"
       />
     </VCol>
 
-    <VCol cols="12" lg="6">
-      <VTextField v-model="filters.address" label="Address" clearable />
-    </VCol>
-
-    <VCol cols="12" lg="6">
+    <VCol cols="12" lg="4">
       <VTextField
-        v-model="filters.reference_number"
-        label="Reference Number"
+        v-model="filters.address"
+        label="Address"
         clearable
+        density="compact"
       />
     </VCol>
   </VRow>

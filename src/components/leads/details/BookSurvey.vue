@@ -34,6 +34,7 @@ onMounted(async () => {
             clearable
             required
             :return-object="false"
+            density="compact"
           />
         </VCol>
 
@@ -45,6 +46,7 @@ onMounted(async () => {
             label="Preffered Time"
             clearable
             required
+            density="compact"
           />
         </VCol>
 
@@ -62,6 +64,7 @@ onMounted(async () => {
             label="Survey Start Time"
             placeholder="Select date and time"
             required
+            density="compact"
           />
         </VCol>
 
@@ -79,6 +82,7 @@ onMounted(async () => {
             label="Survey End Time"
             placeholder="Select date and time"
             required
+            density="compact"
           />
         </VCol>
 

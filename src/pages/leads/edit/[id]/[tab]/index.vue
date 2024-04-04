@@ -41,6 +41,11 @@ const tabs = [
     icon: "mdi-image-marker-outline",
     tab: "installation-pictures",
   },
+  {
+    title: "Submission",
+    icon: "mdi-content-save-cog-outline",
+    tab: "submission",
+  },
   { title: "Communications", icon: "mdi-phone-outline", tab: "communications" },
   { title: "SMS Alerts", icon: "mdi-cellphone", tab: "sms-alerts" },
   { title: "History", icon: "mdi-clock-outline", tab: "history" },
@@ -326,6 +331,10 @@ onUnmounted(() => {
 
         <VWindowItem value="installation-pictures">
           <InstallationPictures />
+        </VWindowItem>
+
+        <VWindowItem value="submission">
+          <SubmissionTab />
         </VWindowItem>
 
         <VWindowItem value="communications">

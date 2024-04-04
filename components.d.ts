@@ -88,6 +88,8 @@ declare module '@vue/runtime-core' {
     Shortcuts: typeof import('./src/@core/components/Shortcuts.vue')['default']
     SmsAlertsTab: typeof import('./src/components/leads/details/SmsAlertsTab.vue')['default']
     StatusesTable: typeof import('./src/components/leads/StatusesTable.vue')['default']
+    SubmissionDocument: typeof import('./src/components/leads/SubmissionDocument.vue')['default']
+    SubmissionTab: typeof import('./src/components/leads/details/SubmissionTab.vue')['default']
     SurveyorsTable: typeof import('./src/components/surveyors/SurveyorsTable.vue')['default']
     SurveyPictures: typeof import('./src/components/leads/details/SurveyPictures.vue')['default']
     TeamTable: typeof import('./src/components/team/TeamTable.vue')['default']

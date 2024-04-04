@@ -3,7 +3,8 @@ import useApiFetch from '@/composables/useApiFetch'
 import { defaultPagination } from '@/constants/pagination'
 import { useToast } from '@/plugins/toastr'
 import { LeadStatus } from '@/stores/leads/useLeadStatusesStore'
-import { getExceptionMessage, handleError, reshapeParams, setQueryParams } from '@/utils/useHelper'
+import { getExceptionMessage, handleError, renameFile, reshapeParams, setQueryParams } from '@/utils/useHelper'
+// @ts-ignore
 import { omit } from 'lodash'
 import { defineStore } from 'pinia'
 
@@ -52,7 +53,8 @@ export const useLeadsStore = defineStore('leads', () => {
   const leads = ref([])
   const selectedLead = ref<any>({
     benefits: [],
-    cell_centers: []
+    cell_centers: [],
+    submission_documents: []
   })
   const selectedLeadCopy = ref();
   const selectedId = ref<null | string | number>(null)
@@ -87,6 +89,7 @@ export const useLeadsStore = defineStore('leads', () => {
     "comments.commentator",
     "leadAdditional",
     "secondReceipent",
+    "submission",
     "notifications"
   ];
   const router = useRouter()
@@ -216,6 +219,14 @@ export const useLeadsStore = defineStore('leads', () => {
         }
       }
 
+      if (selectedLead.value.submission === null) {
+        selectedLead.value.submission = {
+          area: null,
+          pre_rating: null,
+          post_rating: null
+        }
+      }
+
       selectedLead.value.benefits = data.lead?.benefits.map((i: any) => i.id)
       selectedLead.value.measures = data.lead?.measures.map((i: any) => i.id)
       selectedLeadCopy.value = JSON.parse(JSON.stringify(selectedLead.value))
@@ -308,6 +319,28 @@ export const useLeadsStore = defineStore('leads', () => {
     }
   }
 
+  const saveDocumentToCollection = async (id: number, collection: string, file: File, fileName: string | null, options = { method: 'POST' }) => {
+    try {
+      if (fileName) {
+        file = renameFile(file, fileName)
+      }
+
+      let formData = new FormData()
+
+      formData.set('file', file)
+      formData.set('collection', collection)
+
+      await useApiFetch(`${endPoint}/${id}/collections/docs/upload`, {
+        data: formData,
+        ...options
+      })
+
+      $toast.success(`File was uploaded successfully.`)
+    } catch (error) {
+      handleError(error, errors)
+    }
+  }
+
   const getNameOfSurveyBookers = (item: any) => {
     return item.raw?.status_details?.survey_booked?.user?.name ?? "Not booked";
   };
@@ -354,6 +387,7 @@ export const useLeadsStore = defineStore('leads', () => {
     includes,
     showEditButton,
 
+    saveDocumentToCollection,
     getColorOfSurveyBookers,
     getNameOfSurveyBookers,
     storeComments,

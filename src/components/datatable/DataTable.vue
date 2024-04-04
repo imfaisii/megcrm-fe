@@ -60,7 +60,6 @@ const sortable = (sortItem: SortItem[]) => {
     :items-length="10"
     :must-sort="true"
     class="elevation-1"
-    data-test="datatable"
     @update:sort-by="sortable"
   >
     <template #top>
