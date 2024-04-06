@@ -210,7 +210,7 @@ const filteredResults = computed(() => {
             />
           </VCol>
         </VRow>
-        <VRow v-if="!dbStore.loading">
+        <VRow v-if="!dbStore.loading || dbStore.folderImages.length > 0">
           <template
             v-for="additional in ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS.sort()"
           >
