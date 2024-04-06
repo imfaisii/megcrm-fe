@@ -44,7 +44,10 @@ const filteredInstallationLabels = computed(() => {
         return newName.startsWith(i);
       }).length;
 
-      return `${i} ( ${count} )`;
+      return {
+        title: `${i} ( ${count} )`,
+        value: i,
+      };
     });
 });
 
@@ -146,11 +149,11 @@ onMounted(async () => {
 
 const filteredResults = computed(() => {
   if (selectedTags.value.length < 1) {
-    return dbStore.installationImages;
+    return dbStore.folderImages;
   }
 
-  return dbStore.installationImages.filter((image: any) =>
-    selectedTags.value.some((name) => image.name.includes(name))
+  return dbStore.folderImages.filter((image: any) =>
+    selectedTags.value.some((item: any) => image.name.includes(item.value))
   );
 });
 </script>
@@ -204,6 +207,8 @@ const filteredResults = computed(() => {
               v-model="selectedTags"
               :items="filteredInstallationLabels"
               label="Selected Filters"
+              item-title="title"
+              item-value="value"
               clearable
               multiple
               chips

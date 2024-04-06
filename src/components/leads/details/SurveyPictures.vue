@@ -15,16 +15,6 @@ const selectedFilesLength = ref(0);
 const isUploading = ref(false);
 const selectedTags = ref<string[]>([]);
 
-const selectTag = (v: string) => {
-  const index = selectedTags.value.indexOf(v);
-
-  if (index !== -1) {
-    selectedTags.value.splice(index, 1);
-  } else {
-    selectedTags.value.push(v);
-  }
-};
-
 const show = (image: any) => {
   if (isImageFileName(image.name)) {
     const toShow = dbStore.folderImages.map((i: any) => i.link);
@@ -137,7 +127,10 @@ const filteredSurveyImageLabels = computed(() => {
         return newName.startsWith(i);
       }).length;
 
-      return `${i} ( ${count} )`;
+      return {
+        title: `${i} ( ${count} )`,
+        value: i,
+      };
     });
 });
 onUnmounted(() => {
@@ -150,7 +143,7 @@ const filteredResults = computed(() => {
   }
 
   return dbStore.folderImages.filter((image: any) =>
-    selectedTags.value.some((name) => image.name.includes(name))
+    selectedTags.value.some((item: any) => image.name.includes(item.value))
   );
 });
 </script>
@@ -203,6 +196,8 @@ const filteredResults = computed(() => {
             <VCombobox
               v-model="selectedTags"
               :items="filteredSurveyImageLabels"
+              item-title="title"
+              item-value="value"
               label="Selected Filters"
               clearable
               multiple
