@@ -206,6 +206,10 @@ const filteredResults = computed(() => {
           </VCol>
         </VRow>
         <VRow v-if="!dbStore.loading || dbStore.folderImages.length > 0">
+          <VCol cols="12" class="mt-2">
+            <h6 class="text-h6">Missing Pictures</h6>
+          </VCol>
+
           <template
             v-for="additional in ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS.sort()"
           >

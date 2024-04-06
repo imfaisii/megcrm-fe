@@ -149,10 +149,10 @@ onMounted(async () => {
 
 const filteredResults = computed(() => {
   if (selectedTags.value.length < 1) {
-    return dbStore.folderImages;
+    return dbStore.installationImages;
   }
 
-  return dbStore.folderImages.filter((image: any) =>
+  return dbStore.installationImages.filter((image: any) =>
     selectedTags.value.some((item: any) => image.name.includes(item.value))
   );
 });
@@ -216,6 +216,10 @@ const filteredResults = computed(() => {
           </VCol>
         </VRow>
         <VRow v-if="!dbStore.loading || dbStore.installationImages.length > 0">
+          <VCol cols="12" class="mt-2">
+            <h6 class="text-h6">Missing Pictures</h6>
+          </VCol>
+
           <template
             v-for="additional in ADDITIONAL.LEADS.INSTALLATION_IMAGE_LABELS.sort()"
           >
