@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
-import { getProgressColor } from "@/utils/useHelper";
+import { getProgressColor, logsHaveUpdatedProperty } from "@/utils/useHelper";
 import { requiredValidator } from "@validators";
 
 const store = useLeadsStore();
@@ -88,6 +88,10 @@ const handleLeadUpdate = async () => {
   await getLead();
 };
 
+const preCheckingsDetails = computed(() =>
+  logsHaveUpdatedProperty("is_pre_checking_confirmed", store.selectedLead.logs)
+);
+
 onMounted(async () => {
   await store.getExtras();
   await getLead();
@@ -169,21 +173,78 @@ onUnmounted(() => {
                   </VTooltip>
                   <VTooltip>
                     <template #activator="{ props }">
+                      <VChip v-bind="props" label size="x-large" color="error">
+                        <VIcon
+                          :icon="
+                            store.selectedLead.lead_customer_additional_detail
+                              .datamatch_progress === true
+                              ? 'mdi-check-circle'
+                              : 'mdi-close-circle'
+                          "
+                          :color="
+                            store.selectedLead.lead_customer_additional_detail
+                              .datamatch_progress === true
+                              ? 'success'
+                              : 'error'
+                          "
+                        />
+                        <span class="ml-1" style="margin-top: 1px">
+                          Datamatch:
+                          {{
+                            store.selectedLead.lead_customer_additional_detail
+                              .datamatch_progress
+                          }}
+                        </span>
+                      </VChip>
+                    </template>
+                    <span> Lead reference number </span>
+                  </VTooltip>
+
+                  <VTooltip v-if="preCheckingsDetails.found">
+                    <template #activator="{ props }">
                       <VChip
                         v-bind="props"
                         label
                         size="x-large"
-                        class="text-capitalize mb-2 ml-0"
-                        color="error"
+                        :color="
+                          preCheckingsDetails.data.properties.attributes[
+                            'is_pre_checking_confirmed'
+                          ] === true
+                            ? 'success'
+                            : 'error'
+                        "
                       >
-                        DataMatch Status:
-                        {{
-                          store.selectedLead.lead_customer_additional_detail
-                            .datamatch_progress
-                        }}
+                        <VIcon
+                          :icon="
+                            preCheckingsDetails.data.properties.attributes[
+                              'is_pre_checking_confirmed'
+                            ] === true
+                              ? 'mdi-check-circle'
+                              : 'mdi-close-circle'
+                          "
+                          :color="
+                            preCheckingsDetails.data.properties.attributes[
+                              'is_pre_checking_confirmed'
+                            ] === true
+                              ? 'success'
+                              : 'error'
+                          "
+                        />
+                        <span class="ml-1" style="margin-top: 1px">
+                          Pre checking
+                          {{
+                            preCheckingsDetails.data.properties.attributes[
+                              "is_pre_checking_confirmed"
+                            ] === true
+                              ? "verified"
+                              : "unchecked"
+                          }}
+                          by
+                          {{ preCheckingsDetails.data.causer.name }}
+                        </span>
                       </VChip>
                     </template>
-                    <span> Lead reference number </span>
+                    <span>Current Lead Status</span>
                   </VTooltip>
 
                   <VTooltip>

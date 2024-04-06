@@ -176,3 +176,23 @@ export const strTruncated = (str: string, length: number = 20) => {
 
   return truncatedString;
 }
+
+export const logsHaveUpdatedProperty = (property: string, logs: any[] = []): { found: boolean, data: any } => {
+  let result = {
+    found: false,
+    data: null
+  }
+
+  for (let i = logs.length - 1; i >= 0; i--) {
+    const log = logs[i];
+    if (log.event === 'updated') {
+      if (Object.hasOwnProperty.call(log.properties.attributes, property)) {
+        result.found = true;
+        result.data = log;
+        break;
+      }
+    }
+  }
+
+  return result;
+}

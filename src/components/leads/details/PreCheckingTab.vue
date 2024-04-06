@@ -363,6 +363,38 @@ onMounted(async () => {
           Mark as {{ !store.selectedLead.lead_additional.epr_report_confirmed }}
         </VTooltip>
       </VCardText>
+
+      <VCardText>
+        <VRow>
+          <VCol cols="12">
+            <VTooltip>
+              <template #activator="{ props }">
+                <div v-bind="props">
+                  <VCheckbox
+                    v-model="
+                      store.selectedLead.lead_additional
+                        .is_pre_checking_confirmed
+                    "
+                    label="Pre checking for this job is verfied?"
+                    true-icon="mdi-check-circle"
+                    false-icon="mdi-close-circle"
+                    :color="
+                      store.selectedLead.lead_additional
+                        .is_pre_checking_confirmed
+                        ? 'success'
+                        : 'error'
+                    "
+                  />
+                </div>
+              </template>
+              Mark as
+              {{
+                !store.selectedLead.lead_additional.is_pre_checking_confirmed
+              }}
+            </VTooltip>
+          </VCol>
+        </VRow>
+      </VCardText>
     </VCard>
 
     <!-- Dialogs -->
