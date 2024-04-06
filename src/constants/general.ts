@@ -75,7 +75,9 @@ export const ADDITIONAL = {
       'Filter',
       'Tank without insulation or jacket',
       'BOILER front side sticker',
-      'Extras'
+      'Extras',
+      'Datamatch screenshot',
+      'TTZC',
     ]
   }
 }

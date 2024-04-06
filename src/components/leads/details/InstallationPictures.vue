@@ -27,6 +27,27 @@ const selectTag = (v: string) => {
   }
 };
 
+const filteredInstallationLabels = computed(() => {
+  return ADDITIONAL.LEADS.INSTALLATION_IMAGE_LABELS.sort()
+    .filter((additional) =>
+      dbStore.installationFileNames.includes(
+        `${leadsStore.selectedLead.reference_number} - ${additional}`
+      )
+    )
+    .map((i: any) => {
+      const count = dbStore.installationFileNames.filter((f: any) => {
+        const newName = f.replace(
+          `${leadsStore.selectedLead.reference_number} - `,
+          ""
+        );
+
+        return newName.startsWith(i);
+      }).length;
+
+      return `${i} ( ${count} )`;
+    });
+});
+
 const show = (image: any) => {
   if (isImageFileName(image.name)) {
     const toShow = dbStore.installationImages.map((i: any) => i.link);
@@ -178,38 +199,45 @@ const filteredResults = computed(() => {
 
       <VCardItem>
         <VRow>
-          <VCol
-            cols="12"
-            lg="2"
-            v-for="additional in ADDITIONAL.LEADS.INSTALLATION_IMAGE_LABELS.sort(
-              (a, b) => a.length - b.length
-            )"
-          >
-            <VTooltip>
-              <template #activator="{ props }">
-                <VChip
-                  @click="selectTag(additional)"
-                  class="ring"
-                  v-bind="props"
-                  :color="
-                    dbStore.installationFileNames.includes(
-                      `${leadsStore.selectedLead.reference_number} - ${additional}`
-                    )
-                      ? 'secondary'
-                      : 'error'
-                  "
-                  :variant="
-                    selectedTags.includes(additional) ? 'flat' : 'outlined'
-                  "
-                >
-                  {{ strTruncated(additional) }}
-                </VChip>
-              </template>
-              <span>
-                {{ additional }}
-              </span>
-            </VTooltip>
+          <VCol cols="12" class="mt-2">
+            <VCombobox
+              v-model="selectedTags"
+              :items="filteredInstallationLabels"
+              label="Selected Filters"
+              clearable
+              multiple
+              chips
+            />
           </VCol>
+        </VRow>
+        <VRow v-if="!dbStore.loading || dbStore.installationImages.length > 0">
+          <template
+            v-for="additional in ADDITIONAL.LEADS.INSTALLATION_IMAGE_LABELS.sort()"
+          >
+            <VCol
+              cols="12"
+              lg="2"
+              v-if="
+                !dbStore.installationFileNames.includes(
+                  `${leadsStore.selectedLead.reference_number} - ${additional}`
+                )
+              "
+            >
+              <VTooltip>
+                <template #activator="{ props }">
+                  <VChip
+                    class="ring"
+                    v-bind="props"
+                    color="error"
+                    variant="flat"
+                  >
+                    {{ strTruncated(additional) }}
+                  </VChip>
+                </template>
+                <span> {{ additional }} Missing </span>
+              </VTooltip>
+            </VCol>
+          </template>
         </VRow>
       </VCardItem>
     </VCard>

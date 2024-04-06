@@ -121,11 +121,24 @@ onMounted(async () => {
   dbStore.index(dbStore.folder);
 });
 const filteredSurveyImageLabels = computed(() => {
-  return ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS.sort().filter((additional) =>
-    dbStore.surveyFileNames.includes(
-      `${leadsStore.selectedLead.reference_number} - ${additional}`
+  return ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS.sort()
+    .filter((additional) =>
+      dbStore.surveyFileNames.includes(
+        `${leadsStore.selectedLead.reference_number} - ${additional}`
+      )
     )
-  );
+    .map((i: any) => {
+      const count = dbStore.surveyFileNames.filter((f: any) => {
+        const newName = f.replace(
+          `${leadsStore.selectedLead.reference_number} - `,
+          ""
+        );
+
+        return newName.startsWith(i);
+      }).length;
+
+      return `${i} ( ${count} )`;
+    });
 });
 onUnmounted(() => {
   EventBus.$off("refresh-survey-pictures");
