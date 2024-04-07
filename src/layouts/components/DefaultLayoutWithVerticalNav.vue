@@ -32,7 +32,6 @@ const { VITE_APP_API_URL: BASE_URL } = env;
 const verticalNavHeaderActionAnimationName = ref<
   null | "rotate-180" | "rotate-back-180"
 >(null);
-
 const handleFileDownload = async () => {
   const token = auth.accessToken || localStorage.getItem("access_token");
 
@@ -40,21 +39,13 @@ const handleFileDownload = async () => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    responseType: "blob",
-  }).then((response: any) => {
-    const link = document.createElement("a");
-
-    link.href = window.URL.createObjectURL(new Blob([response.data]));
-    link.setAttribute(
-      "download",
-      `datamatch-${time.currentTime("DD-MM-YYYY-hh:mm:ss")}.xlsx`
-    );
-    document.body.appendChild(link);
-
-    link.click();
+    responseType: "json", // assuming response.data contains a URL
+  }).then((response) => {
+    const downloadUrl = response.data.data; // assuming response.data contains a URL
+    // Open the URL in a new tab
+    window.open(downloadUrl, "_blank");
   });
 };
-
 watch(
   [isVerticalNavCollapsed, isAppRtl],
   (val) => {
