@@ -34,7 +34,13 @@ const saveFiles = async (files: any) => {
     await dbStore.store(
       dbStore.folder,
       "Pre Checking",
-      renameFile(files[0], selectedFile.value)
+
+      renameFile(
+        files[0],
+        selectedFile.value === "Others"
+          ? `${files[0].name.split(".").slice(0, -1).join(".")} `
+          : selectedFile.value
+      )
     );
 
     await dbStore.getPreCheckingFiles(dbStore.folder, true);
@@ -129,7 +135,7 @@ watch(
 
       <!-- Upload Button -->
       <div v-else>
-        <div v-if="title.toLowerCase() !== 'others'" v-bind="getRootProps()">
+        <div v-if="true" v-bind="getRootProps()">
           <input v-bind="getInputProps()" />
           <VTooltip>
             <template #activator="{ props }">
@@ -139,6 +145,7 @@ watch(
                 size="small"
                 color="primary"
                 :disabled="dbStore.loading"
+                :loading="dbStore.loading"
                 icon="mdi-upload-outline"
               />
             </template>
@@ -155,6 +162,7 @@ watch(
               size="small"
               color="primary"
               :disabled="dbStore.loading"
+              :loading="dbStore.loading"
               icon="mdi-upload-outline"
             />
           </template>

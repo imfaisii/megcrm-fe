@@ -260,7 +260,7 @@ onMounted(async () => {
         </VCol>
         <VCol :key="`document-others`" cols="12" lg="4">
           <PreCheckingDocumentsCard
-            v-bind="{ title: 'Others', color: 'primary', icon: 'mdi-document' }"
+            v-bind="{ title: 'Others', color: 'success', icon: 'mdi-document' }"
           />
         </VCol>
       </VRow>
