@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import { useGenerateImageVariant } from '@/@core/composable/useGenerateImageVariant'
-import authV1ResetPasswordMaskDark from '@images/pages/auth-v1-reset-password-mask-dark.png'
-import authV1ResetPasswordMaskLight from '@images/pages/auth-v1-reset-password-mask-light.png'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
+import { useGenerateImageVariant } from "@/@core/composable/useGenerateImageVariant";
+import authV1ResetPasswordMaskDark from "@images/pages/auth-v1-reset-password-mask-dark.png";
+import authV1ResetPasswordMaskLight from "@images/pages/auth-v1-reset-password-mask-light.png";
+import { VNodeRenderer } from "@layouts/components/VNodeRenderer";
+import { themeConfig } from "@themeConfig";
 
-const authV1ResetPasswordMask = useGenerateImageVariant(authV1ResetPasswordMaskLight, authV1ResetPasswordMaskDark)
+const authV1ResetPasswordMask = useGenerateImageVariant(
+  authV1ResetPasswordMaskLight,
+  authV1ResetPasswordMaskDark
+);
 
 const form = ref({
-  newPassword: '',
-  confirmPassword: '',
-})
+  newPassword: "",
+  confirmPassword: "",
+});
 
-const isPasswordVisible = ref(false)
-const isConfirmPasswordVisible = ref(false)
+const isPasswordVisible = ref(false);
+const isConfirmPasswordVisible = ref(false);
 </script>
 
 <template>
   <div class="auth-wrapper d-flex align-center justify-center pa-4">
-    <VCard
-      class="auth-card pa-2 pt-7"
-      max-width="448"
-    >
+    <VCard class="auth-card pa-2 pt-7" max-width="448">
       <VCardItem class="justify-center">
         <template #prepend>
           <div class="me-n2">
@@ -35,11 +35,10 @@ const isConfirmPasswordVisible = ref(false)
       </VCardItem>
 
       <VCardText class="pt-2">
-        <h5 class="text-h5 mb-1">
-          Reset Password 🔒
-        </h5>
+        <h5 class="text-h5 mb-1">Reset Password 🔒</h5>
         <p class="mb-0">
-          Enter your email and we'll send you instructions to reset your password
+          Enter your email and we'll send you instructions to reset your
+          password
         </p>
       </VCardText>
 
@@ -54,7 +53,9 @@ const isConfirmPasswordVisible = ref(false)
                 label="New Password"
                 placeholder="············"
                 :type="isPasswordVisible ? 'text' : 'password'"
-                :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
+                :append-inner-icon="
+                  isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'
+                "
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
               />
             </VCol>
@@ -66,19 +67,20 @@ const isConfirmPasswordVisible = ref(false)
                 label="Confirm Password"
                 placeholder="············"
                 :type="isConfirmPasswordVisible ? 'text' : 'password'"
-                :append-inner-icon="isConfirmPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
-                @click:append-inner="isConfirmPasswordVisible = !isConfirmPasswordVisible"
+                :append-inner-icon="
+                  isConfirmPasswordVisible
+                    ? 'mdi-eye-off-outline'
+                    : 'mdi-eye-outline'
+                "
+                @click:append-inner="
+                  isConfirmPasswordVisible = !isConfirmPasswordVisible
+                "
               />
             </VCol>
 
             <!-- reset password -->
             <VCol cols="12">
-              <VBtn
-                block
-                type="submit"
-              >
-                Set New Password
-              </VBtn>
+              <VBtn block type="submit"> Set New Password </VBtn>
             </VCol>
 
             <!-- back to login -->

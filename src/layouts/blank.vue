@@ -6,12 +6,18 @@ export default defineComponent({
   setup() {
     const auth = useAuthStore();
     const router = useRouter();
+    const route = useRoute();
 
     onMounted(async () => {
-      await auth.fetchUser();
+      if (
+        !auth.publicRoutes.includes(route.fullPath) &&
+        !route.path.startsWith("/password-reset")
+      ) {
+        await auth.fetchUser();
 
-      if (auth.isLoggedIn) {
-        router.push("/dashboard");
+        if (auth.isLoggedIn) {
+          router.push("/dashboard");
+        }
       }
     });
 

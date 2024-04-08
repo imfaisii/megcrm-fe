@@ -8,8 +8,12 @@ const auth = useAuthStore();
 const store = usePermissionsStore();
 
 onMounted(async () => {
-  await auth.fetchUser();
-  await store.getUserPermissions();
+  try {
+    await auth.fetchUser();
+    await store.getUserPermissions();
+  } catch (e) {
+    //
+  }
 });
 
 const DefaultLayoutWithVerticalNav = defineAsyncComponent(
