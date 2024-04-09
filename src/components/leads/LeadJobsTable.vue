@@ -18,7 +18,7 @@ export type Comment = {
 const headers = [
   { title: "Name", key: "first_name" },
   { title: "Phone", key: "phone_no" },
-  { title: "Address", key: "address" },
+  { title: "Address", key: "plain_address" },
   { title: "Post Code", key: "post_code" },
   { title: "Lead Generator", key: "lead_generator_id", sortable: false },
   { title: "Survey Booked By", key: "id", sortable: false },
