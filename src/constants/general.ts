@@ -78,6 +78,8 @@ export const ADDITIONAL = {
       'Extras',
       'Datamatch screenshot',
       'TTZC',
+      'Bypass',
+      'New Flue'
     ]
   }
 }
