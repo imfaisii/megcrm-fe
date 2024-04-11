@@ -30,6 +30,8 @@ interface ResetPassword {
 export const useAuthStore = defineStore('auth', () => {
   const endPoint = '/user'
 
+  const publicRoutes = ['/login', '/forgot-password', '/reset-password']
+
   const accessToken = ref<string | null>(null)
   const user = ref<User | null>(null)
   const isLoading = ref<boolean>(false)
@@ -53,8 +55,9 @@ export const useAuthStore = defineStore('auth', () => {
 
       await setUser(data.user)
     }
-    catch (e) {
+    catch (e: any) {
       user.value = null
+      throw Error(e)
     } finally {
       isLoading.value = false
     }
@@ -196,6 +199,7 @@ export const useAuthStore = defineStore('auth', () => {
     message,
     errors,
     accessToken,
+    publicRoutes,
 
     login,
     logout,

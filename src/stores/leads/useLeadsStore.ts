@@ -207,7 +207,8 @@ export const useLeadsStore = defineStore('leads', () => {
           land_registry_confirmed: false,
           proof_of_address_confirmed: false,
           epr_report_confirmed: false,
-          is_pre_checking_confirmed: false
+          is_pre_checking_confirmed: false,
+          gas_connection_before_april_2022: false
         }
       }
 

@@ -260,7 +260,7 @@ onMounted(async () => {
         </VCol>
         <VCol :key="`document-others`" cols="12" lg="4">
           <PreCheckingDocumentsCard
-            v-bind="{ title: 'Others', color: 'primary', icon: 'mdi-document' }"
+            v-bind="{ title: 'Others', color: 'success', icon: 'mdi-document' }"
           />
         </VCol>
       </VRow>
@@ -361,6 +361,32 @@ onMounted(async () => {
             </div>
           </template>
           Mark as {{ !store.selectedLead.lead_additional.epr_report_confirmed }}
+        </VTooltip>
+
+        <VTooltip>
+          <template #activator="{ props }">
+            <div v-bind="props">
+              <VCheckbox
+                v-model="
+                  store.selectedLead.lead_additional
+                    .gas_connection_before_april_2022
+                "
+                label="Gas connection before April 2022"
+                true-icon="mdi-check-circle"
+                false-icon="mdi-close-circle"
+                :color="
+                  store.selectedLead.lead_additional
+                    .gas_connection_before_april_2022
+                    ? 'success'
+                    : 'error'
+                "
+              />
+            </div>
+          </template>
+          Mark as
+          {{
+            !store.selectedLead.lead_additional.gas_connection_before_april_2022
+          }}
         </VTooltip>
       </VCardText>
 

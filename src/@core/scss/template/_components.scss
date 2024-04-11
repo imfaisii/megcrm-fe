@@ -116,7 +116,7 @@ $alert-prominent-icon-size: 38px;
 
 // 👉 Table
 .v-table {
-  color: rgba(var(--v-theme-on-background), var(--v-medium-emphasis-opacity)) !important;
+  // color: rgba(var(--v-theme-on-background), var(--v-medium-emphasis-opacity)) !important;
 
   th {
     color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity)) !important;

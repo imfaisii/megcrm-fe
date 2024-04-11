@@ -30,7 +30,7 @@ const handleSubmit = async () => {
   await auth.resetPassword(form.value);
 
   if (auth.success) {
-    router.push("/dashboard");
+    router.push("/login");
   }
 };
 </script>
@@ -52,22 +52,10 @@ const handleSubmit = async () => {
 
       <VCardText class="pt-2">
         <h5 class="text-h5 mb-1">Reset Password 🔒</h5>
-        <p class="mb-0">
-          Enter your email and we'll send you instructions to reset your
-          password
-        </p>
+        <p class="mb-0">Enter your new password to continue.</p>
       </VCardText>
 
       <VCardText>
-        <VAlert
-          v-if="auth.success"
-          class="mb-8"
-          variant="tonal"
-          color="success"
-        >
-          {{ auth.message }}
-        </VAlert>
-
         <VForm @submit.prevent="handleSubmit">
           <VRow>
             <!-- password -->

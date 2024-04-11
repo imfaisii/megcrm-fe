@@ -22,11 +22,10 @@ import ToastPlugin from 'vue-toast-notification'
 import 'vue-pdf-embed/dist/style/index.css'
 
 // optional styles
-import 'vue-pdf-embed/dist/style/annotationLayer.css'
-import 'vue-pdf-embed/dist/style/textLayer.css'
-// import './style.css'
 import 'primevue/resources/themes/aura-light-green/theme.css'
 import 'vue-easy-lightbox/dist/external-css/vue-easy-lightbox.css'
+import 'vue-pdf-embed/dist/style/annotationLayer.css'
+import 'vue-pdf-embed/dist/style/textLayer.css'
 
 loadFonts()
 

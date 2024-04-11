@@ -7,10 +7,10 @@ export const ADDITIONAL = {
   LEADS: {
     SURVEY_IMAGE_LABELS: [
       "Do not use photo",
-      "Old boiler and its pipework",
-      "Old dataplate including back boiler",
-      "Old flu",
-      "Old filter",
+      "Boiler and its pipework ( Old )",
+      "Dataplate including back boiler ( Old )",
+      "Flu ( Old )",
+      "Filter ( Old )",
       "Gas meter",
       "Electric meter",
       "Eletric meter fuse box",
@@ -49,12 +49,12 @@ export const ADDITIONAL = {
     ],
     INSTALLATION_IMAGE_LABELS: [
       'Do not use photo',
-      'Old Heating System',
-      'Old data plate',
-      'Old flue',
-      'Old boiler',
+      'Heating System ( Old )',
+      'Data plate ( Old )',
+      'Flue ( Old )',
+      'Boiler ( Old )',
       'Empty wall for boiler',
-      'New data plate',
+      'Data plate ( New )',
       'Earth Bonding Wire',
       'Analyser',
       'Condensate pipe',
@@ -62,10 +62,10 @@ export const ADDITIONAL = {
       'Gas meter',
       'Electric meter & Electric Fuse box',
       'Empty wall for radiator',
-      'New Radiator',
+      'Radiator ( New )',
       'Radiators',
       'NO TRV',
-      'New TRV',
+      'TRV ( New )',
       'Gas safe certificate',
       'Benchmark form',
       'Heating control device',
@@ -78,6 +78,8 @@ export const ADDITIONAL = {
       'Extras',
       'Datamatch screenshot',
       'TTZC',
+      'Bypass',
+      'New Flue'
     ]
   }
 }

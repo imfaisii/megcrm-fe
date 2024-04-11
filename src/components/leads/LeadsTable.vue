@@ -8,6 +8,7 @@ import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { mergeProps } from "vue";
+import { strTruncated } from "../../utils/useHelper";
 
 export type Comment = {
   leadId: Number | String;
@@ -18,7 +19,7 @@ export type Comment = {
 // Headers
 const headers = [
   { title: "Name", key: "first_name" },
-  { title: "Phone", key: "phone_no" },
+  { title: "Address", key: "plain_address" },
   { title: "Post Code", key: "post_code" },
   { title: "Lead Generator", key: "lead_generator_id", sortable: false },
   { title: "Survey Booked By", key: "id", sortable: false },
@@ -321,31 +322,33 @@ const handleSwalCallback = (response: boolean) => {
       {{ item.raw.full_name }}
     </template>
 
-    <!-- Email -->
+    <!-- Address -->
     <!-- @vue-expect-error -->
-    <template #item.email="{ item }">
-      <a class="email-color" :href="`mailto:${item.raw.email}`">
-        {{ item.raw.email }}
-      </a>
-    </template>
-
-    <!-- Postcode -->
-    <!-- @vue-expect-error -->
-    <template #item.post_code="{ item }">
+    <template #item.plain_address="{ item }">
       <VTooltip>
         <template #activator="{ props }">
-          <div v-bind="props">{{ item.raw.post_code }}</div>
+          <div v-bind="props">{{ strTruncated(item.raw.address, 20) }}</div>
         </template>
-        <span>{{ item.raw.address }}</span>
+        {{ item.raw.address }}
       </VTooltip>
     </template>
 
     <!-- Lead Generator -->
     <!-- @vue-expect-error -->
     <template #item.lead_generator_id="{ item }">
-      <div class="font-italic">
+      <VTooltip>
+        <template #activator="{ props }">
+          <div class="font-italic" v-bind="props">
+            {{
+              strTruncated(
+                item.raw?.lead_generator?.name ?? "No lead generator",
+                10
+              )
+            }}
+          </div>
+        </template>
         {{ item.raw?.lead_generator?.name ?? "No lead generator" }}
-      </div>
+      </VTooltip>
     </template>
 
     <!-- Survey Booked By -->
