@@ -24,49 +24,50 @@ export const sortToString = (sortItem: { sort_by: string, type: string }) => {
   return `${sortKey}`
 }
 
-export const reshapeParams = (url: string, meta: any = {}, options: any) => {
-  let mergedParams = {
-    ...options,
-    ...meta,
-    page: meta?.current_page
-  }
-
-  if (meta?.sort) {
-    mergedParams = {
-      ...mergedParams,
-      sort: sortToString(meta.sort)
+export const
+  reshapeParams = (url: string, meta: any = {}, options: any) => {
+    let mergedParams = {
+      ...options,
+      ...meta,
+      page: meta?.current_page
     }
-  }
 
-  const query = new URLSearchParams()
-
-  for (const [key, value] of Object.entries(mergedParams) as any) {
-    if (value !== null && value !== undefined && value !== '' && value !== 'undefined' && ['page', 'per_page', 'sort', 'include', 'all', 'append'].includes(key)) {
-      query.append(key, value)
+    if (meta?.sort) {
+      mergedParams = {
+        ...mergedParams,
+        sort: sortToString(meta.sort)
+      }
     }
-  }
 
-  let queryString = query.toString()
+    const query = new URLSearchParams()
 
-  // Add filters from meta.filters
-  if (meta?.filters) {
-    const filters = returnFilterString(meta.filters);
-
-    if (filters) {
-      queryString += `&${filters}`
+    for (const [key, value] of Object.entries(mergedParams) as any) {
+      if (value !== null && value !== undefined && value !== '' && value !== 'undefined' && ['page', 'per_page', 'sort', 'include', 'all', 'append'].includes(key)) {
+        query.append(key, value)
+      }
     }
-  }
 
-  if (options?.filters) {
-    const filters = returnFilterString(options.filters);
+    let queryString = query.toString()
 
-    if (filters) {
-      queryString += `&${filters}`
+    // Add filters from meta.filters
+    if (meta?.filters) {
+      const filters = returnFilterString(meta.filters);
+
+      if (filters) {
+        queryString += `&${filters}`
+      }
     }
-  }
 
-  return queryString ? `${url}?${queryString}` : url
-}
+    if (options?.filters) {
+      const filters = returnFilterString(options.filters);
+
+      if (filters) {
+        queryString += `&${filters}`
+      }
+    }
+
+    return queryString ? `${url}?${queryString}` : url
+  }
 
 export const setQueryParams = (options: {}) => {
   return new URLSearchParams(options).toString();
