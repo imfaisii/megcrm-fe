@@ -7,14 +7,20 @@ import Footer from "@/layouts/components/Footer.vue";
 import NavBarNotifications from "@/layouts/components/NavBarNotifications.vue";
 import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue";
 import UserProfile from "@/layouts/components/UserProfile.vue";
+import { useToast } from "@/plugins/toastr";
 
 // @layouts plugin
 import useTime from "@/composables/useTime";
 import env from "@/constants/env";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { useDatamatchFilesStore } from "@/stores/data-match/useDatamatchFilesStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
+import { EventBus } from "@/utils/useEventBus";
 import { VerticalNavLayout } from "@layouts";
+
 import axios from "axios";
+const dataMatchStore: any = useDatamatchFilesStore();
+const $toast: any = useToast();
 
 const {
   appRouteTransition,
@@ -40,11 +46,14 @@ const handleFileDownload = async () => {
       Authorization: `Bearer ${token}`,
     },
     responseType: "json", // assuming response.data contains a URL
-  }).then((response) => {
-    const downloadUrl = response.data.data; // assuming response.data contains a URL
-    // Open the URL in a new tab
-    window.open(downloadUrl, "_blank");
-  });
+  })
+    .then((response) => {
+      window.open(response?.data?.data?.file_path, "_blank").focus();
+    })
+    .catch((err) => {
+      console.log(err);
+      $toast.error(err.response?.data?.message ?? "Something Went Wrong!");
+    });
 };
 watch(
   [isVerticalNavCollapsed, isAppRtl],
@@ -60,6 +69,24 @@ watch(
   },
   { immediate: true }
 );
+
+onMounted(() => {
+  EventBus.$on("file-download-datamatch", async (response: any) => {
+    // Create a temporary anchor element
+    const link = document.createElement("a");
+
+    link.href = window.URL.createObjectURL(new Blob([response]));
+    link.setAttribute(
+      "download",
+      `datamatch-${time.currentTime("DD-MM-YYYY-hh:mm:ss")}.xlsx`
+    );
+    document.body.appendChild(link);
+
+    link.click();
+  });
+});
+
+onUnmounted(() => EventBus.$off("file-download-datamatch"));
 </script>
 
 <template>

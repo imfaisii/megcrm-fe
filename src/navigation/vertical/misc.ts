@@ -76,6 +76,10 @@ export default [
         title: 'Data Match Upload', to: 'data-match-upload',
         permissions: [modules.LEADS + '.*'],
       },
+      {
+        title: 'Data Match Result Files', to: 'data-match-files',
+        permissions: [modules.LEADS + '.*'],
+      },
     ]
   },
 ] as VerticalNavItems
