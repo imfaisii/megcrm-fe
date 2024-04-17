@@ -53,6 +53,8 @@ export const useDropboxStore = defineStore('dropbox', () => {
         headers
       })
 
+      data.entries = data.entries.filter((entry: any) => entry['.tag'] === 'file');
+
       const folderImageIds = new Set(folderImages.value.map((entry: any) => entry.id));
 
       // Filter data.entries to remove entries with IDs present in folderImageIds
@@ -96,6 +98,8 @@ export const useDropboxStore = defineStore('dropbox', () => {
       }, {
         headers
       })
+
+      data.entries = data.entries.filter((entry: any) => entry['.tag'] === 'file');
 
       const installationImageIds = new Set(installationImages.value.map((entry: any) => entry.id));
 

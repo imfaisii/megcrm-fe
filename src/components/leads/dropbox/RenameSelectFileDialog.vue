@@ -4,7 +4,6 @@ import { useDropboxStore } from "@/stores/dropbox/useDropboxStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
 import { getExtension } from "@/utils/useHelper";
-import { requiredValidator } from "@validators";
 
 const props = defineProps({
   type: {
@@ -25,9 +24,9 @@ const firstName: any = ref(null);
 const oldName: any = ref(null);
 const path: any = ref(null);
 const ext: any = ref("");
+const actualName: any = ref("");
 
-const handleSubmit = async (selectedName: string) => {
-  name.value = selectedName;
+const handleSubmit: any = async () => {
   isLoading.value = true;
 
   const nameWithExtension = `${name.value}.${ext.value}`;
@@ -69,56 +68,70 @@ const handleSubmit = async (selectedName: string) => {
   }
 };
 
+function removeRenameCountAndExtension(filename: string) {
+  // Regular expression to match the rename count enclosed in parentheses at the end of the string
+  const renameCountRegex = /\s*\(\d+\)\.[^.]+$/;
+  // Remove the rename count
+  let cleanedFilename = filename.replace(renameCountRegex, "");
+
+  // Regular expression to match the file extension
+  const extensionRegex = /\.[^.]+$/;
+  // Remove the file extension
+  cleanedFilename = cleanedFilename.replace(extensionRegex, "");
+
+  return cleanedFilename;
+}
+
 onMounted(() => {
-  ext.value = getExtension(props?.imageData?.fileName);
-  oldName.value = props?.imageData?.fileName;
-  name.value = props?.imageData?.fileName.replace(`.${ext.value}`, "");
-  firstName.value = name.value;
-  path.value = props?.imageData?.filePath;
+  ext.value = getExtension(props.imageData.fileName);
+  actualName.value = props.imageData.fileName
+    .replace(`${leadsStore.selectedLead.reference_number} - `, "")
+    .replace(`.${ext.value}`, "");
+
+  oldName.value = props.imageData.fileName;
+  path.value = props.imageData.filePath;
+
+  name.value = removeRenameCountAndExtension(
+    props?.imageData?.fileName
+  ).replace(`${leadsStore.selectedLead.reference_number} - `, "");
+
+  if (!dropdownOptions.value.includes(name.value)) {
+    name.value = "";
+  }
 });
 
 const dropdownOptions = computed(() => {
   if (props.type === "Survey Pictures") {
-    return ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS;
+    return ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS.sort((a, b) =>
+      a.toLowerCase().localeCompare(b.toLowerCase())
+    );
   }
 
-  return ADDITIONAL.LEADS.INSTALLATION_IMAGE_LABELS;
+  return ADDITIONAL.LEADS.INSTALLATION_IMAGE_LABELS.sort((a, b) =>
+    a.toLowerCase().localeCompare(b.toLowerCase())
+  );
 });
 </script>
 
 <template>
-  <VForm>
-    <VCol cols="12">
-      <VSelect
-        v-model="name"
-        :rules="[requiredValidator]"
-        :items="
-          dropdownOptions.sort((a, b) =>
-            a.toLowerCase().localeCompare(b.toLowerCase())
-          )
-        "
-        label="Name"
-        placeholder="File Name"
-        required
-      >
-        <template v-slot:item="{ item, props }">
-          <div
-            @click="handleSubmit(item.title)"
-            v-bind="props"
-            class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line v-list-item--variant-text"
-            tabindex="0"
-          >
-            <span class="v-list-item__overlay"></span
-            ><span class="v-list-item__underlay"></span>
-            <div class="v-list-item__prepend"><!----></div>
-            <div class="v-list-item__content" data-no-activator="">
-              <div class="v-list-item-title">
-                {{ item.title }}
-              </div>
-            </div>
-          </div>
-        </template>
-      </VSelect>
-    </VCol>
-  </VForm>
+  <VCol cols="12">
+    <select v-model="name" @change="handleSubmit">
+      <option value="" disabled>Select an option</option>
+      <option v-for="option in dropdownOptions" :value="option" :key="option">
+        {{ option === name ? actualName : option }}
+      </option>
+    </select>
+  </VCol>
 </template>
+
+<style lang="scss" scoped>
+select {
+  padding: 6px;
+  padding-inline: 12px;
+  border: 1px solid #7a7979;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background: #fafafa;
+}
+</style>

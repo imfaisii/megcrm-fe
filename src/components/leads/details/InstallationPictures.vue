@@ -286,7 +286,7 @@ const filteredResults = computed(() => {
                       :src="`${
                         isImageFileName(image.name) ? image.link : errorimage
                       }`"
-                      height="450"
+                      height="300"
                       loading="lazy"
                     />
                   </VCol>
