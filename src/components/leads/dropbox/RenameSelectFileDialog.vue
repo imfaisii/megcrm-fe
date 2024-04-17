@@ -20,7 +20,6 @@ const isLoading = ref(false);
 const store = useDropboxStore();
 const leadsStore = useLeadsStore();
 const name: any = ref(null);
-const firstName: any = ref(null);
 const oldName: any = ref(null);
 const path: any = ref(null);
 const ext: any = ref("");
@@ -41,8 +40,7 @@ const handleSubmit: any = async () => {
         `${leadsStore.selectedLead.reference_number} - `,
         ""
       )}`
-    ),
-    nameWithExtension
+    )
   );
 
   if (props.type === "Survey Pictures") {
@@ -61,7 +59,14 @@ const handleSubmit: any = async () => {
     );
 
     if (entryIndex !== -1) {
-      store.installationImages[entryIndex] = response;
+      if (props.imageData?.folderName) {
+        store.installationImages[entryIndex] = {
+          ...response,
+          folderName: props.imageData?.folderName,
+        };
+      } else {
+        store.installationImages[entryIndex] = response;
+      }
     }
 
     EventBus.$emit("refresh-installation-pictures");
@@ -114,7 +119,7 @@ const dropdownOptions = computed(() => {
 </script>
 
 <template>
-  <VCol cols="12">
+  <VCol class="pa-0" cols="12">
     <select v-model="name" @change="handleSubmit">
       <option value="" disabled>Select an option</option>
       <option v-for="option in dropdownOptions" :value="option" :key="option">

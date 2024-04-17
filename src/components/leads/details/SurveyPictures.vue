@@ -202,6 +202,7 @@ const filteredResults = computed(() => {
               clearable
               multiple
               chips
+              density="compact"
             />
           </VCol>
         </VRow>
@@ -275,7 +276,7 @@ const filteredResults = computed(() => {
                       :src="`${
                         isImageFileName(image.name) ? image.link : errorimage
                       }`"
-                      height="450"
+                      height="350"
                       loading="lazy"
                     />
                   </VCol>
@@ -290,7 +291,7 @@ const filteredResults = computed(() => {
               cols="12"
               @click.stop
             >
-              <div style="flex-basis: 100%">
+              <div style="flex-basis: 100%; padding: 10px">
                 <rename-select-file-dialog
                   :imageData="{
                     id: image.id,

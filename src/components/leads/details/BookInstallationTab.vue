@@ -39,7 +39,7 @@ onMounted(async () => {
               :rules="[requiredValidator]"
               label="Installer"
               :item-title="
-                (item) =>
+                (item:any) =>
                   `${item.name} ( ${item?.company?.name ?? 'No company'} )`
               "
               item-value="id"

@@ -75,6 +75,7 @@ declare module '@vue/runtime-core' {
     LeadsTable: typeof import('./src/components/leads/LeadsTable.vue')['default']
     MeasuresTable: typeof import('./src/components/measures/MeasuresTable.vue')['default']
     MoreBtn: typeof import('./src/@core/components/MoreBtn.vue')['default']
+    MoveToFolderSelect: typeof import('./src/components/leads/dropbox/MoveToFolderSelect.vue')['default']
     Notifications: typeof import('./src/@core/components/Notifications.vue')['default']
     Pagination: typeof import('./src/components/datatable/Pagination.vue')['default']
     PreCheckingDocumentsCard: typeof import('./src/components/leads/details/PreCheckingDocumentsCard.vue')['default']

@@ -25,6 +25,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
   const renameEndpoint = `${baseUrl}/move_v2`
   const getTemporaryLinkEndpoint = `${baseUrl}/get_temporary_link`
 
+  const intallationPicturesFolders: any = ref([])
   const folderImages: any = ref([])
   const surveyFileNames: any = ref([])
   const installationFileNames: any = ref([])
@@ -84,6 +85,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
 
   const getInstallationPictures = async (folderName: string, fetchLinks: boolean = true) => {
     try {
+      let images = []
       loading.value = true
 
       const { data } = await axios.post(`${folderFilesEndpoint}`, {
@@ -99,15 +101,39 @@ export const useDropboxStore = defineStore('dropbox', () => {
         headers
       })
 
-      data.entries = data.entries.filter((entry: any) => entry['.tag'] === 'file');
+      images.push(data.entries.filter((entry: any) => entry['.tag'] === 'file'))
+
+      intallationPicturesFolders.value = data.entries.filter((entry: any) => entry['.tag'] === 'folder')
+
+      for await (const folder of intallationPicturesFolders.value) {
+        const { data } = await axios.post(`${folderFilesEndpoint}`, {
+          "include_deleted": false,
+          "include_has_explicit_shared_members": false,
+          "include_media_info": true,
+          "include_mounted_folders": true,
+          "include_non_downloadable_files": true,
+          "limit": 2000,
+          "path": `${baseDirectory}/${folderName}/Installation/${folder.name}`,
+          "recursive": false
+        }, {
+          headers
+        })
+
+        images.push(data.entries.map((i: any) => ({
+          ...i,
+          folderName: folder.name
+        })).filter((entry: any) => entry['.tag'] === 'file'))
+      }
+
+      let flattenedImages = [].concat(...images);
 
       const installationImageIds = new Set(installationImages.value.map((entry: any) => entry.id));
 
       // Filter data.entries to remove entries with IDs present in folderImageIds
-      data.entries = data.entries.filter((entry: any) => !installationImageIds.has(entry.id));
+      flattenedImages = flattenedImages.filter((entry: any) => !installationImageIds.has(entry.id));
       const combined = [
         ...installationImages.value,
-        ...data.entries
+        ...flattenedImages
       ]
 
       installationImages.value = combined.sort((a, b) => {
@@ -232,7 +258,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
     }
   }
 
-  const renameFile = async (oldPath: string, newPath: string, newFileName: string) => {
+  const renameFile = async (oldPath: string, newPath: string) => {
     try {
       loading.value = true
 
@@ -273,6 +299,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
     precheckingDocuments,
     surveyFileNames,
     installationFileNames,
+    intallationPicturesFolders,
 
     renameFile,
     getInstallationPictures,

@@ -14,8 +14,10 @@ const filesUploaded = ref(0);
 const selectedFilesLength = ref(0);
 const isUploading = ref(false);
 const leadsStore = useLeadsStore();
-
+const panel = ref(0);
 const selectedTags = ref<string[]>([]);
+const subFolder = ref(null);
+const newFolderName = ref(null);
 
 const selectTag = (v: string) => {
   const index = selectedTags.value.indexOf(v);
@@ -78,7 +80,13 @@ async function uploadFilesSequentially(files: any) {
           quality: 0.4,
           async success(result) {
             try {
-              await dbStore.store(dbStore.folder, "Installation", result);
+              await dbStore.store(
+                dbStore.folder,
+                [null, ""].includes(subFolder.value)
+                  ? "Installation"
+                  : `Installation/${subFolder.value}`,
+                result
+              );
               filesUploaded.value++;
               resolve(result);
             } catch (error) {
@@ -112,12 +120,6 @@ const saveFiles = async (files: any) => {
 
   uploadFilesSequentially(files)
     .then(async () => {
-      // await leadsStore.updateStatus({
-      //   leadId: leadsStore.selectedLead.id,
-      //   status: "Survey Done",
-      //   comments: "All files were uploaded to dropbox.",
-      // });
-
       setTimeout(() => {
         dbStore.getInstallationPictures(dbStore.folder);
         EventBus.$emit("refresh-lead-data");
@@ -169,29 +171,6 @@ const filteredResults = computed(() => {
         <VCardTitle>
           Installation Pictures ( {{ dbStore.installationImages.length }} )
         </VCardTitle>
-
-        <template #append>
-          <div class="me-n3 mt-n2">
-            <VCol cols="12">
-              <div v-bind="getRootProps()">
-                <input v-bind="getInputProps()" />
-                <VTooltip>
-                  <template #activator="{ props }">
-                    <VBtn
-                      :loading="dbStore.loading"
-                      :disabled="dbStore.loading"
-                      v-bind="props"
-                      color="primary"
-                      icon="mdi-upload-outline"
-                    />
-                  </template>
-
-                  <span>Upload files</span>
-                </VTooltip>
-              </div>
-            </VCol>
-          </div>
-        </template>
       </VCardItem>
 
       <VCardTitle v-if="isUploading">
@@ -212,6 +191,7 @@ const filteredResults = computed(() => {
               clearable
               multiple
               chips
+              density="compact"
             />
           </VCol>
         </VRow>
@@ -251,14 +231,30 @@ const filteredResults = computed(() => {
       </VCardItem>
     </VCard>
 
-    <VRow class="mt-4">
-      <VCol v-if="filteredResults.length < 1" cols="12">
-        <VCard title="No image(s) found." />
-      </VCol>
+    <VRow
+      v-if="filteredResults.filter((i: any) => !i?.folderName)
+                .length > 0"
+      class="py-4 mt-2"
+    >
+      <VCol cols="12">
+        <VCardItem class="pa-0">
+          <template #prepend>
+            <VIcon icon="mdi-image-marker" class="text-disabled" />
+          </template>
 
+          <VCardTitle>
+            Pictures not marked (
+            {{ filteredResults.filter((i: any) => !i?.folderName).length }}
+            )
+          </VCardTitle>
+        </VCardItem>
+      </VCol>
+    </VRow>
+
+    <VRow class="mt-4">
       <VCol
-        v-for="image in (filteredResults as any)"
-        v-else
+        v-for="image in (filteredResults.filter((i:any) => !i.folderName) as any)"
+        v-if="filteredResults.filter((i:any) => !i.folderName).length > 1"
         :key="image.id"
         class="image-card px-3"
         cols="12"
@@ -295,27 +291,148 @@ const filteredResults = computed(() => {
             </template>
             <span>Click to preview</span>
           </VTooltip>
-          <VRow>
-            <VCol
-              class="d-flex justify-start align-center pa-3"
-              cols="12"
-              @click.stop
-            >
-              <div style="flex-basis: 100%">
-                <rename-select-file-dialog
-                  type="Installation Pictures"
-                  :imageData="{
-                    id: image.id,
-                    fileName: image.name,
-                    filePath: image.path_display,
-                  }"
-                />
-              </div>
+          <VRow class="pa-4">
+            <VCol cols="12" @click.stop>
+              <MoveToFolderSelect :image="image" />
             </VCol>
           </VRow>
         </VCard>
       </VCol>
     </VRow>
+
+    <VExpansionPanels class="mt-4" v-model="panel" multiple>
+      <VExpansionPanel
+        v-if="leadsStore.selectedLead.measures.length > 0"
+        v-for="installation in leadsStore.selectedLead.installation_bookings"
+        :key="installation.id"
+      >
+        <VExpansionPanelTitle>
+          {{
+            `${installation.name} ( ${
+              filteredResults.filter(
+                (i: any) => i?.folderName === installation.name
+              ).length
+            } )`
+          }}
+          <template v-slot:actions="{ expanded }">
+            <div @click.stop>
+              <VCol @click="subFolder = installation.name" cols="12">
+                <div v-bind="getRootProps()">
+                  <input v-bind="getInputProps()" />
+                  <VTooltip>
+                    <template #activator="{ props }">
+                      <VBtn
+                        :loading="dbStore.loading"
+                        :disabled="dbStore.loading"
+                        v-bind="props"
+                        color="primary"
+                        icon="mdi-upload"
+                        density="compact"
+                      />
+                    </template>
+
+                    <span>Upload files</span>
+                  </VTooltip>
+                </div>
+              </VCol>
+            </div>
+          </template>
+        </VExpansionPanelTitle>
+
+        <VExpansionPanelText>
+          <VRow>
+            <VCol cols="12">
+              <VCardTitle v-if="isUploading">
+                <span>
+                  Uploaded {{ filesUploaded }} / {{ selectedFilesLength }}
+                </span>
+              </VCardTitle>
+            </VCol>
+          </VRow>
+
+          <VRow class="mt-4">
+            <VCol
+              v-if="filteredResults.filter(
+                      (i: any) => i?.folderName === installation.name
+                    ).length < 1"
+              class="pa-0"
+              cols="12"
+            >
+              <VCard flat title="No image(s) found." />
+            </VCol>
+
+            <VCol
+              v-for="image in (filteredResults.filter(
+                      (i: any) => i?.folderName === installation.name
+                    ) as any)"
+              v-else
+              :key="image.id"
+              class="image-card px-3"
+              cols="12"
+              sm="6"
+              md="3"
+            >
+              <div v-if="image.link === undefined">
+                <Skeleton height="2rem" class="mb-2" borderRadius="16px" />
+
+                <VCardText class="position-relative">
+                  <VCardTitle>
+                    <Skeleton width="5rem" borderRadius="16px" class="mb-2" />
+                  </VCardTitle>
+                </VCardText>
+              </div>
+
+              <VCard flat v-else>
+                <VTooltip>
+                  <template #activator="{ props }">
+                    <div v-bind="props">
+                      <VRow @click="show(image)">
+                        <VCol cols="12">
+                          <!-- Image -->
+                          <VImg
+                            :src="`${
+                              isImageFileName(image.name)
+                                ? image.link
+                                : errorimage
+                            }`"
+                            height="300"
+                            loading="lazy"
+                          />
+                        </VCol>
+                      </VRow>
+                    </div>
+                  </template>
+                  <span>Click to preview</span>
+                </VTooltip>
+                <VRow>
+                  <VCol
+                    class="d-flex justify-start align-center pa-3"
+                    cols="12"
+                    @click.stop
+                  >
+                    <div style="flex-basis: 100%">
+                      <rename-select-file-dialog
+                        type="Installation Pictures"
+                        :imageData="{
+                          id: image.id,
+                          fileName: image.name,
+                          filePath: image.path_display,
+                          folderName: image?.folderName,
+                        }"
+                      />
+                    </div>
+                  </VCol>
+                </VRow>
+              </VCard>
+            </VCol>
+          </VRow>
+        </VExpansionPanelText>
+      </VExpansionPanel>
+      <VExpansionPanel
+        v-else
+        title="Please select measures to upload pictures."
+      />
+    </VExpansionPanels>
   </div>
 
   <!-- Dialogs-->
