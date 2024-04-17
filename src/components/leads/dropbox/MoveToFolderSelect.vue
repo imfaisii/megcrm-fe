@@ -10,12 +10,14 @@ const store = useDropboxStore();
 const name = ref(null);
 
 const updateFolder = async () => {
+  const regex = /\/installation\//i;
+  const newPathDisplay = props.image.path_display.replace(
+    regex,
+    `/Installation/${name.value}/`
+  );
   const response = await store.renameFile(
     props.image.path_display,
-    props.image.path_display.replace(
-      "/Installation/",
-      `/Installation/${name.value}/`
-    )
+    newPathDisplay
   );
 
   const entryIndex = store.installationImages.findIndex(

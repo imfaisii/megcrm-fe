@@ -173,10 +173,6 @@ const filteredResults = computed(() => {
         </VCardTitle>
       </VCardItem>
 
-      <VCardTitle v-if="isUploading">
-        <span> Uploaded {{ filesUploaded }} / {{ selectedFilesLength }} </span>
-      </VCardTitle>
-
       <VDivider />
 
       <VCardItem>
@@ -254,7 +250,7 @@ const filteredResults = computed(() => {
     <VRow class="mt-4">
       <VCol
         v-for="image in (filteredResults.filter((i:any) => !i.folderName) as any)"
-        v-if="filteredResults.filter((i:any) => !i.folderName).length > 1"
+        v-if="filteredResults.filter((i:any) => !i.folderName).length > 0"
         :key="image.id"
         class="image-card px-3"
         cols="12"

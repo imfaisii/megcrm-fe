@@ -187,7 +187,7 @@ export const logsHaveUpdatedProperty = (property: string, logs: any[] = []): { f
   for (let i = logs.length - 1; i >= 0; i--) {
     const log = logs[i];
     if (log.event === 'updated') {
-      if (Object.hasOwnProperty.call(log.properties.attributes, property)) {
+      if (log.properties && log.properties.length > 0 && Object.hasOwn(log.properties.attributes, property)) {
         result.found = true;
         result.data = log;
         break;
