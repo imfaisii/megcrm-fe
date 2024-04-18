@@ -30,6 +30,7 @@ export const useUsersStore = defineStore('users', () => {
     is_active: true,
     roles: [],
     aircall_email_address: null,
+    installation_types: [],
     documents: [],
     company_documents: [],
     additional: {
