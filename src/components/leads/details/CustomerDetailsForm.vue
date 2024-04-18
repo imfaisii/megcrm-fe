@@ -61,7 +61,6 @@ onMounted(async () => {
             placeholder="John"
             clearable
             required
-            :disabled="isDisabledBecauseDatamatch"
           />
         </VCol>
 
@@ -84,7 +83,6 @@ onMounted(async () => {
             label="Last Name"
             placeholder="Doe"
             clearable
-            :disabled="isDisabledBecauseDatamatch"
             required
           />
         </VCol>
@@ -123,7 +121,6 @@ onMounted(async () => {
             type="number"
             clearable
             required
-            :disabled="isDisabledBecauseDatamatch"
             :readonly="!permissionsStore.isSuperAdmin"
           />
         </VCol>
