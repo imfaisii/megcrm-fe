@@ -438,6 +438,34 @@ onMounted(async () => {
                   <VCol cols="12">
                     <VCardItem class="px-0">
                       <template #prepend>
+                        <VIcon icon="mdi-water-boiler" class="text-disabled" />
+                      </template>
+
+                      <VCardTitle>Installation Types</VCardTitle>
+                    </VCardItem>
+
+                    <VDivider class="mt-1 mb-6" />
+
+                    <VAutocomplete
+                      v-model="store.selected.installation_types"
+                      :rules="[requiredValidator]"
+                      :items="leadsStore.installation_types"
+                      item-title="name"
+                      item-value="id"
+                      label="Installation Type"
+                      placeholder="Installation Type"
+                      :return-object="false"
+                      :error-messages="store?.errors?.installation_types?.[0]"
+                      multiple
+                      chips
+                      clearable
+                    />
+                  </VCol>
+                </VRow>
+                <VRow>
+                  <VCol cols="12">
+                    <VCardItem class="px-0">
+                      <template #prepend>
                         <VIcon
                           icon="mdi-office-building-outline"
                           class="text-disabled"
