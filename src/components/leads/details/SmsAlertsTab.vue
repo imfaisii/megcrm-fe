@@ -1,14 +1,58 @@
 <script lang="ts" setup>
+import useApiFetch from "@/composables/useApiFetch";
 import useTime from "@/composables/useTime";
+import { useToast } from "@/plugins/toastr";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 
 const isDialogVisible = ref(false);
-const leadStore = useLeadsStore();
+const leadStore: any = useLeadsStore();
 const time = useTime();
+const $toast = useToast();
+const sendingSMS = ref(false);
+
+const sendSmsWithTemplate = async (templateId: number, leadId: number) => {
+  try {
+    sendingSMS.value = true;
+    await useApiFetch(`/send-sms/${leadId}/${templateId}`);
+
+    $toast.success("Your message was sent.");
+  } catch (e) {
+  } finally {
+    sendingSMS.value = false;
+  }
+};
 </script>
 
 <template>
   <VCard>
+    <VCardItem>
+      <template #prepend>
+        <VIcon icon="mdi-cellphone-check" class="text-disabled" />
+      </template>
+
+      <VCardTitle>SMS Alerts Templates</VCardTitle>
+    </VCardItem>
+
+    <VDivider />
+
+    <VCardText>
+      <div class="d-flex ga-2">
+        <VBtn
+          @click="sendSmsWithTemplate(template.id, leadStore.selectedLead.id)"
+          color="primary"
+          :disabled="
+            !leadStore.selectedLead.phone_number_formatted || sendingSMS
+          "
+          :loading="sendingSMS"
+          v-for="template in leadStore.sms_templates"
+        >
+          {{ template.name }}
+        </VBtn>
+      </div>
+    </VCardText>
+  </VCard>
+
+  <VCard class="mt-6">
     <VCardItem>
       <template #prepend>
         <VIcon icon="mdi-cellphone-marker" class="text-disabled" />
@@ -30,7 +74,7 @@ const time = useTime();
                 </div>
               </template>
               <span>
-                This lead have invalid number, please fix it to allow sending
+                This lead has invalid number, please fix it to allow sending
                 text messages.
               </span>
             </VTooltip>

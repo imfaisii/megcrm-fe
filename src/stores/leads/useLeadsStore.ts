@@ -75,6 +75,7 @@ export const useLeadsStore = defineStore('leads', () => {
   const installation_types: Ref<InstallationType[]> = ref([])
   const banks: Ref<Bank[]> = ref([])
   const csrs = ref([])
+  const sms_templates = ref([])
   const errors = ref({})
   const includes = [
     "leadGenerator",
@@ -125,6 +126,7 @@ export const useLeadsStore = defineStore('leads', () => {
       installation_types.value = data?.installation_types ?? []
       banks.value = data?.banks ?? []
       csrs.value = data?.csrs ?? []
+      sms_templates.value = data?.sms_templates ?? []
       isLoading.value = false
     }
   }
@@ -365,6 +367,7 @@ export const useLeadsStore = defineStore('leads', () => {
 
 
   return {
+    sms_templates,
     csrs,
     banks,
     installation_types,
