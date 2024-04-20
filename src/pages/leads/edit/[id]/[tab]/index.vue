@@ -194,10 +194,26 @@ onUnmounted(() => {
                             store.selectedLead.lead_customer_additional_detail
                               .datamatch_progress
                           }}
+                          <template
+                            v-if="
+                              ![
+                                'not sent',
+                                'sent',
+                                'not_sent',
+                                'notSent',
+                              ].includes(
+                                store?.selectedLead?.lead_customer_additional_detail?.datamatch_progress?.toLowerCase()
+                              )
+                            "
+                          >
+                            {{
+                              `on ${store?.selectedLead?.lead_customer_additional_detail?.datamatch_progress_date} ${store?.selectedLead?.lead_customer_additional_detail?.result_first_name ? `against ${store?.selectedLead?.lead_customer_additional_detail?.result_first_name}` : ''} ${store?.selectedLead?.lead_customer_additional_detail?.result_last_name ?? ''}`
+                            }}</template
+                          >
                         </span>
                       </VChip>
                     </template>
-                    <span> Lead reference number </span>
+                    <span> DataMatch Response </span>
                   </VTooltip>
 
                   <VTooltip v-if="preCheckingsDetails.found">
