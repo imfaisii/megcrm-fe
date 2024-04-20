@@ -51,7 +51,7 @@ const form = reactive<Comment>({
 });
 
 // composables
-let SelectedNumberForCall: string = "";
+let SelectedNumberForCall: string = ref("");
 const store: any = useLeadsStore();
 const body = ref("");
 const isConfirmDialogVisible = ref(false);
@@ -116,7 +116,7 @@ const handleAirCall = async (lead: any) => {
       },
       method: "POST",
     });
-    SelectedNumberForCall = "+44" + fixNumber(lead?.phone_no ?? "");
+    SelectedNumberForCall.value = "+44" + fixNumber(lead?.phone_no ?? "");
     const myCallerId = auth?.user?.air_caller_id;
     oldCalls = oldCalls.filter(function (obj: any) {
       /* check if some one else has called it or not */
@@ -147,7 +147,7 @@ const handleAirCall = async (lead: any) => {
     }
 
     if (isDialCall) {
-      return makeDialCall(SelectedNumberForCall);
+      return makeDialCall(SelectedNumberForCall.value);
     } else {
       return false;
     }
@@ -179,7 +179,7 @@ const makeDialCall = async (phone_no: string) => {
 
 const handleSwalCallback = (response: boolean) => {
   if (response) {
-    makeDialCall(SelectedNumberForCall);
+    makeDialCall(SelectedNumberForCall.value);
   }
 };
 </script>
@@ -455,7 +455,12 @@ const handleSwalCallback = (response: boolean) => {
         <template #activator="{ props }">
           <IconBtn @click.stop="handleAirCall(item.raw)" v-bind="props">
             <VProgressCircular
-              v-if="airCallLoader && store.selectedId === item.raw.id"
+              v-if="
+                airCallLoader &&
+                (store.selectedId === item.raw.id ||
+                  SelectedNumberForCall ===
+                    `+44` + fixNumber(item?.raw?.phone_no ?? ''))
+              "
               size="24"
               color="info"
               indeterminate
