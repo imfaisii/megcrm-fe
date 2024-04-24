@@ -17,6 +17,7 @@ const tabs = [
     tab: "customer-details",
   },
   { title: "Communications", icon: "mdi-phone-outline", tab: "communications" },
+  { title: "SMS Alerts", icon: "mdi-cellphone", tab: "sms-alerts" },
   {
     title: "Call History",
     icon: "openmoji:mobile-info",
