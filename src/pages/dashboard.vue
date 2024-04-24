@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import CalendarComponent from "@/pages/calendar/index.vue";
 import ApexChartAreaChart from "@/views/charts/apex-chart/ApexChartAreaChart.vue";
 
 const statisticsVertical = [
@@ -58,6 +59,10 @@ const statisticsVertical = [
 
     <VCol cols="12" lg="4">
       <CardMostSalesInCountries />
+    </VCol>
+
+    <VCol cols="12">
+      <CalendarComponent />
     </VCol>
 
     <VCol cols="12">
