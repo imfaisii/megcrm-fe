@@ -117,7 +117,7 @@ export const useLeadsStore = defineStore('leads', () => {
       fuelTypes.value = data?.fuel_types ?? []
       benefitTypes.value = data?.benefit_types ?? []
       surveyors.value = data?.surveyors ?? []
-      leadGenerators.value = data?.lead_generators ?? []
+      leadGenerators.value = data?.lead_generSators ?? []
       leadSources.value = data?.lead_sources ?? []
       leadStatuses.value = data?.lead_statuses ?? []
       leadTableStatuses.value = data?.lead_table_filters ?? []

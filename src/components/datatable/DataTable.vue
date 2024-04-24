@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { VDataTableServer } from "vuetify/labs/VDataTable";
 
+const expanded: any = ref([]);
+
 const props: any = defineProps({
   store: {
     required: true,
+    type: Object,
   },
   searchable: {
     type: Boolean,
@@ -60,6 +63,7 @@ const sortable = (sortItem: SortItem[]) => {
     :items-length="10"
     :must-sort="true"
     class="elevation-1"
+    v-model:expanded="expanded"
     @update:sort-by="sortable"
   >
     <template #top>

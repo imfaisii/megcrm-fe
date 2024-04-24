@@ -21,8 +21,8 @@ export type Comment = {
 
 // Headers
 const headers = [
+  { text: "", key: "data-table-expand" },
   { title: "Name", key: "first_name" },
-  { title: "Address", key: "plain_address" },
   { title: "Post Code", key: "post_code" },
   { title: "Lead Generator", key: "lead_generator_id", sortable: false },
   { title: "Survey Booked By", key: "id", sortable: false },
@@ -202,6 +202,17 @@ const handleStoreCallStatus = (lead: any) => {
   store.selectedLead = lead;
   isDialogVisible.value = true;
 };
+
+const getExpandedColumnLength = (columns: any, divide = 3): number => {
+  return columns.length % divide === 0
+    ? columns.length / divide
+    : columns.length / divide + 1;
+};
+
+const handleLeadUpdate = (lead: any) => {
+  store.selectedLead = lead;
+  store.update();
+};
 </script>
 
 <template>
@@ -330,12 +341,89 @@ const handleStoreCallStatus = (lead: any) => {
     :store="store"
     :items="store.leads"
     :headers="headers"
+    show-expand
     class="text-no-wrap"
-    show-select
-    @click:row="onRowClick"
     @update:on-pagination-change="onPaginationChange"
     @update:on-sort-change="onSortChange"
   >
+    <!-- Expanded Data -->
+    <!-- @vue-expect-error -->
+    <template v-slot:expanded-row="{ columns, item }">
+      <tr>
+        <td class="pa-5" :colspan="columns.length">
+          <p class="px-1 mb-0">
+            Address:
+            <span class="font-italic">{{ item.raw.address }}</span>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="pa-5" :colspan="columns.length">
+          <p class="px-1 mb-0">
+            Email:
+            <span class="d-inline-flex">
+              <a
+                v-if="item.raw?.email"
+                :href="`mailto:${item.raw.email}`"
+                class="font-italic"
+              >
+                {{ item.raw.email ?? "Not found" }}
+              </a>
+              <p class="mb-0 font-italic">Not found</p>
+            </span>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="pa-5" :colspan="columns.length">
+          <p class="px-1 mb-0">
+            Phone:
+            <span class="d-inline-flex">
+              <a
+                v-if="item.raw?.phone_number_formatted"
+                :href="`tel:${item.raw.phone_number_formatted}`"
+                class="font-italic"
+              >
+                {{ item.raw.phone_number_formatted ?? "Not found" }}
+              </a>
+              <p v-else class="mb-0 font-italic">
+                Invalid number {{ item.raw?.phone_number_formatted ?? "NULL" }}
+              </p>
+            </span>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="pa-5" :colspan="3">
+          <VTextField label="EPC" v-model="item.raw.epc" density="compact" />
+        </td>
+        <td class="pa-5" :colspan="2">
+          <VTextField
+            label="Gas Safe"
+            v-model="item.raw.gas_safe"
+            density="compact"
+          />
+        </td>
+        <td class="pa-5" :colspan="2">
+          <VTextField
+            label="Recommend"
+            v-model="item.raw.recommend"
+            density="compact"
+          />
+        </td>
+        <td class="text-center pa-5" :colspan="1">
+          <VBtn
+            class="mt-2"
+            @click="handleLeadUpdate(item.raw)"
+            size="small"
+            :loading="store.isLoading"
+            :disabled="store.isLoading"
+            >Save</VBtn
+          >
+        </td>
+      </tr>
+    </template>
+
     <!-- Name -->
     <!-- @vue-expect-error -->
     <template #item.first_name="{ item }">
@@ -344,12 +432,14 @@ const handleStoreCallStatus = (lead: any) => {
 
     <!-- Address -->
     <!-- @vue-expect-error -->
-    <template #item.plain_address="{ item }">
+    <template #item.post_code="{ item }">
       <VTooltip>
         <template #activator="{ props }">
-          <div v-bind="props">{{ strTruncated(item.raw.address, 10) }}</div>
+          <div v-bind="props">{{ item.raw.post_code }}</div>
         </template>
-        {{ item.raw.address }}
+        <span>
+          {{ item.raw.address }}
+        </span>
       </VTooltip>
     </template>
 
@@ -529,5 +619,9 @@ const handleStoreCallStatus = (lead: any) => {
 <style lang="scss" scoped>
 .email-color {
   color: "#4FC3F7";
+}
+
+:deep(.v-field__append-inner) {
+  padding-top: 5px !important;
 }
 </style>
