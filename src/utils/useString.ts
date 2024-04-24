@@ -29,3 +29,5 @@ export const getLastSegment = (str: string) => {
 
   return segments[segments.length - 1]
 }
+
+export const fixNumber = (str: string): string => str.replace(/\D/g, "").slice(-10);

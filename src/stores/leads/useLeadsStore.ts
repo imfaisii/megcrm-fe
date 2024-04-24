@@ -128,8 +128,6 @@ export const useLeadsStore = defineStore('leads', () => {
       csrs.value = data?.csrs ?? []
       sms_templates.value = data?.sms_templates.map((t: any) => ({ ...t, body_copy: t.body, model: t.properties.map((p: any) => { return { p: null } }) })) ?? []
       isLoading.value = false
-
-      console.log(sms_templates.value);
     }
   }
 

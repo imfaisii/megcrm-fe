@@ -3,6 +3,7 @@ import useTime from "@/composables/useTime";
 import { useCallCentersStore } from "@/stores/call-center/useCallCentersStore";
 import { EventBus } from "@/utils/useEventBus";
 import { requiredValidator } from "@validators";
+import { useLeadsStore } from "../../stores/leads/useLeadsStore";
 
 defineProps({
   isDialogVisible: {
@@ -14,6 +15,7 @@ defineProps({
 const time = useTime();
 const route = useRoute();
 const store = useCallCentersStore();
+const leadStore = useLeadsStore();
 const formRef = ref();
 const form = ref({
   call_center_status_id: null,
@@ -32,12 +34,13 @@ const closeDialog = () => {
 };
 
 const handleSubmit = async () => {
+  console.log(leadStore.selectedLead);
   const validation = await formRef.value.validate();
 
   if (validation?.valid) {
     await store.store({
       ...form.value,
-      lead_id: route.params.id,
+      lead_id: route?.params?.id ?? leadStore?.selectedLead?.id,
     });
   }
 };

@@ -56,9 +56,10 @@ const onCancel = () => {
           <span class="text-5xl">!</span>
         </VBtn>
 
-        <h6 class="text-lg font-weight-medium">
-          {{ props.confirmationQuestion }}
-        </h6>
+        <h6
+          class="text-lg font-weight-medium"
+          v-html="props.confirmationQuestion"
+        ></h6>
       </VCardText>
 
       <VCardText class="d-flex align-center justify-center gap-2">

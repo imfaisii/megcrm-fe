@@ -410,12 +410,13 @@ onMounted(async () => {
               :readonly="true"
             />
           </VCol>
-          <VDivider class="mb-3" />
+
           <!-- Datamatch History -->
-          <VCol cols="12" lg="12" v-if="DataMatchLogs">
+          <VCol class="pa-0" cols="12" lg="12" v-if="DataMatchLogs">
             <ActivityTimeline
               :logs="DataMatchLogs ?? []"
               heading="DataMatch History"
+              elevation="0"
             />
           </VCol>
         </VRow>

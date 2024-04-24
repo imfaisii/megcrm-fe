@@ -25,6 +25,10 @@ const props = defineProps({
     required: false,
     default: () => true,
   },
+  elevation: {
+    required: false,
+    default: 3,
+  },
 });
 
 const store = useLeadsStore();
@@ -168,7 +172,7 @@ const getChanges = (i: any): any => {
 </script>
 
 <template>
-  <VCard>
+  <VCard :elevation="elevation">
     <VCardItem>
       <template #prepend>
         <VIcon icon="mdi-format-list-bulleted" class="text-disabled" />

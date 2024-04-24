@@ -5,8 +5,11 @@ import useTime from "@/composables/useTime";
 import { useToast } from "@/plugins/toastr";
 import router from "@/router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { useCallCentersStore } from "@/stores/call-center/useCallCentersStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
+import { fixNumber } from "@/utils/useString";
+import moment from "moment";
 import { mergeProps } from "vue";
 import { strTruncated } from "../../utils/useHelper";
 
@@ -27,6 +30,8 @@ const headers = [
   { title: "Date", key: "created_at" },
   { title: "Actions", key: "actions", sortable: false },
 ];
+
+const isDialogVisible = ref(false);
 
 // filters
 const filters = ref({
@@ -51,8 +56,9 @@ const form = reactive<Comment>({
 });
 
 // composables
-let SelectedNumberForCall: string = ref("");
+let SelectedNumberForCall: any = ref("");
 const store: any = useLeadsStore();
+const callCenterStore = useCallCentersStore();
 const body = ref("");
 const isConfirmDialogVisible = ref(false);
 let isDialCall = true;
@@ -94,12 +100,12 @@ const handleRedirect = (itemId: any) => {
 
 onMounted(async () => {
   await store.getExtras();
+  await callCenterStore.fetchCallCenterStatuses();
 });
 
 const airCallLoader = ref(false);
 
 const toast = useToast();
-const fixNumber = (str: string): string => str.replace(/\D/g, "").slice(-10);
 
 const handleAirCall = async (lead: any) => {
   try {
@@ -131,16 +137,22 @@ const handleAirCall = async (lead: any) => {
 
       const otherCallersNames = oldCalls
         ?.map(function (obj: any) {
-          return obj.user.name;
+          return {
+            name: obj.user.name,
+            time: moment.unix(obj.started_at).format("DD/MM/YYYY hh:mm A"),
+          };
         })
         .filter(
           (value: any, index: any, self: any) => self.indexOf(value) === index // make uniquness of name
         )
+        .map((i: any) => `${i.name} at ${i.time}`)
         .join(", ");
 
       console.log(`output->others`, otherCallersNames);
 
-      body.value = `This person is already called by ${otherCallersNames}. would you still like to call this customer`;
+      body.value = `This person is already called by ${otherCallersNames}. would you still like to call this customer.<br /><br /> Most recent comment: <p class="font-italic">${
+        lead?.status_details?.reason?.toUpperCase() ?? "NULL"
+      }</p>`;
       isConfirmDialogVisible.value = true;
       // means someone has called it and its not me
       return;
@@ -181,6 +193,11 @@ const handleSwalCallback = (response: boolean) => {
   if (response) {
     makeDialCall(SelectedNumberForCall.value);
   }
+};
+
+const handleStoreCallStatus = (lead: any) => {
+  store.selectedLead = lead;
+  isDialogVisible.value = true;
 };
 </script>
 
@@ -327,7 +344,7 @@ const handleSwalCallback = (response: boolean) => {
     <template #item.plain_address="{ item }">
       <VTooltip>
         <template #activator="{ props }">
-          <div v-bind="props">{{ strTruncated(item.raw.address, 20) }}</div>
+          <div v-bind="props">{{ strTruncated(item.raw.address, 10) }}</div>
         </template>
         {{ item.raw.address }}
       </VTooltip>
@@ -470,6 +487,14 @@ const handleSwalCallback = (response: boolean) => {
         </template>
         <span>Open The Aircall App And Put this Number on Dial Pad</span>
       </VTooltip>
+      <VTooltip location="bottom">
+        <template #activator="{ props }">
+          <IconBtn @click.stop="handleStoreCallStatus(item.raw)" v-bind="props">
+            <VIcon color="warning" icon="mdi-phone-clock" />
+          </IconBtn>
+        </template>
+        <span>Save the call status</span>
+      </VTooltip>
     </template>
   </DataTable>
 
@@ -490,6 +515,11 @@ const handleSwalCallback = (response: boolean) => {
     v-model:is-loading="store.isLoading"
     @on-dialog-close="isCommentsDialogVisible = false"
     @on-comments-update="handleCommentsSubmit"
+  />
+
+  <AddCallRecordDialog
+    v-model:is-dialog-visible="isDialogVisible"
+    @on-dialog-close="isDialogVisible = false"
   />
 </template>
 

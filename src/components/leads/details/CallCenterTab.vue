@@ -1,13 +1,102 @@
 <script setup lang="ts">
+import useApiFetch from "@/composables/useApiFetch";
 import useTime from "@/composables/useTime";
+import { useToast } from "@/plugins/toastr";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useCallCentersStore } from "@/stores/call-center/useCallCentersStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
+import { fixNumber } from "@/utils/useString";
 import avatar1 from "@images/avatars/avatar-4.png";
 
+const auth: any = useAuthStore();
 const leadStore = useLeadsStore();
 const store = useCallCentersStore();
 const time = useTime();
+const $toast = useToast();
+
 const isDialogVisible = ref(false);
+const isConfirmDialogVisible = ref(false);
+const body = ref("");
+const selectedNumberForCall: any = ref("");
+const airCallLoader = ref(false);
+
+let isDialCall = true;
+
+const handleAirCall = async (lead: any) => {
+  try {
+    if (!lead?.phone_no) {
+      $toast.error("phone number invalid");
+      return;
+    }
+    leadStore.selectedId = lead.id;
+    airCallLoader.value = true;
+    /* before making a call i need to make another call to check the stats of this number and check whether someone else has called it or not */
+    let { data: oldCalls } = await useApiFetch("/aircall/search-call", {
+      data: {
+        phone_number: "+44" + fixNumber(lead?.phone_no ?? ""),
+      },
+      method: "POST",
+    });
+    selectedNumberForCall.value = "+44" + fixNumber(lead?.phone_no ?? "");
+    const myCallerId = auth?.user?.air_caller_id;
+    oldCalls = oldCalls.filter(function (obj: any) {
+      /* check if some one else has called it or not */
+      if (!obj.user) {
+        return false; // if its an inbound then it should not be included
+      }
+      return myCallerId != obj?.user?.id;
+    });
+
+    if (oldCalls.length > 0) {
+      console.log(oldCalls);
+
+      const otherCallersNames = oldCalls
+        ?.map(function (obj: any) {
+          return obj.user.name;
+        })
+        .filter(
+          (value: any, index: any, self: any) => self.indexOf(value) === index // make uniquness of name
+        )
+        .join(", ");
+
+      console.log(`output->others`, otherCallersNames);
+
+      body.value = `This person is already called by ${otherCallersNames}. would you still like to call this customer`;
+      isConfirmDialogVisible.value = true;
+      // means someone has called it and its not me
+      return;
+    }
+
+    if (isDialCall) {
+      return makeDialCall(selectedNumberForCall.value);
+    } else {
+      return false;
+    }
+  } catch (err: any) {
+    console.log(err);
+    $toast.error(err.response?.data?.message ?? "Something Went Wrong!");
+  } finally {
+    leadStore.selectedId = null;
+    airCallLoader.value = false;
+  }
+};
+
+const makeDialCall = async (phone_no: string) => {
+  try {
+    airCallLoader.value = true;
+    const { data, message } = await useApiFetch("/aircall/dial-call", {
+      data: {
+        phone_number: "+44" + fixNumber(phone_no),
+      },
+      method: "POST",
+    });
+    $toast.success("AirCall Success");
+  } catch (err: any) {
+    $toast.error(err.response?.data?.message ?? "Something Went Wrong!");
+  } finally {
+    airCallLoader.value = false;
+  }
+};
 
 onMounted(async () => await store.fetchCallCenterStatuses());
 </script>
@@ -16,10 +105,43 @@ onMounted(async () => await store.fetchCallCenterStatuses());
   <VCard title="Calling Schedule">
     <template #append>
       <div class="me-n3 mt-n2">
-        <VCol cols="12">
-          <VBtn @click="isDialogVisible = true" color="primary">
-            Add a call
-          </VBtn>
+        <VCol class="d-flex align-center" cols="12">
+          <VTooltip>
+            <template #activator="{ props }">
+              <div v-bind="props">
+                <VProgressCircular
+                  v-if="
+                    airCallLoader &&
+                    `+44` + fixNumber(leadStore?.selectedLead?.phone_no ?? '')
+                  "
+                  size="24"
+                  color="info"
+                  indeterminate
+                />
+                <VBtn
+                  v-else
+                  @click.stop="handleAirCall(leadStore.selectedLead)"
+                  v-bind="props"
+                  icon="mdi-phone-dial-outline"
+                  color="info"
+                  size="small"
+                />
+              </div>
+            </template>
+            <span>Make a new AirCall call</span>
+          </VTooltip>
+          <VTooltip>
+            <template #activator="{ props }">
+              <VBtn
+                v-bind="props"
+                @click="isDialogVisible = true"
+                color="primary"
+                icon="mdi-content-save-alert-outline"
+                size="small"
+              />
+            </template>
+            <span>Save call details</span>
+          </VTooltip>
         </VCol>
       </div>
     </template>

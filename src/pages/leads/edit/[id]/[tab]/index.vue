@@ -16,6 +16,12 @@ const tabs = [
     icon: "mdi-account-outline",
     tab: "customer-details",
   },
+  { title: "Communications", icon: "mdi-phone-outline", tab: "communications" },
+  {
+    title: "Call History",
+    icon: "openmoji:mobile-info",
+    tab: "call-history",
+  },
   {
     title: "Book Survey",
     icon: "mdi-home-plus-outline",
@@ -46,14 +52,7 @@ const tabs = [
     icon: "mdi-content-save-cog-outline",
     tab: "submission",
   },
-  { title: "Communications", icon: "mdi-phone-outline", tab: "communications" },
-  { title: "SMS Alerts", icon: "mdi-cellphone", tab: "sms-alerts" },
-  { title: "History", icon: "mdi-clock-outline", tab: "history" },
-  {
-    title: "Call History",
-    icon: "openmoji:mobile-info",
-    tab: "call-history",
-  },
+  { title: "Lead History", icon: "mdi-clock-outline", tab: "history" },
   {
     title: "Coming soon...",
     icon: "mdi-clock-alert-outline",
@@ -149,7 +148,7 @@ onUnmounted(() => {
                         label
                         size="x-large"
                         class="text-capitalize mb-2 ml-0"
-                        color="warning"
+                        color="secondary"
                       >
                         {{ store.selectedLead.address }}
                       </VChip>
@@ -207,7 +206,21 @@ onUnmounted(() => {
                             "
                           >
                             {{
-                              `on ${store?.selectedLead?.lead_customer_additional_detail?.datamatch_progress_date} ${store?.selectedLead?.lead_customer_additional_detail?.result_first_name ? `against ${store?.selectedLead?.lead_customer_additional_detail?.result_first_name}` : ''} ${store?.selectedLead?.lead_customer_additional_detail?.result_last_name ?? ''}`
+                              `on ${
+                                store?.selectedLead
+                                  ?.lead_customer_additional_detail
+                                  ?.datamatch_progress_date
+                              } ${
+                                store?.selectedLead
+                                  ?.lead_customer_additional_detail
+                                  ?.result_first_name
+                                  ? `against ${store?.selectedLead?.lead_customer_additional_detail?.result_first_name}`
+                                  : ""
+                              } ${
+                                store?.selectedLead
+                                  ?.lead_customer_additional_detail
+                                  ?.result_last_name ?? ""
+                              }`
                             }}</template
                           >
                         </span>
@@ -269,7 +282,7 @@ onUnmounted(() => {
                         v-bind="props"
                         label
                         size="x-large"
-                        class="text-capitalize mb-2 blink-animate ml-0"
+                        class="text-capitalize mb-2 ml-0"
                         color="warning"
                       >
                         {{ store.selectedLead.status_details.name }}
@@ -284,7 +297,7 @@ onUnmounted(() => {
                         v-bind="props"
                         label
                         size="x-large"
-                        class="text-capitalize mb-2 blink-animate ml-0"
+                        class="text-capitalize mb-2 ml-0"
                         color="error"
                       >
                         {{ store.selectedLead.phone_no }}
@@ -363,7 +376,7 @@ onUnmounted(() => {
       </VRow>
 
       <VCard class="py-2">
-        <VTabs v-model="activeTab" class="v-tabs-pill">
+        <VTabs v-model="activeTab" stacked>
           <VTab
             v-for="tab in tabs"
             :key="tab.icon"
@@ -374,12 +387,13 @@ onUnmounted(() => {
             }"
             :disabled="tab?.tab ? false : true"
           >
-            <VIcon start :size="24" :icon="tab.icon" />
-            <span>{{ tab.title }}</span>
+            <div class="d-flex flex-column align-center">
+              <VIcon start :size="24" :icon="tab.icon" />
+              <span>{{ tab.title }}</span>
+            </div>
           </VTab>
         </VTabs>
       </VCard>
-      <VDivider />
 
       <VWindow
         v-model="activeTab"

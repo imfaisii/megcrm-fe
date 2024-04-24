@@ -3,6 +3,7 @@ import useDataTable from "@/composables/useDatatable";
 import useTime from "@/composables/useTime";
 import router from "@/router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { useCallCentersStore } from "@/stores/call-center/useCallCentersStore";
 import { useLeadJobsStore } from "@/stores/leads/useLeadJobsStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
@@ -51,6 +52,7 @@ const filters = ref({
 });
 
 const isCommentsDialogVisible = ref(false);
+const isDialogVisible = ref(false);
 
 const form = reactive<Comment>({
   leadId: "",
@@ -61,6 +63,7 @@ const form = reactive<Comment>({
 // composables
 const store: any = useLeadsStore();
 const auth: any = useAuthStore();
+const callCenterStore = useCallCentersStore();
 const permStore: any = usePermissionsStore();
 const leadJobStore: any = useLeadJobsStore();
 const time = useTime();
@@ -99,8 +102,14 @@ const handleRedirect = (itemId: any) => {
   window.open(routeData.href, "_blank");
 };
 
+const handleStoreCallStatus = (lead: any) => {
+  store.selectedLead = lead;
+  isDialogVisible.value = true;
+};
+
 onMounted(async () => {
   await store.getExtras();
+  await callCenterStore.fetchCallCenterStatuses();
 });
 </script>
 
@@ -369,6 +378,14 @@ onMounted(async () => {
         </template>
         <span>Are you sure you want to delete this lead?</span>
       </VTooltip>
+      <VTooltip location="bottom">
+        <template #activator="{ props }">
+          <IconBtn @click.stop="handleStoreCallStatus(item.raw)" v-bind="props">
+            <VIcon color="warning" icon="mdi-phone-clock" />
+          </IconBtn>
+        </template>
+        <span>Save the call status</span>
+      </VTooltip>
     </template>
   </DataTable>
 
@@ -378,6 +395,11 @@ onMounted(async () => {
     v-model:is-loading="store.isLoading"
     @on-dialog-close="isCommentsDialogVisible = false"
     @on-comments-update="handleCommentsSubmit"
+  />
+
+  <AddCallRecordDialog
+    v-model:is-dialog-visible="isDialogVisible"
+    @on-dialog-close="isDialogVisible = false"
   />
 </template>
 
