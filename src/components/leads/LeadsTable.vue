@@ -140,19 +140,22 @@ const handleAirCall = async (lead: any) => {
           return {
             name: obj.user.name,
             time: moment.unix(obj.started_at).format("DD/MM/YYYY hh:mm A"),
+            number: obj.number.digits,
           };
         })
         .filter(
           (value: any, index: any, self: any) => self.indexOf(value) === index // make uniquness of name
         )
-        .map((i: any) => `${i.name} at ${i.time}`)
-        .join(", ");
+        .map((i: any) => `From ${i.number} at ${i.time} by ${i.name}`)
+        .join("<br />");
 
       console.log(`output->others`, otherCallersNames);
 
-      body.value = `This person is already called by ${otherCallersNames}. would you still like to call this customer.<br /><br /> Most recent comment: <p class="font-italic">${
+      body.value = `This person is already called by:<br /><br />${otherCallersNames}<br /><br /><p class="font-italic">Last comment: ${
         lead?.status_details?.reason?.toUpperCase() ?? "NULL"
-      }</p>`;
+      } (${
+        lead.status_details?.user?.name ?? "System"
+      })</p>Do you still like to call this customer?`;
       isConfirmDialogVisible.value = true;
       // means someone has called it and its not me
       return;
