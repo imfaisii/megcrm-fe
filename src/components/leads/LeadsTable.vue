@@ -401,7 +401,7 @@ onMounted(async () => {
                 {{ item.raw.phone_number_formatted ?? "Not found" }}
               </a>
               <p v-else class="mb-0 font-italic">
-                Invalid number {{ item.raw?.phone_number_formatted ?? "NULL" }}
+                {{ item.raw?.phone_number_formatted ?? "NULL" }}
               </p>
             </span>
           </p>
