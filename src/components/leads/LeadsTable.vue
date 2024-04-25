@@ -60,18 +60,19 @@ const form = reactive<Comment>({
 
 // composables
 let SelectedNumberForCall: any = ref("");
+let isDialCall = true;
+
 const store: any = useLeadsStore();
 const callCenterStore = useCallCentersStore();
 const body = ref("");
 const isConfirmDialogVisible = ref(false);
-let isDialCall = true;
 const auth: any = useAuthStore();
 const permStore: any = usePermissionsStore();
 const time = useTime();
 const airCallLoader = ref(false);
 const toast = useToast();
 const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
-  store.fetchLeads({ include: "leadGenerator" })
+  store.fetchLeads({ include: ["leadGenerator", "benefits"].join(",") })
 );
 
 const handleCommentsSubmit = async (comments: String) => {
@@ -418,6 +419,22 @@ onMounted(async () => {
             <span class="d-inline-flex">
               <p class="mb-0 font-italic">
                 {{ store.getCommentsOfSurveyBooker(item) }}
+              </p>
+            </span>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="pa-5" :colspan="columns.length">
+          <p class="px-1 mb-0">
+            Benefits:
+            <span class="d-inline-flex">
+              <p class="mb-0 font-italic">
+                {{
+                  item.raw.benefits.length > 0
+                    ? item.raw.benefits.map((b: any) => b.name).join(", ")
+                    : "No benefits"
+                }}
               </p>
             </span>
           </p>
