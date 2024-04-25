@@ -536,7 +536,7 @@ onMounted(async () => {
             @click.stop="
               handleEpcDetailsClick(item.raw?.epc_details, item.raw.post_code)
             "
-            :color="item.raw?.epc_details && 'success' : ''"
+            :color="item.raw?.epc_details && 'success'"
             v-bind="props"
             class="mt-1 mr-1"
             :icon="
