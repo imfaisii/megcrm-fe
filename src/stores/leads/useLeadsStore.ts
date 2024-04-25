@@ -126,7 +126,7 @@ export const useLeadsStore = defineStore('leads', () => {
       installation_types.value = data?.installation_types ?? []
       banks.value = data?.banks ?? []
       csrs.value = data?.csrs ?? []
-      sms_templates.value = data?.sms_templates.map((t: any) => ({ ...t, body_copy: t.body, model: t.properties.map((p: any) => { return { p: null } }) })) ?? []
+      sms_templates.value = data?.sms_templates?.map((t: any) => ({ ...t, body_copy: t.body, model: t.properties.map((p: any) => { return { p: null } }) })) ?? []
       isLoading.value = false
     }
   }
@@ -175,6 +175,9 @@ export const useLeadsStore = defineStore('leads', () => {
       isLoading.value = true
       const { data } = await useApiFetch(`${endPoint}/${leadId}?${setQueryParams(options)}`)
       selectedLead.value = data.lead
+      const date = new Date(selectedLead.value.dob);  // checking that its a coorect date or not 
+      // Check if the created Date object is valid and if the dateString matches the expected format because we will not let it submit for datamatch if dob is not correct
+      selectedLead.value.dob = date instanceof Date && !isNaN(date) ? date : null;
 
       let installations: any = [];
 
