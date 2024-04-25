@@ -78,7 +78,7 @@ const time = useTime();
 const { onSortChange, onPaginationChange } = useDataTable(
   leadJobStore,
   filters,
-  () => leadJobStore.fetchLeads({ include: "leadGenerator" })
+  () => leadJobStore.fetchLeads({ include: ["leadGenerator", "benefits"].join(",") })
 );
 
 const handleCommentsSubmit = async (comments: String) => {
