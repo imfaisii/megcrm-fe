@@ -625,26 +625,11 @@ onMounted(async () => {
     <template #item.actions="{ item }">
       <VTooltip location="bottom">
         <template #activator="{ props }">
-          <IconBtn v-bind="props" @click="handleRedirect(item.raw.id)">
-            <VProgressCircular
-              v-if="store.isLoading && store.selectedId === item.raw.id"
-              size="24"
-              color="info"
-              indeterminate
-            />
-            <VIcon v-else icon="tabler-edit" />
-          </IconBtn>
-        </template>
-        <span>View Lead Details</span>
-      </VTooltip>
-
-      <VTooltip location="bottom">
-        <template #activator="{ props }">
           <IconBtn
             @click.stop="
               handleEpcDetailsClick(item.raw?.epc_details, item.raw.post_code)
             "
-            :color="item.raw?.epc_details ? 'success' : 'secondary'"
+            :color="item.raw?.epc_details && 'success'"
             v-bind="props"
             class="mt-1 mr-1"
             :icon="
