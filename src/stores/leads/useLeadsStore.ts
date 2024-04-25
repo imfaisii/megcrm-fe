@@ -362,6 +362,7 @@ export const useLeadsStore = defineStore('leads', () => {
       return "#E4A11B";
     }
 
+
     if (name.toLowerCase().startsWith("hajar")) {
       return "#14A44D";
     }
@@ -370,6 +371,10 @@ export const useLeadsStore = defineStore('leads', () => {
   };
 
   const getBadgeColorsForExtraColumns = (str: any) => {
+    if (!str) {
+      return 'secondary';
+    }
+
     if (str.toLowerCase().startsWith('no')) {
       return '#ff0000';
     }

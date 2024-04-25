@@ -28,9 +28,9 @@ const headers = [
   // { title: "Survey Booked By", key: "id", sortable: false },
   { title: "Status", key: "status_details", sortable: false },
   { title: "EPC", key: "epc", sortable: false },
-  { title: "Gas Safe", key: "gas_safe", sortable: false },
   { title: "Recommend", key: "recommend", sortable: false },
-  { title: "Date", key: "created_at" },
+  { title: "Gas Safe", key: "gas_safe", sortable: false },
+  { title: "Added on", key: "created_at" },
   { title: "Actions", key: "actions", sortable: false },
 ];
 
@@ -543,7 +543,7 @@ onMounted(async () => {
         class="text-white"
         variant="elevated"
         size="x-small"
-        :color="store.getBadgeColorsForExtraColumns(item.raw?.epc ?? 'no')"
+        :color="store.getBadgeColorsForExtraColumns(item.raw.epc)"
         readonly
       >
         <p class="font-italic">{{ item.raw?.epc ?? "NULL" }}</p>
@@ -557,7 +557,7 @@ onMounted(async () => {
         class="text-white"
         variant="elevated"
         size="x-small"
-        :color="store.getBadgeColorsForExtraColumns(item.raw?.gas_safe ?? 'no')"
+        :color="store.getBadgeColorsForExtraColumns(item.raw.gas_safe)"
         readonly
       >
         <p class="font-italic">{{ item.raw?.gas_safe ?? "NULL" }}</p>
@@ -571,9 +571,7 @@ onMounted(async () => {
         class="text-white"
         variant="elevated"
         size="x-small"
-        :color="
-          store.getBadgeColorsForExtraColumns(item.raw?.recommend ?? 'no')
-        "
+        :color="store.getBadgeColorsForExtraColumns(item.raw.recommend)"
         readonly
       >
         <p class="font-italic">{{ item.raw?.recommend ?? "NULL" }}</p>
@@ -583,7 +581,9 @@ onMounted(async () => {
     <!-- Created At -->
     <!-- @vue-expect-error -->
     <template #item.created_at="{ item }">
-      <p>{{ time.formatDate(item.raw.created_at, "DD/MM/YYYY") }}</p>
+      <p class="ma-0">
+        {{ time.formatDate(item.raw.created_at, "DD/MM/YYYY") }}
+      </p>
     </template>
 
     <!-- Actions -->
