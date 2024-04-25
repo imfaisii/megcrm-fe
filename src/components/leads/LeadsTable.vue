@@ -77,7 +77,7 @@ const time = useTime();
 const airCallLoader = ref(false);
 const toast = useToast();
 const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
-  store.fetchLeads({ include: ["leadGenerator"].join(",") })
+  store.fetchLeads({ include: ["leadGenerator", "benefits"].join(",") })
 );
 
 const handleCommentsSubmit = async (comments: String) => {
