@@ -18,12 +18,15 @@ export type Comment = {
 
 // Headers
 const headers = [
+  { text: "", key: "data-table-expand" },
   { title: "Name", key: "first_name" },
-  { title: "Address", key: "plain_address" },
   { title: "Post Code", key: "post_code" },
   { title: "Lead Generator", key: "lead_generator_id", sortable: false },
-  { title: "Survey Booked By", key: "id", sortable: false },
+  // { title: "Survey Booked By", key: "id", sortable: false },
   { title: "Status", key: "status_details", sortable: false },
+  { title: "EPC", key: "epc", sortable: false },
+  { title: "Gas Safe", key: "gas_safe", sortable: false },
+  { title: "Recommend", key: "recommend", sortable: false },
   { title: "Date", key: "created_at" },
   { title: "Actions", key: "actions", sortable: false },
 ];
@@ -105,6 +108,11 @@ const handleRedirect = (itemId: any) => {
 const handleStoreCallStatus = (lead: any) => {
   store.selectedLead = lead;
   isDialogVisible.value = true;
+};
+
+const handleLeadUpdate = (lead: any) => {
+  store.selectedLead = lead;
+  store.update();
 };
 
 onMounted(async () => {
@@ -240,11 +248,123 @@ onMounted(async () => {
     :items="leadJobStore.leads"
     :headers="headers"
     class="text-no-wrap"
-    show-select
     @click:row="onRowClick"
     @update:on-pagination-change="onPaginationChange"
     @update:on-sort-change="onSortChange"
   >
+    <!-- Expanded Data -->
+    <!-- @vue-expect-error -->
+    <template v-slot:expanded-row="{ columns, item }">
+      <tr>
+        <td class="pa-5" :colspan="columns.length">
+          <p class="px-1 mb-0">
+            Address:
+            <span class="font-italic">{{ item.raw.address }}</span>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="pa-5" :colspan="columns.length">
+          <p class="px-1 mb-0">
+            Email:
+            <span class="d-inline-flex">
+              <a
+                v-if="item.raw?.email"
+                :href="`mailto:${item.raw.email}`"
+                class="font-italic"
+              >
+                {{ item.raw.email ?? "Not found" }}
+              </a>
+              <p v-else class="mb-0 font-italic">Not found</p>
+            </span>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="pa-5" :colspan="columns.length">
+          <p class="px-1 mb-0">
+            Phone:
+            <span class="d-inline-flex">
+              <a
+                v-if="item.raw?.phone_number_formatted"
+                :href="`tel:${item.raw.phone_number_formatted}`"
+                class="font-italic"
+              >
+                {{ item.raw.phone_number_formatted ?? "Not found" }}
+              </a>
+              <p v-else class="mb-0 font-italic">
+                Invalid number {{ item.raw?.phone_number_formatted ?? "NULL" }}
+              </p>
+            </span>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="pa-5" :colspan="columns.length">
+          <p class="px-1 mb-0">
+            Survey booked by:
+            <span class="d-inline-flex">
+              <VBtn
+                class="text-white"
+                variant="elevated"
+                size="x-small"
+                :color="
+                  store.getColorOfSurveyBookers(
+                    store.getNameOfSurveyBookers(item)
+                  )
+                "
+                readonly
+              >
+                {{ store.getNameOfSurveyBookers(item) }}
+              </VBtn>
+            </span>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="pa-5" :colspan="columns.length">
+          <p class="px-1 mb-0">
+            Survey booking comments:
+            <span class="d-inline-flex">
+              <p class="mb-0 font-italic">
+                {{ store.getCommentsOfSurveyBooker(item) }}
+              </p>
+            </span>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="pa-5" :colspan="3">
+          <VTextField label="EPC" v-model="item.raw.epc" density="compact" />
+        </td>
+        <td class="pa-5" :colspan="3">
+          <VTextField
+            label="Gas Safe"
+            v-model="item.raw.gas_safe"
+            density="compact"
+          />
+        </td>
+        <td class="pa-5" :colspan="3">
+          <VTextField
+            label="Recommend"
+            v-model="item.raw.recommend"
+            density="compact"
+          />
+        </td>
+        <td class="text-center pa-5" :colspan="1">
+          <VBtn
+            class="mt-2"
+            @click="handleLeadUpdate(item.raw)"
+            size="small"
+            :loading="store.isLoading"
+            :disabled="store.isLoading"
+          >
+            Save
+          </VBtn>
+        </td>
+      </tr>
+    </template>
+
     <!-- Name -->
     <!-- @vue-expect-error -->
     <template #item.first_name="{ item }">
@@ -338,6 +458,50 @@ onMounted(async () => {
       </VMenu>
     </template>
 
+    <!-- EPC -->
+    <!-- @vue-expect-error -->
+    <template #item.epc="{ item }">
+      <VBtn
+        class="text-white"
+        variant="elevated"
+        size="x-small"
+        :color="store.getBadgeColorsForExtraColumns(item.raw?.epc ?? 'no')"
+        readonly
+      >
+        <p class="font-italic">{{ item.raw?.epc ?? "NULL" }}</p>
+      </VBtn>
+    </template>
+
+    <!-- Gas Safe -->
+    <!-- @vue-expect-error -->
+    <template #item.gas_safe="{ item }">
+      <VBtn
+        class="text-white"
+        variant="elevated"
+        size="x-small"
+        :color="store.getBadgeColorsForExtraColumns(item.raw?.gas_safe ?? 'no')"
+        readonly
+      >
+        <p class="font-italic">{{ item.raw?.gas_safe ?? "NULL" }}</p>
+      </VBtn>
+    </template>
+
+    <!-- Recommend -->
+    <!-- @vue-expect-error -->
+    <template #item.recommend="{ item }">
+      <VBtn
+        class="text-white"
+        variant="elevated"
+        size="x-small"
+        :color="
+          store.getBadgeColorsForExtraColumns(item.raw?.recommend ?? 'no')
+        "
+        readonly
+      >
+        <p class="font-italic">{{ item.raw?.recommend ?? "NULL" }}</p>
+      </VBtn>
+    </template>
+
     <!-- Created At -->
     <!-- @vue-expect-error -->
     <template #item.created_at="{ item }">
@@ -406,5 +570,9 @@ onMounted(async () => {
 <style lang="scss" scoped>
 .email-color {
   color: "#4FC3F7";
+}
+
+:deep(.v-table__wrapper) {
+  overflow-y: hidden;
 }
 </style>

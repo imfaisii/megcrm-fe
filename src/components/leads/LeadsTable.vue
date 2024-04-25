@@ -25,8 +25,11 @@ const headers = [
   { title: "Name", key: "first_name" },
   { title: "Post Code", key: "post_code" },
   { title: "Lead Generator", key: "lead_generator_id", sortable: false },
-  { title: "Survey Booked By", key: "id", sortable: false },
+  // { title: "Survey Booked By", key: "id", sortable: false },
   { title: "Status", key: "status_details", sortable: false },
+  { title: "EPC", key: "epc", sortable: false },
+  { title: "Gas Safe", key: "gas_safe", sortable: false },
+  { title: "Recommend", key: "recommend", sortable: false },
   { title: "Date", key: "created_at" },
   { title: "Actions", key: "actions", sortable: false },
 ];
@@ -65,6 +68,8 @@ let isDialCall = true;
 const auth: any = useAuthStore();
 const permStore: any = usePermissionsStore();
 const time = useTime();
+const airCallLoader = ref(false);
+const toast = useToast();
 const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
   store.fetchLeads({ include: "leadGenerator" })
 );
@@ -97,15 +102,6 @@ const handleRedirect = (itemId: any) => {
 
   window.open(routeData.href, "_blank");
 };
-
-onMounted(async () => {
-  await store.getExtras();
-  await callCenterStore.fetchCallCenterStatuses();
-});
-
-const airCallLoader = ref(false);
-
-const toast = useToast();
 
 const handleAirCall = async (lead: any) => {
   try {
@@ -203,16 +199,15 @@ const handleStoreCallStatus = (lead: any) => {
   isDialogVisible.value = true;
 };
 
-const getExpandedColumnLength = (columns: any, divide = 3): number => {
-  return columns.length % divide === 0
-    ? columns.length / divide
-    : columns.length / divide + 1;
-};
-
 const handleLeadUpdate = (lead: any) => {
   store.selectedLead = lead;
   store.update();
 };
+
+onMounted(async () => {
+  await store.getExtras();
+  await callCenterStore.fetchCallCenterStatuses();
+});
 </script>
 
 <template>
@@ -343,6 +338,7 @@ const handleLeadUpdate = (lead: any) => {
     :headers="headers"
     show-expand
     class="text-no-wrap"
+    @click:row="onRowClick"
     @update:on-pagination-change="onPaginationChange"
     @update:on-sort-change="onSortChange"
   >
@@ -369,7 +365,7 @@ const handleLeadUpdate = (lead: any) => {
               >
                 {{ item.raw.email ?? "Not found" }}
               </a>
-              <p class="mb-0 font-italic">Not found</p>
+              <p v-else class="mb-0 font-italic">Not found</p>
             </span>
           </p>
         </td>
@@ -394,17 +390,51 @@ const handleLeadUpdate = (lead: any) => {
         </td>
       </tr>
       <tr>
+        <td class="pa-5" :colspan="columns.length">
+          <p class="px-1 mb-0">
+            Survey booked by:
+            <span class="d-inline-flex">
+              <VBtn
+                class="text-white"
+                variant="elevated"
+                size="x-small"
+                :color="
+                  store.getColorOfSurveyBookers(
+                    store.getNameOfSurveyBookers(item)
+                  )
+                "
+                readonly
+              >
+                {{ store.getNameOfSurveyBookers(item) }}
+              </VBtn>
+            </span>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="pa-5" :colspan="columns.length">
+          <p class="px-1 mb-0">
+            Survey booking comments:
+            <span class="d-inline-flex">
+              <p class="mb-0 font-italic">
+                {{ store.getCommentsOfSurveyBooker(item) }}
+              </p>
+            </span>
+          </p>
+        </td>
+      </tr>
+      <tr>
         <td class="pa-5" :colspan="3">
           <VTextField label="EPC" v-model="item.raw.epc" density="compact" />
         </td>
-        <td class="pa-5" :colspan="2">
+        <td class="pa-5" :colspan="3">
           <VTextField
             label="Gas Safe"
             v-model="item.raw.gas_safe"
             density="compact"
           />
         </td>
-        <td class="pa-5" :colspan="2">
+        <td class="pa-5" :colspan="3">
           <VTextField
             label="Recommend"
             v-model="item.raw.recommend"
@@ -418,8 +448,9 @@ const handleLeadUpdate = (lead: any) => {
             size="small"
             :loading="store.isLoading"
             :disabled="store.isLoading"
-            >Save</VBtn
           >
+            Save
+          </VBtn>
         </td>
       </tr>
     </template>
@@ -459,22 +490,6 @@ const handleLeadUpdate = (lead: any) => {
         </template>
         {{ item.raw?.lead_generator?.name ?? "No lead generator" }}
       </VTooltip>
-    </template>
-
-    <!-- Survey Booked By -->
-    <!-- @vue-expect-error -->
-    <template #item.id="{ item }">
-      <VBtn
-        class="text-white"
-        variant="elevated"
-        size="x-small"
-        :color="
-          store.getColorOfSurveyBookers(store.getNameOfSurveyBookers(item))
-        "
-        readonly
-      >
-        {{ store.getNameOfSurveyBookers(item) }}
-      </VBtn>
     </template>
 
     <!-- Status -->
@@ -519,6 +534,50 @@ const handleLeadUpdate = (lead: any) => {
           </VListItem>
         </VList>
       </VMenu>
+    </template>
+
+    <!-- EPC -->
+    <!-- @vue-expect-error -->
+    <template #item.epc="{ item }">
+      <VBtn
+        class="text-white"
+        variant="elevated"
+        size="x-small"
+        :color="store.getBadgeColorsForExtraColumns(item.raw?.epc ?? 'no')"
+        readonly
+      >
+        <p class="font-italic">{{ item.raw?.epc ?? "NULL" }}</p>
+      </VBtn>
+    </template>
+
+    <!-- Gas Safe -->
+    <!-- @vue-expect-error -->
+    <template #item.gas_safe="{ item }">
+      <VBtn
+        class="text-white"
+        variant="elevated"
+        size="x-small"
+        :color="store.getBadgeColorsForExtraColumns(item.raw?.gas_safe ?? 'no')"
+        readonly
+      >
+        <p class="font-italic">{{ item.raw?.gas_safe ?? "NULL" }}</p>
+      </VBtn>
+    </template>
+
+    <!-- Recommend -->
+    <!-- @vue-expect-error -->
+    <template #item.recommend="{ item }">
+      <VBtn
+        class="text-white"
+        variant="elevated"
+        size="x-small"
+        :color="
+          store.getBadgeColorsForExtraColumns(item.raw?.recommend ?? 'no')
+        "
+        readonly
+      >
+        <p class="font-italic">{{ item.raw?.recommend ?? "NULL" }}</p>
+      </VBtn>
     </template>
 
     <!-- Created At -->
@@ -619,6 +678,10 @@ const handleLeadUpdate = (lead: any) => {
 <style lang="scss" scoped>
 .email-color {
   color: "#4FC3F7";
+}
+
+:deep(.v-table__wrapper) {
+  overflow-y: hidden;
 }
 
 :deep(.v-field__append-inner) {

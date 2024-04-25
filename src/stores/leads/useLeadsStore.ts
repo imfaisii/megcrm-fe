@@ -349,6 +349,10 @@ export const useLeadsStore = defineStore('leads', () => {
     return item.raw?.status_details?.survey_booked?.user?.name ?? "Not booked";
   };
 
+  const getCommentsOfSurveyBooker = (item: any) => {
+    return item.raw?.status_details?.survey_booked?.reason ?? "Not booked";
+  };
+
   const getColorOfSurveyBookers = (name: string) => {
     if (name.toLowerCase().startsWith("samiya")) {
       return "#FF0000";
@@ -365,6 +369,23 @@ export const useLeadsStore = defineStore('leads', () => {
     return "secondary";
   };
 
+  const getBadgeColorsForExtraColumns = (str: any) => {
+    if (str.toLowerCase().startsWith('no')) {
+      return '#ff0000';
+    }
+
+    if (str.toLowerCase().startsWith('ye')) {
+      return '#14A44D';
+    }
+
+    return '#E4A11B';
+  }
+
+  const getExpandedColumnLength = (columns: any, divide = 3): number => {
+    return columns.length % divide === 0
+      ? columns.length / divide
+      : columns.length / divide + 1;
+  };
 
   return {
     sms_templates,
@@ -392,9 +413,12 @@ export const useLeadsStore = defineStore('leads', () => {
     includes,
     showEditButton,
 
+    getExpandedColumnLength,
     saveDocumentToCollection,
     getColorOfSurveyBookers,
     getNameOfSurveyBookers,
+    getBadgeColorsForExtraColumns,
+    getCommentsOfSurveyBooker,
     storeComments,
     checkIfCountryIsScotland,
     updateStatus,
