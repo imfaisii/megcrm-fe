@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import useDataTable from "@/composables/useDatatable";
 import useTime from "@/composables/useTime";
+import env from "@/constants/env";
 import router from "@/router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useCallCentersStore } from "@/stores/call-center/useCallCentersStore";
@@ -9,6 +10,8 @@ import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import { mergeProps } from "vue";
 import { strTruncated } from "../../utils/useHelper";
+
+const { VITE_APP_API_URL: BASE_URL } = env;
 
 export type Comment = {
   leadId: Number | String;
@@ -64,6 +67,8 @@ const form = reactive<Comment>({
 });
 
 // composables
+const epcDetails = ref({});
+const isEpcDialogVisible = ref(false);
 const store: any = useLeadsStore();
 const auth: any = useAuthStore();
 const callCenterStore = useCallCentersStore();
@@ -113,6 +118,17 @@ const handleStoreCallStatus = (lead: any) => {
 const handleLeadUpdate = (lead: any) => {
   store.selectedLead = lead;
   store.update();
+};
+
+const handleEpcDetailsClick = async (details: any, postCode: number) => {
+  if (!details) {
+    window.open(`${BASE_URL}/leads-links/epc/${postCode}`);
+
+    return;
+  }
+
+  epcDetails.value = details;
+  isEpcDialogVisible.value = true;
 };
 
 onMounted(async () => {
@@ -525,6 +541,24 @@ onMounted(async () => {
         </template>
         <span>View Lead Details</span>
       </VTooltip>
+
+      <VTooltip location="bottom">
+        <template #activator="{ props }">
+          <IconBtn
+            @click.stop="
+              handleEpcDetailsClick(item.raw?.epc_details, item.raw.post_code)
+            "
+            :color="item.raw?.epc_details ? 'success' : 'secondary'"
+            v-bind="props"
+            class="mt-1 mr-1"
+            :icon="
+              item.raw?.epc_details ? 'mdi-eye-outline' : 'mdi-open-in-new'
+            "
+          />
+        </template>
+        <span>View EPC Details</span>
+      </VTooltip>
+
       <VTooltip
         v-if="auth.user.email == 'cfaysal099@gmail.com'"
         location="bottom"
@@ -564,6 +598,12 @@ onMounted(async () => {
   <AddCallRecordDialog
     v-model:is-dialog-visible="isDialogVisible"
     @on-dialog-close="isDialogVisible = false"
+  />
+
+  <EpcDetailsDialog
+    v-model:is-dialog-visible="isEpcDialogVisible"
+    :details="epcDetails"
+    @on-dialog-close="isEpcDialogVisible = false"
   />
 </template>
 

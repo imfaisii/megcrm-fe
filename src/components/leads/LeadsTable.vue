@@ -2,6 +2,7 @@
 import useApiFetch from "@/composables/useApiFetch";
 import useDataTable from "@/composables/useDatatable";
 import useTime from "@/composables/useTime";
+import env from "@/constants/env";
 import { useToast } from "@/plugins/toastr";
 import router from "@/router";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
@@ -12,6 +13,8 @@ import { fixNumber } from "@/utils/useString";
 import moment from "moment";
 import { mergeProps } from "vue";
 import { strTruncated } from "../../utils/useHelper";
+
+const { VITE_APP_API_URL: BASE_URL } = env;
 
 export type Comment = {
   leadId: Number | String;
@@ -62,6 +65,8 @@ const form = reactive<Comment>({
 let SelectedNumberForCall: any = ref("");
 let isDialCall = true;
 
+const epcDetails = ref({});
+const isEpcDialogVisible = ref(false);
 const store: any = useLeadsStore();
 const callCenterStore = useCallCentersStore();
 const body = ref("");
@@ -72,7 +77,7 @@ const time = useTime();
 const airCallLoader = ref(false);
 const toast = useToast();
 const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
-  store.fetchLeads({ include: ["leadGenerator", "benefits"].join(",") })
+  store.fetchLeads({ include: ["leadGenerator"].join(",") })
 );
 
 const handleCommentsSubmit = async (comments: String) => {
@@ -112,6 +117,9 @@ const handleAirCall = async (lead: any) => {
     }
     store.selectedId = lead.id;
     airCallLoader.value = true;
+
+    let otherPeopleCalls = [];
+
     /* before making a call i need to make another call to check the stats of this number and check whether someone else has called it or not */
     let { data: oldCalls } = await useApiFetch("/aircall/search-call", {
       data: {
@@ -121,7 +129,7 @@ const handleAirCall = async (lead: any) => {
     });
     SelectedNumberForCall.value = "+44" + fixNumber(lead?.phone_no ?? "");
     const myCallerId = auth?.user?.air_caller_id;
-    oldCalls = oldCalls.filter(function (obj: any) {
+    otherPeopleCalls = oldCalls.filter(function (obj: any) {
       /* check if some one else has called it or not */
       if (!obj.user) {
         return false; // if its an inbound then it should not be included
@@ -130,23 +138,21 @@ const handleAirCall = async (lead: any) => {
     });
 
     if (oldCalls.length > 0) {
-      console.log(oldCalls);
-
       const otherCallersNames = oldCalls
         ?.map(function (obj: any) {
           return {
             name: obj.user.name,
             time: moment.unix(obj.started_at).format("DD/MM/YYYY hh:mm A"),
             number: obj.number.digits,
+            unixTime: obj.started,
           };
         })
+        .sort((a: any, b: any) => a.unixTime - b.unixTime)
         .filter(
           (value: any, index: any, self: any) => self.indexOf(value) === index // make uniquness of name
         )
         .map((i: any) => `From ${i.number} at ${i.time} by ${i.name}`)
         .join("<br />");
-
-      console.log(`output->others`, otherCallersNames);
 
       body.value = `This person is already called by:<br /><br />${otherCallersNames}<br /><br /><p class="font-italic">Last comment: ${
         lead?.status_details?.reason?.toUpperCase() ?? "NULL"
@@ -203,6 +209,17 @@ const handleStoreCallStatus = (lead: any) => {
 const handleLeadUpdate = (lead: any) => {
   store.selectedLead = lead;
   store.update();
+};
+
+const handleEpcDetailsClick = async (details: any, postCode: number) => {
+  if (!details) {
+    window.open(`${BASE_URL}/leads-links/epc/${postCode}`);
+
+    return;
+  }
+
+  epcDetails.value = details;
+  isEpcDialogVisible.value = true;
 };
 
 onMounted(async () => {
@@ -620,6 +637,24 @@ onMounted(async () => {
         </template>
         <span>View Lead Details</span>
       </VTooltip>
+
+      <VTooltip location="bottom">
+        <template #activator="{ props }">
+          <IconBtn
+            @click.stop="
+              handleEpcDetailsClick(item.raw?.epc_details, item.raw.post_code)
+            "
+            :color="item.raw?.epc_details ? 'success' : 'secondary'"
+            v-bind="props"
+            class="mt-1 mr-1"
+            :icon="
+              item.raw?.epc_details ? 'mdi-eye-outline' : 'mdi-open-in-new'
+            "
+          />
+        </template>
+        <span>View EPC Details</span>
+      </VTooltip>
+
       <VTooltip
         v-if="auth.user.email == 'cfaysal099@gmail.com'"
         location="bottom"
@@ -689,6 +724,12 @@ onMounted(async () => {
   <AddCallRecordDialog
     v-model:is-dialog-visible="isDialogVisible"
     @on-dialog-close="isDialogVisible = false"
+  />
+
+  <EpcDetailsDialog
+    v-model:is-dialog-visible="isEpcDialogVisible"
+    :details="epcDetails"
+    @on-dialog-close="isEpcDialogVisible = false"
   />
 </template>
 

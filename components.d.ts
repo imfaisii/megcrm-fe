@@ -60,6 +60,7 @@ declare module '@vue/runtime-core' {
     CustomRadiosWithImage: typeof import('./src/@core/components/app-form-elements/CustomRadiosWithImage.vue')['default']
     DataTable: typeof import('./src/components/datatable/DataTable.vue')['default']
     DialogCloseBtn: typeof import('./src/@core/components/DialogCloseBtn.vue')['default']
+    EpcDetailsDialog: typeof import('./src/components/leads/EpcDetailsDialog.vue')['default']
     ErrorHeader: typeof import('./src/components/ErrorHeader.vue')['default']
     FuelTypesTable: typeof import('./src/components/fuel-types/FuelTypesTable.vue')['default']
     I18n: typeof import('./src/@core/components/I18n.vue')['default']
