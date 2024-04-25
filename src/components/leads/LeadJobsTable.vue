@@ -339,15 +339,15 @@ onMounted(async () => {
         </td>
         <td class="pa-5" :colspan="3">
           <VTextField
-            label="Gas Safe"
-            v-model="item.raw.gas_safe"
+            label="Recommend"
+            v-model="item.raw.recommend"
             density="compact"
           />
         </td>
         <td class="pa-5" :colspan="3">
           <VTextField
-            label="Recommend"
-            v-model="item.raw.recommend"
+            label="Gas Safe"
+            v-model="item.raw.gas_safe"
             density="compact"
           />
         </td>
