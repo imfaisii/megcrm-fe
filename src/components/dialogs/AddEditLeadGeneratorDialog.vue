@@ -19,7 +19,7 @@ defineProps({
   },
 });
 
-const store = useLeadGeneratorsStore();
+const store: any = useLeadGeneratorsStore();
 const formRef = ref();
 const emit = defineEmits<Emit>();
 
@@ -110,11 +110,27 @@ const handleSubmit = async () => {
                 v-model="store.selected.phone_no"
                 :rules="[
                   integerValidator,
-                  (v) => maxLengthValidator(v, 10),
-                  (v) => lengthValidator(v, 10),
+                  (v:any) => maxLengthValidator(v, 10),
+                  (v:any) => lengthValidator(v, 10),
                 ]"
                 :error-messages="store.errors?.phone_no"
                 label="Phone No"
+                placeholder="7943111111"
+                clearable
+                required
+              />
+            </VCol>
+
+            <VCol cols="12">
+              <VTextField
+                v-model="store.selected.aircall_number"
+                :rules="[
+                  integerValidator,
+                  (v:any) => maxLengthValidator(v, 10),
+                  (v:any) => lengthValidator(v, 10),
+                ]"
+                :error-messages="store.errors?.aircall_number"
+                label="Aircall No"
                 placeholder="7943111111"
                 clearable
                 required
@@ -129,7 +145,7 @@ const handleSubmit = async () => {
               :disabled="store.isLoading"
               :loading="store.isLoading"
             >
-              {{ store.isSelected ? "Update" : "Create" }} {{ title }}
+              {{ store.isSelected ? "Update" : "Create" }}
             </VBtn>
 
             <VBtn color="secondary" variant="tonal" @click="closeDialog">

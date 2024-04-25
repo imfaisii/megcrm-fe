@@ -9,6 +9,7 @@ const headers = [
   { title: "SMS Sender Title", key: "sender_id" },
   { title: "Email Reference in SMS", key: "email" },
   { title: "Phone Reference in SMS", key: "phone_no" },
+  { title: "Aircall Number", key: "aircall_number" },
   { title: "Added by", key: "created_by.name", sortable: false },
   { title: "Actions", key: "actions", sortable: false },
 ];
@@ -39,19 +40,39 @@ const handleView = (item: any) => {
   <!-- Filters -->
   <VRow class="pa-4">
     <VCol cols="12" md="3">
-      <VTextField v-model="filters.name" label="Name" clearable />
+      <VTextField
+        v-model="filters.name"
+        label="Name"
+        clearable
+        density="compact"
+      />
     </VCol>
 
     <VCol cols="12" md="3">
-      <VTextField v-model="filters.sender_id" label="Sender Name" clearable />
+      <VTextField
+        v-model="filters.sender_id"
+        label="Sender Name"
+        clearable
+        density="compact"
+      />
     </VCol>
 
     <VCol cols="12" md="3">
-      <VTextField v-model="filters.email" label="Email" clearable />
+      <VTextField
+        v-model="filters.email"
+        label="Email"
+        clearable
+        density="compact"
+      />
     </VCol>
 
     <VCol cols="12" md="3">
-      <VTextField v-model="filters.phone_no" label="Phone No" clearable />
+      <VTextField
+        v-model="filters.phone_no"
+        label="Phone No"
+        clearable
+        density="compact"
+      />
     </VCol>
   </VRow>
 
@@ -61,19 +82,26 @@ const handleView = (item: any) => {
     :items="store.entries"
     :headers="headers"
     class="text-no-wrap"
-    show-select
     @update:on-pagination-change="onPaginationChange"
     @update:on-sort-change="onSortChange"
   >
+    <!-- @vue-expect-error -->
     <template #item.email="{ item }">
       <p class="mb-0 font-italic">{{ item?.raw?.email ?? "NULL" }}</p>
     </template>
 
+    <!-- @vue-expect-error -->
     <template #item.phone_no="{ item }">
       <p class="mb-0 font-italic">{{ item?.raw?.phone_no ?? "NULL" }}</p>
     </template>
 
+    <!-- @vue-expect-error -->
+    <template #item.aircall_number="{ item }">
+      <p class="mb-0 font-italic">{{ item?.raw?.aircall_number ?? "NULL" }}</p>
+    </template>
+
     <!-- Actions -->
+    <!-- @vue-expect-error -->
     <template #item.actions="{ item }">
       <IconBtn @click="handleView(item.raw)">
         <VIcon icon="tabler-edit" />
