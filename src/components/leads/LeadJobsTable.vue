@@ -8,8 +8,8 @@ import { useCallCentersStore } from "@/stores/call-center/useCallCentersStore";
 import { useLeadJobsStore } from "@/stores/leads/useLeadJobsStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
+import { copy, strTruncated } from "@/utils/useHelper";
 import { mergeProps } from "vue";
-import { strTruncated } from "../../utils/useHelper";
 
 const { VITE_APP_API_URL: BASE_URL } = env;
 
@@ -390,14 +390,18 @@ onMounted(async () => {
       {{ item.raw.full_name }}
     </template>
 
-    <!-- Address -->
+    <!-- Post Code -->
     <!-- @vue-expect-error -->
-    <template #item.plain_address="{ item }">
+    <template #item.post_code="{ item }">
       <VTooltip>
         <template #activator="{ props }">
-          <div v-bind="props">{{ strTruncated(item.raw.address, 20) }}</div>
+          <div v-bind="props" @click.stop="copy(item.raw.post_code)">
+            {{ item.raw.post_code }}
+          </div>
         </template>
-        {{ item.raw.address }}
+        <span>
+          {{ item.raw.address }}
+        </span>
       </VTooltip>
     </template>
 

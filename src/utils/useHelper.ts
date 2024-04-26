@@ -197,3 +197,8 @@ export const logsHaveUpdatedProperty = (property: string, logs: any[] = []): { f
 
   return result;
 }
+
+export const copy = (str: string) => {
+  navigator.clipboard.writeText(str);
+  useToast().success(`Copied: ${str}`);
+}

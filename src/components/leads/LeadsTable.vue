@@ -9,10 +9,10 @@ import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useCallCentersStore } from "@/stores/call-center/useCallCentersStore";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
+import { copy, strTruncated } from "@/utils/useHelper";
 import { fixNumber } from "@/utils/useString";
 import moment from "moment";
 import { mergeProps } from "vue";
-import { strTruncated } from "../../utils/useHelper";
 
 const { VITE_APP_API_URL: BASE_URL } = env;
 
@@ -495,12 +495,14 @@ onMounted(async () => {
       {{ item.raw.full_name }}
     </template>
 
-    <!-- Address -->
+    <!-- Post Code -->
     <!-- @vue-expect-error -->
     <template #item.post_code="{ item }">
       <VTooltip>
         <template #activator="{ props }">
-          <div v-bind="props">{{ item.raw.post_code }}</div>
+          <div v-bind="props" @click.stop="copy(item.raw.post_code)">
+            {{ item.raw.post_code }}
+          </div>
         </template>
         <span>
           {{ item.raw.address }}
