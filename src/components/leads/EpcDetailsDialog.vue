@@ -73,12 +73,14 @@ const getObjectKeys = (arr: any) => {
               <!-- @vue-skip-->
               {{
                 k
+                  .toLowerCase()
                   .replaceAll("_", " ")
-                  .replaceAll("I D", "ID")
-                  .replaceAll("STEPS", "STEPS ")
-                  .replaceAll("STEP", "STEP ")
-                  .replaceAll("TO", " TO ")
-                  .replaceAll("AND", " AND ")
+                  .replaceAll("i d", "id")
+                  .replaceAll("steps", "steps ")
+                  .replaceAll("step", "step ")
+                  .replaceAll("to", " to ")
+                  .replaceAll("and", " and ")
+                  .replaceAll("s ", "")
               }}
             </p>
           </VCol>
