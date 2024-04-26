@@ -10,7 +10,6 @@ const props = defineProps({
   },
 });
 
-const panel = ref(0);
 const emit = defineEmits(["onDialogClose"]);
 const closeDialog = () => emit("onDialogClose");
 
@@ -68,9 +67,9 @@ const getObjectKeys = (arr: any) => {
       </VCardItem>
 
       <VCardText>
-        <div v-for="(v, k) in keyValues" class="d-flex justify-space-between">
-          <p class="text-uppercase">
-            <strong>
+        <VRow v-for="(v, k) in keyValues">
+          <VCol cols="6">
+            <p class="font-weight-medium text-capitalize mb-0">
               <!-- @vue-skip-->
               {{
                 k
@@ -81,67 +80,93 @@ const getObjectKeys = (arr: any) => {
                   .replaceAll("TO", " TO ")
                   .replaceAll("AND", " AND ")
               }}
-            </strong>
-          </p>
-          <p class="text-uppercase font-italic">{{ v }}</p>
-        </div>
+            </p>
+          </VCol>
+          <VCol cols="67">
+            <a
+              v-if="v.toLowerCase().includes('https')"
+              :href="v"
+              target="_blank"
+              class="text-uppercase font-italic"
+            >
+              <VBtn class="mb-2" icon="mdi-open-in-new" size="x-small" />
+            </a>
+            <p v-else class="text-uppercase font-italic">{{ v }}</p>
+          </VCol>
+        </VRow>
 
-        <VExpansionPanels v-model="panel">
-          <VExpansionPanel v-for="(v, k) in arrays" :key="k">
-            <VExpansionPanelTitle disable-icon-rotate>
-              <!--@vue-skip-->
-              <strong>{{ k.toUpperCase() }}</strong>
-              <template #actions>
-                <VBtn
-                  rounded
-                  :title="getTitle(v)"
-                  color="warning"
-                  size="x-small"
+        <VRow>
+          <VCol cols="12">
+            <VExpansionPanels multiple>
+              <VExpansionPanel v-for="(v, k) in arrays" :key="k">
+                <VExpansionPanelTitle
+                  class="text-h6"
+                  style="color: #646464 !important"
+                  disable-icon-rotate
                 >
-                  <strong>{{ getTitle(v) }}</strong>
-                </VBtn>
-              </template>
-            </VExpansionPanelTitle>
-            <VExpansionPanelText>
-              <template v-if="isArrayOfTypeString(v)">
-                <VList>
-                  <VListItem v-for="(item, index) in v" :key="index">
-                    {{ item }}
-                  </VListItem>
-                </VList>
-              </template>
-              <template v-else>
-                <VTable fixed-header>
-                  <thead>
-                    <tr>
-                      <th
-                        class="text-uppercase"
-                        v-for="(key, index) in getObjectKeys(v)"
-                        :key="index"
-                      >
-                        {{ key }}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="text-high-emphasis">
-                    <tr v-for="(obj, index) in v" :key="index">
-                      <td class="py-4" v-for="(value, key) in obj" :key="key">
-                        {{ value }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </VTable>
-              </template>
-            </VExpansionPanelText>
-          </VExpansionPanel>
-        </VExpansionPanels>
+                  <!--@vue-skip-->
+                  <p class="font-weight-medium text-uppercase mb-0">{{ k }}</p>
+                  <template #actions>
+                    <VBtn
+                      rounded
+                      :title="getTitle(v)"
+                      color="warning"
+                      size="x-small"
+                    >
+                      <strong>{{ getTitle(v) }}</strong>
+                    </VBtn>
+                  </template>
+                </VExpansionPanelTitle>
+                <VExpansionPanelText>
+                  <template v-if="isArrayOfTypeString(v)">
+                    <VList>
+                      <VListItem v-for="(item, index) in v" :key="index">
+                        {{ item }}
+                      </VListItem>
+                    </VList>
+                  </template>
+                  <template v-else>
+                    <VTable fixed-header>
+                      <thead>
+                        <tr>
+                          <th
+                            class="text-uppercase font-italic font-weight-bold"
+                            v-for="(key, index) in getObjectKeys(v)"
+                            :key="index"
+                          >
+                            {{ key }}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody class="text-high-emphasis">
+                        <tr v-for="(obj, index) in v" :key="index">
+                          <td v-for="(value, key) in obj" :key="key">
+                            {{ value }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </VTable>
+                  </template>
+                </VExpansionPanelText>
+              </VExpansionPanel>
+            </VExpansionPanels>
+          </VCol>
+        </VRow>
       </VCardText>
     </VCard>
   </VDialog>
 </template>
 
 <style lang="scss" scoped>
-:deep(.v-expansion-panel-title) {
-  background: lemonchiffon;
+:deep(.v-card) {
+  background: #fafafa;
+}
+
+:deep(th) {
+  border-radius: 0 !important;
+}
+
+:deep(td) {
+  border-radius: 0 !important;
 }
 </style>
