@@ -52,6 +52,8 @@ const filters = ref({
   surveyor_id: [],
   timestamp: "",
   epc_assessment_at: "",
+  improvements: "",
+  features: "",
   address: "",
   reference_number: "",
   survey_booked_by: [],
@@ -262,7 +264,7 @@ onMounted(async () => {
       />
     </VCol>
 
-    <VCol cols="12">
+    <VCol cols="12" lg="4">
       <AppDateTimePicker
         v-model="filters.epc_assessment_at"
         :config="{
@@ -276,6 +278,24 @@ onMounted(async () => {
         placeholder="Select date"
         density="compact"
         clearable
+      />
+    </VCol>
+
+    <VCol cols="12" lg="4">
+      <VTextField
+        v-model="filters.features"
+        label="Features"
+        clearable
+        density="compact"
+      />
+    </VCol>
+
+    <VCol cols="12" lg="4">
+      <VTextField
+        v-model="filters.improvements"
+        label="Improvements"
+        clearable
+        density="compact"
       />
     </VCol>
   </VRow>
