@@ -3,7 +3,6 @@ import useDataTable from "@/composables/useDatatable";
 import useTime from "@/composables/useTime";
 import env from "@/constants/env";
 import { useDatamatchFilesStore } from "@/stores/data-match/useDatamatchFilesStore";
-import { EventBus } from "@/utils/useEventBus";
 
 const { VITE_APP_API_URL: BASE_URL } = env;
 
@@ -12,6 +11,7 @@ const headers = [
   { title: "Name", key: "file_name" },
   { title: "Created At", key: "created_at" },
   { title: "Added by", key: "created_by.name", sortable: false },
+  { title: "Type", key: "type", sortable: false },
   { title: "Actions", key: "actions", sortable: false },
 ];
 
@@ -35,7 +35,6 @@ const handleDownload = (item: any) => {
   // @ts-ignore
   window.open(item.file_path, "_blank").focus();
 };
-
 </script>
 
 <template>

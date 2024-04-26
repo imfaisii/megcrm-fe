@@ -8,11 +8,18 @@ const file: any = ref();
 const uploadDataMatchResultForm = ref();
 const loading = ref(false);
 const isSuccess = ref(false);
+const fileDownloadLink = ref(null);
 const isError = ref(false);
+const responseMessage = ref("");
 const FailedLeads: any = ref(null);
 const $toast: any = useToast();
 const errorMessage: Ref<String> = ref("");
 
+const downloadFailedLeadFiles = () => {
+  if (fileDownloadLink.value) {
+    window.open(fileDownloadLink.value, "_blank").focus();
+  }
+};
 const handleFileUpload = async () => {
   uploadDataMatchResultForm.value?.validate().then(async (valid: any) => {
     if (valid.valid) {
@@ -24,7 +31,7 @@ const handleFileUpload = async () => {
         loading.value = true;
         isError.value = false;
         isSuccess.value = false;
-        const { data: response } = await useApiFetch(
+        const { data: response, message: link } = await useApiFetch(
           "/leads-datamatch-upload",
           {
             method: "POST",
@@ -35,7 +42,15 @@ const handleFileUpload = async () => {
           }
         );
         FailedLeads.value = response.failedLeads;
-        $toast.success("File was uploaded successfully.");
+        responseMessage.value = `File was uploaded successfully and updated ${
+          response?.data?.totalUploadedRows ?? 0
+        } leads .`;
+        fileDownloadLink.value = link;
+        $toast.success(
+          `File was uploaded successfully and updated ${
+            response?.data?.totalUploadedRows ?? 0
+          } leads .`
+        );
         isSuccess.value = true;
         isError.value = false;
       } catch (e: any) {
@@ -50,9 +65,9 @@ const handleFileUpload = async () => {
   });
 };
 
-watch(file, () => {
-  loading.value = !file.value[0];
-});
+// watch(file, () => {
+//   loading.value = !file.value[0];
+// });
 </script>
 
 <template>
@@ -98,6 +113,10 @@ watch(file, () => {
                 <VAlert v-if="isError" type="error">
                   {{ errorMessage }}
                 </VAlert>
+
+                <VAlert v-if="responseMessage" type="info">
+                  {{ responseMessage }}
+                </VAlert>
               </VCol>
 
               <VCol cols="12">
@@ -108,21 +127,38 @@ watch(file, () => {
                   prepend-icon=""
                   prepend-inner-icon="mdi-paperclip"
                   color="primary"
-                  accept=".xlsx"
-                  label="Select an excel file..."
+                  accept=".csv"
+                  label="Select a csv file..."
                 />
               </VCol>
 
               <VCol cols="12">
-                <VBtn
-                  type="submit"
-                  :loading="loading"
-                  :disabled="loading"
-                  color="primary"
-                >
-                  Upload
-                  <VIcon end icon="mdi-cloud-upload-outline" />
-                </VBtn>
+                <VRow>
+                  <VCol cols="11">
+                    <VBtn
+                      type="submit"
+                      :loading="loading"
+                      :disabled="loading"
+                      color="primary"
+                    >
+                      Upload
+                      <VIcon end icon="mdi-cloud-upload-outline" />
+                    </VBtn>
+                  </VCol>
+                  <VCol cols="1" v-if="fileDownloadLink">
+                    <VTooltip location="bottom">
+                      <template #activator="{ props }">
+                        <IconBtn
+                          @click="downloadFailedLeadFiles()"
+                          v-bind="props"
+                        >
+                          <VIcon color="success" icon="tabler-download" />
+                        </IconBtn>
+                      </template>
+                      <span> Download the Failed updated Leads </span>
+                    </VTooltip>
+                  </VCol>
+                </VRow>
               </VCol>
 
               <VCol cols="12" v-if="FailedLeads">
