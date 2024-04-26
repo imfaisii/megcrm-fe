@@ -119,7 +119,6 @@ onMounted(async () => {
             label="Phone"
             placeholder="XXX-XXXXXXX"
             type="number"
-            clearable
             required
             :readonly="!permissionsStore.isSuperAdmin"
           />

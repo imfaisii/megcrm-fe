@@ -48,6 +48,7 @@ const filters = ref({
   lead_generator_id: [],
   surveyor_id: [],
   timestamp: "",
+  epc_assessment_at: "",
   address: "",
   reference_number: "",
   survey_booked_by: [],
@@ -336,6 +337,7 @@ onMounted(async () => {
         label="Dated"
         placeholder="Select date"
         density="compact"
+        clearable
       />
     </VCol>
 
@@ -345,6 +347,23 @@ onMounted(async () => {
         label="Address"
         clearable
         density="compact"
+      />
+    </VCol>
+
+    <VCol cols="12">
+      <AppDateTimePicker
+        v-model="filters.epc_assessment_at"
+        :config="{
+          mode: 'range',
+          wrap: true,
+          altInput: true,
+          altFormat: 'F j, Y',
+          dateFormat: 'Y-m-d',
+        }"
+        label="EPC Expiry Date"
+        placeholder="Select date"
+        density="compact"
+        clearable
       />
     </VCol>
   </VRow>
