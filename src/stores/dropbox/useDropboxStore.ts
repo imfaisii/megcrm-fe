@@ -10,6 +10,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
   const $toast = useToast()
   const loading = ref(false)
 
+  const isInOldDirectory = ref(false)
   const auth: any = useAuthStore();
   const leadsStore: any = useLeadsStore();
   const folder = `${leadsStore.selectedLead.post_code
@@ -17,8 +18,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
     .replace(/ /g, "")} - ${leadsStore.selectedLead.address.replace("/", "|")}`;
 
   const baseUrl = 'https://api.dropboxapi.com/2/files'
-  const baseDirectory = '/001 Umar Riaz Ashton/~~~~##########ECO 4 SURVEY'
-
+  const baseDirectory = ref('/001 Umar Riaz Ashton/~~~~##########ECO 4 SURVEY')
   const fileUploadEndpoint = "https://content.dropboxapi.com/2/files/upload";
   const newFolderEndpoint = `${baseUrl}/create_folder_v2`
   const folderFilesEndpoint = `${baseUrl}/list_folder`
@@ -37,19 +37,36 @@ export const useDropboxStore = defineStore('dropbox', () => {
     'Authorization': `Bearer ${auth.user.dropbox.data}`
   }
 
+  const basicPostPayload = {
+    "include_deleted": false,
+    "include_has_explicit_shared_members": false,
+    "include_media_info": true,
+    "include_mounted_folders": true,
+    "include_non_downloadable_files": true,
+    "limit": 2000,
+    "recursive": false
+  }
+
+  onMounted(async () => {
+    try {
+      await axios.post(folderFilesEndpoint, {
+        ...basicPostPayload,
+        path: `${baseDirectory.value}/${folder}`,
+      }, { headers })
+    } catch (e: any) {
+      if (e.response && e.response.status === 409) {
+        baseDirectory.value = '/ALL PRE SURVEYS'
+      }
+    }
+  })
+
   const index = async (folderName: string, fetchLinks: boolean = true) => {
     try {
       loading.value = true
 
       const { data } = await axios.post(`${folderFilesEndpoint}`, {
-        "include_deleted": false,
-        "include_has_explicit_shared_members": false,
-        "include_media_info": true,
-        "include_mounted_folders": true,
-        "include_non_downloadable_files": true,
-        "limit": 2000,
-        "path": `${baseDirectory}/${folderName}/Survey`,
-        "recursive": false
+        ...basicPostPayload,
+        path: `${baseDirectory.value}/${folderName}/Survey`,
       }, {
         headers
       })
@@ -89,32 +106,19 @@ export const useDropboxStore = defineStore('dropbox', () => {
       loading.value = true
 
       const { data } = await axios.post(`${folderFilesEndpoint}`, {
-        "include_deleted": false,
-        "include_has_explicit_shared_members": false,
-        "include_media_info": true,
-        "include_mounted_folders": true,
-        "include_non_downloadable_files": true,
-        "limit": 2000,
-        "path": `${baseDirectory}/${folderName}/Installation`,
-        "recursive": false
+        ...basicPostPayload,
+        path: `${baseDirectory.value}/${folderName}/Installation`,
       }, {
         headers
       })
 
       images.push(data.entries.filter((entry: any) => entry['.tag'] === 'file'))
-
       intallationPicturesFolders.value = data.entries.filter((entry: any) => entry['.tag'] === 'folder')
 
       for await (const folder of intallationPicturesFolders.value) {
         const { data } = await axios.post(`${folderFilesEndpoint}`, {
-          "include_deleted": false,
-          "include_has_explicit_shared_members": false,
-          "include_media_info": true,
-          "include_mounted_folders": true,
-          "include_non_downloadable_files": true,
-          "limit": 2000,
-          "path": `${baseDirectory}/${folderName}/Installation/${folder.name}`,
-          "recursive": false
+          ...basicPostPayload,
+          path: `${baseDirectory.value}/${folderName}/Installation/${folder.name}`,
         }, {
           headers
         })
@@ -159,14 +163,8 @@ export const useDropboxStore = defineStore('dropbox', () => {
       loading.value = true
 
       const { data } = await axios.post(`${folderFilesEndpoint}`, {
-        "include_deleted": false,
-        "include_has_explicit_shared_members": false,
-        "include_media_info": true,
-        "include_mounted_folders": true,
-        "include_non_downloadable_files": true,
-        "limit": 2000,
-        "path": `${baseDirectory}/${folderName}/Pre Checking`,
-        "recursive": false
+        ...basicPostPayload,
+        path: `${baseDirectory.value}/${folderName}/Pre Checking`,
       }, {
         headers
       })
@@ -189,7 +187,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
 
       await axios.post(`${newFolderEndpoint}`, {
         autorename: false,
-        path: `${baseDirectory}/${newFolderName}`
+        path: `${baseDirectory.value}/${newFolderName}`
       }, {
         headers
       })
@@ -213,7 +211,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
           autorename: true,
           mode: "add",
           mute: false,
-          path: `${baseDirectory}/${address}/${subFolder}/${file.name}`,
+          path: `${baseDirectory.value}/${address}/${subFolder}/${file.name}`,
           strict_conflict: true,
         }),
         Authorization: `Bearer ${auth.user.dropbox.data}`,

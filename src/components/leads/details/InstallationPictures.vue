@@ -68,6 +68,8 @@ const show = (image: any) => {
 };
 
 async function uploadFilesSequentially(files: any) {
+  filesUploaded.value = 0;
+
   for (const file of files) {
     if (!file) {
       continue;
@@ -122,7 +124,6 @@ const saveFiles = async (files: any) => {
     .then(async () => {
       setTimeout(() => {
         dbStore.getInstallationPictures(dbStore.folder);
-        EventBus.$emit("refresh-lead-data");
       }, 2000);
     })
     .catch((error) => {

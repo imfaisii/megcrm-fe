@@ -84,8 +84,7 @@ const saveFiles = async (files: any) => {
 
       setTimeout(() => {
         dbStore.index(dbStore.folder);
-        EventBus.$emit("refresh-lead-data");
-      }, 2000);
+      }, 1000);
     })
     .catch((error) => {
       console.error("Error uploading files:", error);
