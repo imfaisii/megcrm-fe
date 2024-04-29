@@ -183,7 +183,7 @@ onUnmounted(() => {
                           "
                           :color="
                             store.selectedLead.lead_customer_additional_detail
-                              .datamatch_progress === true
+                              .datamatch_progress === true || store?.selectedLead?.lead_customer_additional_detail?.datamatch_progress?.toLowerCase() === 'matched'
                               ? 'success'
                               : 'error'
                           "
