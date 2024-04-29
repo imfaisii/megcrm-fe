@@ -173,7 +173,7 @@ onUnmounted(() => {
                   </VTooltip>
                   <VTooltip>
                     <template #activator="{ props }">
-                      <VChip v-bind="props" label size="x-large" color="error">
+                      <VChip v-bind="props" label size="x-large" :color="store?.selectedLead?.lead_customer_additional_detail?.datamatch_progress?.toLowerCase() === 'matched' ? 'success' : 'error'">
                         <VIcon
                           :icon="
                             store.selectedLead.lead_customer_additional_detail
