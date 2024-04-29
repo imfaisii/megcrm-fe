@@ -177,7 +177,7 @@ onUnmounted(() => {
                         <VIcon
                           :icon="
                             store.selectedLead.lead_customer_additional_detail
-                              .datamatch_progress === true
+                              .datamatch_progress === true || store?.selectedLead?.lead_customer_additional_detail?.datamatch_progress?.toLowerCase() === 'matched'
                               ? 'mdi-check-circle'
                               : 'mdi-close-circle'
                           "
