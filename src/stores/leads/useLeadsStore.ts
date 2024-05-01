@@ -73,6 +73,7 @@ export const useLeadsStore = defineStore('leads', () => {
   const leadJobTableStatuses: Ref<LeadStatus[]> = ref([])
   const installers: Ref<Installer[]> = ref([])
   const installation_types: Ref<InstallationType[]> = ref([])
+  const isStatusChanged: Ref<Boolean> = ref(false)
   const banks: Ref<Bank[]> = ref([])
   const csrs = ref([])
   const sms_templates = ref([])
@@ -306,7 +307,13 @@ export const useLeadsStore = defineStore('leads', () => {
   }
 
   const showEditButton = computed(() => {
-    return JSON.stringify(selectedLeadCopy.value) !== JSON.stringify(selectedLead.value)
+    const copy = JSON.stringify(selectedLeadCopy.value)
+    const changed = JSON.stringify(selectedLead.value)
+    const copyParsed = JSON.parse(copy)
+    const changedParsed = JSON.parse(changed)
+
+    isStatusChanged.value = copyParsed?.status_details?.name !== changedParsed?.status_details?.name
+    return copy !== changed
   })
 
   const sendSms = async (leadId: string, payload: { body: string | null }, options = { method: 'POST' }) => {
@@ -420,6 +427,7 @@ export const useLeadsStore = defineStore('leads', () => {
     meta,
     includes,
     showEditButton,
+    isStatusChanged,
 
     getExpandedColumnLength,
     saveDocumentToCollection,

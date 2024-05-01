@@ -84,8 +84,12 @@ const getLead = async () => {
 };
 
 const handleLeadUpdate = async () => {
-  await store.update();
-  await getLead();
+  if (store.isStatusChanged) {
+    isCommentsDialogVisible.value = true;
+  } else {
+    await store.update();
+    await getLead();
+  }
 };
 
 const preCheckingsDetails = computed(() =>
@@ -173,17 +177,31 @@ onUnmounted(() => {
                   </VTooltip>
                   <VTooltip>
                     <template #activator="{ props }">
-                      <VChip v-bind="props" label size="x-large" :color="store?.selectedLead?.lead_customer_additional_detail?.datamatch_progress?.toLowerCase() === 'matched' ? 'success' : 'error'">
+                      <VChip
+                        v-bind="props"
+                        label
+                        size="x-large"
+                        :color="
+                          store?.selectedLead?.lead_customer_additional_detail?.datamatch_progress?.toLowerCase() ===
+                          'matched'
+                            ? 'success'
+                            : 'error'
+                        "
+                      >
                         <VIcon
                           :icon="
                             store.selectedLead.lead_customer_additional_detail
-                              .datamatch_progress === true || store?.selectedLead?.lead_customer_additional_detail?.datamatch_progress?.toLowerCase() === 'matched'
+                              .datamatch_progress === true ||
+                            store?.selectedLead?.lead_customer_additional_detail?.datamatch_progress?.toLowerCase() ===
+                              'matched'
                               ? 'mdi-check-circle'
                               : 'mdi-close-circle'
                           "
                           :color="
                             store.selectedLead.lead_customer_additional_detail
-                              .datamatch_progress === true || store?.selectedLead?.lead_customer_additional_detail?.datamatch_progress?.toLowerCase() === 'matched'
+                              .datamatch_progress === true ||
+                            store?.selectedLead?.lead_customer_additional_detail?.datamatch_progress?.toLowerCase() ===
+                              'matched'
                               ? 'success'
                               : 'error'
                           "
@@ -336,7 +354,6 @@ onUnmounted(() => {
                     type="text"
                     item-value="name"
                     item-title="name"
-                    clearable
                     required
                     :return-object="false"
                   >
@@ -365,10 +382,6 @@ onUnmounted(() => {
                       </VFadeTransition>
                     </template>
                   </VAutocomplete>
-
-                  <VBtn @click="isCommentsDialogVisible = true">
-                    Save Status
-                  </VBtn>
                 </VCol>
               </VRow>
             </VCardText>
@@ -376,7 +389,7 @@ onUnmounted(() => {
         </VCol>
       </VRow>
 
-      <VCard class="py-2">
+      <VCard>
         <VTabs v-model="activeTab" stacked>
           <VTab
             v-for="tab in tabs"

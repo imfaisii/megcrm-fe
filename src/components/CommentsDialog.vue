@@ -37,7 +37,7 @@ const handleCommentsSubmit = async () => {
 
 <template>
   <VDialog
-    :width="$vuetify.display.smAndDown ? 'auto' : 600"
+    :width="$vuetify.display.smAndDown ? 'auto' : 800"
     :model-value="isCommentsDialogVisible"
     @update:model-value="closeDialog"
     persistent
@@ -48,7 +48,9 @@ const handleCommentsSubmit = async () => {
     <VCard class="pa-sm-8 pa-5">
       <!-- Title -->
       <VCardItem class="text-center">
-        <VCardTitle class="text-h4 mb-3"> Add Comments </VCardTitle>
+        <VCardTitle class="text-h5 mb-3">
+          Add Details of why you are changing lead status
+        </VCardTitle>
       </VCardItem>
 
       <VForm ref="formRef" @submit.prevent="handleCommentsSubmit">

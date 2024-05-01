@@ -9,6 +9,12 @@ const headers = [
   { title: "Fuel", key: "fuel", sortable: false },
   { title: "Main Type", key: "main_type", sortable: false },
   { title: "Condensing", key: "condensing", sortable: false },
+  {
+    title: "SAP Winter Seasonal Efficiency",
+    key: "s_a_p_winter_seasonal_efficiency",
+    sortable: false,
+  },
+
   { title: "Last Updated", key: "updated_at", sortable: false },
 ];
 
@@ -44,10 +50,15 @@ onMounted(async () => {
 <template>
   <!-- Filters -->
   <VRow class="pa-4">
-    <VCol cols="12" lg="4">
-      <VTextField v-model="filters.Model_data" label="Name" clearable />
+    <VCol cols="12" lg="3">
+      <VTextField
+        v-model="filters.Model_data"
+        label="Name"
+        clearable
+        density="compact"
+      />
     </VCol>
-    <VCol cols="12" lg="4">
+    <VCol cols="12" lg="3">
       <VAutocomplete
         v-model="filters.manufacturer"
         :items="store.manufactures"
@@ -59,9 +70,10 @@ onMounted(async () => {
         multiple
         clearable
         :return-object="false"
+        density="compact"
       />
     </VCol>
-    <VCol cols="12" lg="4">
+    <VCol cols="12" lg="3">
       <VAutocomplete
         v-model="filters.condensing"
         :items="condensingTypes"
@@ -71,6 +83,15 @@ onMounted(async () => {
         item-title="key"
         item-value="value"
         :return-object="false"
+        density="compact"
+      />
+    </VCol>
+    <VCol cols="12" lg="3">
+      <VTextField
+        v-model="filters.s_a_p_winter_seasonal_efficiency"
+        label="SAP Efficiency"
+        clearable
+        density="compact"
       />
     </VCol>
   </VRow>
@@ -81,7 +102,6 @@ onMounted(async () => {
     :items="store.entries"
     :headers="headers"
     class="text-no-wrap"
-    show-select
     @update:on-pagination-change="onPaginationChange"
     @update:on-sort-change="onSortChange"
   >
