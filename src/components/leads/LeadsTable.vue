@@ -362,7 +362,7 @@ onMounted(async () => {
           altFormat: 'F j, Y',
           dateFormat: 'Y-m-d',
         }"
-        label="EPC Expiry Date"
+        label="EPC Assessment Date"
         placeholder="Select date"
         density="compact"
         clearable
