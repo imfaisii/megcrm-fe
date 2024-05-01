@@ -43,12 +43,12 @@ const handleFileUpload = async () => {
         );
         FailedLeads.value = response.failedLeads;
         responseMessage.value = `File was uploaded successfully and updated ${
-          response?.data?.totalUploadedRows ?? 0
+          response?.totalUploadedRows ?? 0
         } leads .`;
         fileDownloadLink.value = link;
         $toast.success(
           `File was uploaded successfully and updated ${
-            response?.data?.totalUploadedRows ?? 0
+            response?.totalUploadedRows ?? 0
           } leads .`
         );
         isSuccess.value = true;
