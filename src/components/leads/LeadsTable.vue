@@ -725,6 +725,24 @@ onMounted(async () => {
         </template>
         <span>Save the call status</span>
       </VTooltip>
+      <VTooltip location="bottom">
+        <template #activator="{ props }">
+          <span @click.stop v-bind="props">
+            <IconBtn
+              @click.stop="store.sendDocsUploadLink(item.raw.id)"
+              color="primary"
+              class="mt-1 mr-1"
+              icon="mdi-upload-outline"
+              :disabled="!item.raw?.phone_number_formatted"
+            />
+          </span>
+        </template>
+        <span>{{
+          item.raw?.phone_number_formatted
+            ? "Send Tracking Link"
+            : "Lead has invalid phone number."
+        }}</span>
+      </VTooltip>
     </template>
   </DataTable>
 

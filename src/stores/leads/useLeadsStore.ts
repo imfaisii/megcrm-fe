@@ -333,6 +333,20 @@ export const useLeadsStore = defineStore('leads', () => {
     }
   }
 
+  const sendDocsUploadLink = async (leadId: string, options = { method: 'GET' }) => {
+    try {
+      isLoading.value = true
+
+      await useApiFetch(`/send-sms/${leadId}/tracking-link`)
+
+      $toast.success('SMS was sent successfully.')
+    } catch (error) {
+      handleError(error, errors)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const saveDocumentToCollection = async (id: number, collection: string, file: File, fileName: string | null, options = { method: 'POST' }) => {
     try {
       if (fileName) {
@@ -429,6 +443,7 @@ export const useLeadsStore = defineStore('leads', () => {
     showEditButton,
     isStatusChanged,
 
+    sendDocsUploadLink,
     getExpandedColumnLength,
     saveDocumentToCollection,
     getColorOfSurveyBookers,
