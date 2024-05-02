@@ -104,7 +104,12 @@ onUnmounted(() => EventBus.$off("file-download-datamatch"));
         </IconBtn>
 
         <NavbarThemeSwitcher />
-        <VTooltip v-if="store.can(['leads.download-datamatch']) && [1,4,12].includes(auth.user.id)">
+        <VTooltip
+          v-if="
+            store.can(['leads.download-datamatch']) &&
+            [1, 4, 12, 30, 48].includes(auth.user.id)
+          "
+        >
           <template #activator="{ props }">
             <IconBtn
               @click="handleFileDownload"
