@@ -146,8 +146,11 @@ onMounted(async () => {
     dbStore.getInstallationPictures(dbStore.folder);
   });
 
-  await dbStore.create(`${dbStore.folder}/Installation`);
-  dbStore.getInstallationPictures(dbStore.folder);
+  //! IMPORTANT TO WAIT AS THE STORE IS STILL CHECKING FOR OLD DIRECTORY
+  setTimeout(async () => {
+    await dbStore.create(`${dbStore.folder}/Installation`);
+    dbStore.getInstallationPictures(dbStore.folder);
+  }, 500);
 });
 
 const filteredResults = computed(() => {

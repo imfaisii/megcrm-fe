@@ -106,8 +106,11 @@ onMounted(async () => {
     dbStore.index(dbStore.folder);
   });
 
-  await dbStore.create(`${dbStore.folder}/Survey`);
-  dbStore.index(dbStore.folder);
+  //! IMPORTANT TO WAIT AS THE STORE IS STILL CHECKING FOR OLD DIRECTORY
+  setTimeout(async () => {
+    await dbStore.create(`${dbStore.folder}/Survey`);
+    await dbStore.index(dbStore.folder);
+  }, 500);
 });
 const filteredSurveyImageLabels = computed(() => {
   return ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS.sort()
