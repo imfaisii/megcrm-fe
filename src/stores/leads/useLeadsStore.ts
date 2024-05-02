@@ -52,6 +52,7 @@ export const useLeadsStore = defineStore('leads', () => {
   const endPoint = '/leads'
   const leads = ref([])
   const selectedLead = ref<any>({
+    tracking_link: null,
     benefits: [],
     cell_centers: [],
     submission_documents: []
@@ -337,8 +338,13 @@ export const useLeadsStore = defineStore('leads', () => {
     try {
       isLoading.value = true
 
-      await useApiFetch(`/send-sms/${leadId}/tracking-link`)
+      const { data } = await useApiFetch(`/send-sms/${leadId}/tracking-link`)
 
+      const lead: any = leads.value.find((i: any) => i.id === leadId)
+
+      if (lead) {
+        lead.tracking_link = data.link;
+      }
       $toast.success('SMS was sent successfully.')
     } catch (error) {
       handleError(error, errors)

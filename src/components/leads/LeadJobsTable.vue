@@ -391,6 +391,13 @@ onMounted(async () => {
           </p>
         </td>
       </tr>
+      <tr v-if="item.raw?.tracking_link">
+        <td class="pa-5" :colspan="columns.length">
+          <a :href="item.raw.tracking_link" target="_blank" class="px-1 mb-0">
+            Click here to open tracking link
+          </a>
+        </td>
+      </tr>
       <tr>
         <td class="pa-5" :colspan="3">
           <VTextField label="EPC" v-model="item.raw.epc" density="compact" />
@@ -614,6 +621,24 @@ onMounted(async () => {
           </IconBtn>
         </template>
         <span>Save the call status</span>
+      </VTooltip>
+      <VTooltip location="bottom">
+        <template #activator="{ props }">
+          <span @click.stop v-bind="props">
+            <IconBtn
+              @click.stop="store.sendDocsUploadLink(item.raw.id)"
+              color="primary"
+              class="mt-1 mr-1"
+              icon="mdi-upload-outline"
+              :disabled="!item.raw?.phone_number_formatted"
+            />
+          </span>
+        </template>
+        <span>{{
+          item.raw?.phone_number_formatted
+            ? "Send Tracking Link"
+            : "Lead has invalid phone number."
+        }}</span>
       </VTooltip>
     </template>
   </DataTable>
