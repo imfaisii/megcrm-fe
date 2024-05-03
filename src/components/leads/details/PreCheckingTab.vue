@@ -148,7 +148,7 @@ onMounted(async () => {
           <VIcon icon="mdi-image-check" class="text-disabled" />
         </template>
 
-        <VCardTitle>Pre Checking Details Details</VCardTitle>
+        <VCardTitle>Pre Checking Details</VCardTitle>
       </VCardItem>
 
       <VDivider />
