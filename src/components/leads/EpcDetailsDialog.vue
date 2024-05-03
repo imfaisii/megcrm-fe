@@ -67,34 +67,37 @@ const getObjectKeys = (arr: any) => {
       </VCardItem>
 
       <VCardText>
-        <VRow v-for="(v, k) in keyValues">
-          <VCol cols="6">
-            <p class="font-weight-medium text-capitalize mb-0">
-              <!-- @vue-skip-->
-              {{
-                k
-                  .toLowerCase()
-                  .replaceAll("_", " ")
-                  .replaceAll("i d", "id")
-                  .replaceAll("steps", "steps ")
-                  .replaceAll("step", "step ")
-                  .replaceAll("to", " to ")
-                  .replaceAll("and", " and ")
-                  .replaceAll("s ", "")
-              }}
-            </p>
-          </VCol>
-          <VCol cols="67">
-            <a
-              v-if="v.toLowerCase().includes('https')"
-              :href="v"
-              target="_blank"
-              class="text-uppercase font-italic"
-            >
-              <VBtn class="mb-2" icon="mdi-open-in-new" size="x-small" />
-            </a>
-            <p v-else class="text-uppercase font-italic">{{ v }}</p>
-          </VCol>
+        <VRow v-for="(v, k) in (keyValues as any)">
+          <!-- @vue-skip-->
+          <template v-if="k !== 'type_of_assessment'">
+            <VCol cols="6">
+              <p class="font-weight-medium text-capitalize mb-0">
+                <!-- @vue-skip-->
+                {{
+                  k
+                    .toLowerCase()
+                    .replaceAll("_", " ")
+                    .replaceAll("i d", "id")
+                    .replaceAll("steps", "steps ")
+                    .replaceAll("step", "step ")
+                    .replaceAll("to", " to ")
+                    .replaceAll("and", " and ")
+                    .replaceAll("s ", "")
+                }}
+              </p>
+            </VCol>
+            <VCol cols="67">
+              <a
+                v-if="v.toLowerCase().includes('https')"
+                :href="v"
+                target="_blank"
+                class="text-uppercase font-italic"
+              >
+                <VBtn class="mb-2" icon="mdi-open-in-new" size="x-small" />
+              </a>
+              <p v-else class="text-uppercase font-italic">{{ v }}</p>
+            </VCol>
+          </template>
         </VRow>
 
         <VRow>
