@@ -55,6 +55,11 @@ const tabs = [
   },
   { title: "Lead History", icon: "mdi-clock-outline", tab: "history" },
   {
+    title: "Complaints",
+    icon: "mdi-message-question-outline",
+    tab: "Complaint",
+  },
+  {
     title: "Coming soon...",
     icon: "mdi-clock-alert-outline",
   },
@@ -442,6 +447,9 @@ onUnmounted(() => {
             :logs="store.selectedLead?.logs ?? []"
             :statuses="store.selectedLead?.statuses ?? []"
           />
+        </VWindowItem>
+        <VWindowItem value="Complaint">
+          <Complain :objectId="store.selectedLead?.id" />
         </VWindowItem>
 
         <VWindowItem value="call-history">
