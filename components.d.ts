@@ -54,6 +54,7 @@ declare module '@vue/runtime-core' {
     CustomCheckboxesWithIcon: typeof import('./src/@core/components/app-form-elements/CustomCheckboxesWithIcon.vue')['default']
     CustomCheckboxesWithImage: typeof import('./src/@core/components/app-form-elements/CustomCheckboxesWithImage.vue')['default']
     CustomerDetailsForm: typeof import('./src/components/leads/details/CustomerDetailsForm.vue')['default']
+    CustomerDocument: typeof import('./src/components/leads/CustomerDocument.vue')['default']
     CustomizerSection: typeof import('./src/@core/components/CustomizerSection.vue')['default']
     CustomRadios: typeof import('./src/@core/components/app-form-elements/CustomRadios.vue')['default']
     CustomRadiosWithIcon: typeof import('./src/@core/components/app-form-elements/CustomRadiosWithIcon.vue')['default']
