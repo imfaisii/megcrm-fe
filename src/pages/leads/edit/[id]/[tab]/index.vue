@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import CustomerDocument from "@/components/leads/CustomerDocument.vue";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
 import { getProgressColor, logsHaveUpdatedProperty } from "@/utils/useHelper";
@@ -54,6 +55,8 @@ const tabs = [
     tab: "submission",
   },
   { title: "Lead History", icon: "mdi-clock-outline", tab: "history" },
+  { title: "Customer Documents", icon: "mdi-file-multiple", tab: "customer-document" },
+
   {
     title: "Coming soon...",
     icon: "mdi-clock-alert-outline",
@@ -457,6 +460,9 @@ onUnmounted(() => {
           />
         </VWindowItem>
 
+        <VWindowItem value="customer-document">
+          <CustomerDocument />
+        </VWindowItem>
         <VWindowItem value="call-history">
           <AirCallHistory />
         </VWindowItem>

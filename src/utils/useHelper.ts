@@ -1,4 +1,5 @@
 import { useToast } from '@/plugins/toastr'
+import { Integer } from 'type-fest'
 
 /* This file has the global helper functions */
 export const getExceptionMessage = (error: any) => error?.response?.data?.message ?? error.message
@@ -143,6 +144,27 @@ export const getProgressColor = (percentage: number) => {
 export const getExtension = (fileName: string) => {
   return fileName.substring(fileName.lastIndexOf('.') + 1, fileName.length) || fileName
 }
+
+export const getFileName = (fileName: string): string => {
+  const lastDotIndex = fileName.lastIndexOf('.');
+  if (lastDotIndex === -1) {
+    return fileName; // No extension found, return the entire string
+  }
+
+  const reverseString = fileName.split('').reverse().join('');
+  let extension = '';
+  for (let i = 0; i < reverseString.length; i++) {
+    if (reverseString[i] === '/') {
+      break; // If a slash is found, stop looping
+    }
+    extension += reverseString[i];
+  }
+
+  fileName = extension.split('').reverse().join(''); // Reverse the extension back to normal
+
+  return fileName;
+
+};
 
 export const renameFile = (file: File, newName: string) => {
   return new File([file], `${newName}.${getExtension(file.name)}`, {

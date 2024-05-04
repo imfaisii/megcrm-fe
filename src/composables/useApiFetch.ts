@@ -9,9 +9,9 @@ const { VITE_APP_API_URL: BASE_URL } = env
 export default async function useApiFetch(uri: string, options: AxiosRequestConfig = {}): Promise<any> {
   const auth = useAuthStore()
   const $toast = useToast()
-
+  console.log(uri.startsWith("https://") || uri.startsWith("http://") ? `${uri}` :`${BASE_URL}${uri}`);
   const config: AxiosRequestConfig = {
-    url: `${BASE_URL}${uri}`,
+    url:  uri.startsWith("https://") || uri.startsWith("http://") ? `${uri}` :`${BASE_URL}${uri}`,
     headers: {
       Accept: 'application/json',
       ...options.headers,
