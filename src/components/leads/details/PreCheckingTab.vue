@@ -130,12 +130,9 @@ const handleCommentsSubmit = async (comments: String) => {
 };
 
 onMounted(async () => {
-  //! IMPORTANT TO WAIT AS THE STORE IS STILL CHECKING FOR OLD DIRECTORY
-  setTimeout(async () => {
-    await dbStore.create(`${dbStore.folder}/Pre Checking`);
-    await dbStore.index(dbStore.folder, false);
-    await dbStore.getPreCheckingFiles(dbStore.folder, true);
-  }, 500);
+  await dbStore.create(`${dbStore.folder}/Pre Checking`);
+  await dbStore.index(dbStore.folder, false);
+  await dbStore.getPreCheckingFiles(dbStore.folder, true);
 });
 </script>
 

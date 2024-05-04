@@ -18,7 +18,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
     .replace(/ /g, "")} - ${leadsStore.selectedLead.address.replace("/", "|")}`;
 
   const baseUrl = 'https://api.dropboxapi.com/2/files'
-  const baseDirectory = ref('/001 Umar Riaz Ashton/~~~~##########ECO 4 SURVEY')
+  const baseDirectory = ref('/CRM')
   const fileUploadEndpoint = "https://content.dropboxapi.com/2/files/upload";
   const newFolderEndpoint = `${baseUrl}/create_folder_v2`
   const folderFilesEndpoint = `${baseUrl}/list_folder`
@@ -46,19 +46,6 @@ export const useDropboxStore = defineStore('dropbox', () => {
     "limit": 2000,
     "recursive": false
   }
-
-  onMounted(async () => {
-    try {
-      await axios.post(folderFilesEndpoint, {
-        ...basicPostPayload,
-        path: `${baseDirectory.value}/${folder}`,
-      }, { headers })
-    } catch (e: any) {
-      if (e.response && e.response.status === 409) {
-        baseDirectory.value = '/ALL PRE SURVEYS'
-      }
-    }
-  })
 
   const index = async (folderName: string, fetchLinks: boolean = true) => {
     try {

@@ -101,17 +101,6 @@ const { getRootProps, getInputProps, ...rest } = useDropzone({
   accept: ["image/*", "video/*", "application/pdf"],
 });
 
-onMounted(async () => {
-  EventBus.$on("refresh-survey-pictures", () => {
-    dbStore.index(dbStore.folder);
-  });
-
-  //! IMPORTANT TO WAIT AS THE STORE IS STILL CHECKING FOR OLD DIRECTORY
-  setTimeout(async () => {
-    await dbStore.create(`${dbStore.folder}/Survey`);
-    await dbStore.index(dbStore.folder);
-  }, 500);
-});
 const filteredSurveyImageLabels = computed(() => {
   return ADDITIONAL.LEADS.SURVEY_IMAGE_LABELS.sort()
     .filter((additional) =>
@@ -135,9 +124,6 @@ const filteredSurveyImageLabels = computed(() => {
       };
     });
 });
-onUnmounted(() => {
-  EventBus.$off("refresh-survey-pictures");
-});
 
 const filteredResults = computed(() => {
   if (selectedTags.value.length < 1) {
@@ -147,6 +133,19 @@ const filteredResults = computed(() => {
   return dbStore.folderImages.filter((image: any) =>
     selectedTags.value.some((item: any) => image.name.includes(item.value))
   );
+});
+
+onMounted(async () => {
+  EventBus.$on("refresh-survey-pictures", () => {
+    dbStore.index(dbStore.folder);
+  });
+
+  await dbStore.create(`${dbStore.folder}/Survey`);
+  await dbStore.index(dbStore.folder);
+});
+
+onUnmounted(() => {
+  EventBus.$off("refresh-survey-pictures");
 });
 </script>
 
