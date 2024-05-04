@@ -7,10 +7,9 @@ import { defineStore } from 'pinia'
 
 export const useDropboxStore = defineStore('dropbox', () => {
 
-  const $toast = useToast()
   const loading = ref(false)
 
-  const isInOldDirectory = ref(false)
+  const $toast = useToast()
   const auth: any = useAuthStore();
   const leadsStore: any = useLeadsStore();
   const folder = `${leadsStore.selectedLead.post_code
@@ -18,7 +17,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
     .replace(/ /g, "")} - ${leadsStore.selectedLead.address.replace("/", "|")}`;
 
   const baseUrl = 'https://api.dropboxapi.com/2/files'
-  const baseDirectory = ref('/001 Umar Riaz Ashton/~~~~##########ECO 4 SURVEY')
+  const baseDirectory = ref('/CRM')
   const fileUploadEndpoint = "https://content.dropboxapi.com/2/files/upload";
   const newFolderEndpoint = `${baseUrl}/create_folder_v2`
   const folderFilesEndpoint = `${baseUrl}/list_folder`
