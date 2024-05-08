@@ -12,10 +12,16 @@ import {
   integerValidator,
   requiredValidator,
 } from "@validators";
+import moment from "moment";
+
+import { useToast } from "@/plugins/toastr";
 
 const permissionsStore = usePermissionsStore();
 const store = useLeadsStore();
 const DataMatchLogs = ref(null);
+const $toast: any = useToast();
+
+const showAlert = ref(false);
 const jobTypes = computed(() =>
   store.jobTypes.map((i: any) => {
     return { title: i.name, value: i.id };
@@ -25,6 +31,33 @@ const isDisabledBecauseDatamatch = computed(
   () =>
     store.selectedLead.lead_customer_additional_detail.datamatch_progress ==
       "Sent" && !permissionsStore.isSuperAdmin
+);
+/* if the data match is within 28 days and the old value was match then don't let  it update */
+watch(
+  () =>
+    store.selectedLead.lead_customer_additional_detail.is_datamatch_required,
+  (newValue, oldValue) => {
+    if (newValue === true && newValue !== oldValue ) {
+      const { datamatch_progress, datamatch_progress_date } =
+        store.selectedLead.lead_customer_additional_detail;
+
+      if (datamatch_progress?.toLowerCase() === "matched") {
+        const currentDate = moment();
+        const progressDate = moment(datamatch_progress_date);
+        const differenceInDays = currentDate.diff(progressDate, "days");
+        console.log(differenceInDays);
+        if (differenceInDays <= 28) {
+          console.log(`within 28 days`);
+          showAlert.value = true; // Prevent further alerts
+          $toast.error(
+            "You cannot resend a matched result for datamatch within 28 days of the current time..Ask administration for it help..."
+          );
+          store.selectedLead.lead_customer_additional_detail.is_datamatch_required =
+            false; // Reset to old value
+        }
+      }
+    }
+  }
 );
 
 onMounted(async () => {
