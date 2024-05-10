@@ -138,7 +138,6 @@ onMounted(async () => {
 
 <template>
   <div>
-    <!-- Picture Statistics -->
     <VCard class="mb-4">
       <VCardItem>
         <template #prepend>

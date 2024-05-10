@@ -9,8 +9,6 @@ export const useDropboxStore = defineStore('dropbox', () => {
 
   const $toast = useToast()
   const loading = ref(false)
-
-  const isInOldDirectory = ref(false)
   const auth: any = useAuthStore();
   const leadsStore: any = useLeadsStore();
   const folder = `${leadsStore.selectedLead.post_code
@@ -18,7 +16,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
     .replace(/ /g, "")} - ${leadsStore.selectedLead.address.replace("/", "|")}`;
 
   const baseUrl = 'https://api.dropboxapi.com/2/files'
-  const baseDirectory = ref('/CRM')
+  const baseDirectory = '/CRM'
   const fileUploadEndpoint = "https://content.dropboxapi.com/2/files/upload";
   const newFolderEndpoint = `${baseUrl}/create_folder_v2`
   const folderFilesEndpoint = `${baseUrl}/list_folder`
@@ -53,7 +51,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
 
       const { data } = await axios.post(`${folderFilesEndpoint}`, {
         ...basicPostPayload,
-        path: `${baseDirectory.value}/${folderName}/Survey`,
+        path: `${baseDirectory}/${folderName}/Survey`,
       }, {
         headers
       })
@@ -94,7 +92,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
 
       const { data } = await axios.post(`${folderFilesEndpoint}`, {
         ...basicPostPayload,
-        path: `${baseDirectory.value}/${folderName}/Installation`,
+        path: `${baseDirectory}/${folderName}/Installation`,
       }, {
         headers
       })
@@ -105,7 +103,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
       for await (const folder of intallationPicturesFolders.value) {
         const { data } = await axios.post(`${folderFilesEndpoint}`, {
           ...basicPostPayload,
-          path: `${baseDirectory.value}/${folderName}/Installation/${folder.name}`,
+          path: `${baseDirectory}/${folderName}/Installation/${folder.name}`,
         }, {
           headers
         })
@@ -151,7 +149,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
 
       const { data } = await axios.post(`${folderFilesEndpoint}`, {
         ...basicPostPayload,
-        path: `${baseDirectory.value}/${folderName}/Pre Checking`,
+        path: `${baseDirectory}/${folderName}/Pre Checking`,
       }, {
         headers
       })
@@ -174,7 +172,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
 
       await axios.post(`${newFolderEndpoint}`, {
         autorename: false,
-        path: `${baseDirectory.value}/${newFolderName}`
+        path: `${baseDirectory}/${newFolderName}`
       }, {
         headers
       })
@@ -198,7 +196,7 @@ export const useDropboxStore = defineStore('dropbox', () => {
           autorename: true,
           mode: "add",
           mute: false,
-          path: `${baseDirectory.value}/${address}/${subFolder}/${file.name}`,
+          path: `${baseDirectory}/${address}/${subFolder}/${file.name}`,
           strict_conflict: true,
         }),
         Authorization: `Bearer ${auth.user.dropbox.data}`,
