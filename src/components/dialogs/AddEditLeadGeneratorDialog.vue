@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useLeadGeneratorsStore } from "@/stores/lead-generators/useLeadGeneratorsStore";
+import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import {
   emailValidator,
   integerValidator,
@@ -19,6 +20,7 @@ defineProps({
   },
 });
 
+const leadStore = useLeadsStore();
 const store: any = useLeadGeneratorsStore();
 const formRef = ref();
 const emit = defineEmits<Emit>();
@@ -134,6 +136,23 @@ const handleSubmit = async () => {
                 placeholder="7943111111"
                 clearable
                 required
+              />
+            </VCol>
+
+            <VCol cols="12">
+              <VAutocomplete
+                v-model="store.selected.lead_generator_assignments"
+                :items="leadStore.leadGenerators"
+                :rules="[requiredValidator]"
+                :error-messages="store?.errors?.lead_generator_assignments"
+                label="Lead Generator"
+                item-title="name"
+                item-value="id"
+                clearable
+                required
+                multiple
+                chips
+                :return-object="false"
               />
             </VCol>
           </VRow>

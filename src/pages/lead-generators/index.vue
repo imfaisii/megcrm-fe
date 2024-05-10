@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { useLeadGeneratorsStore } from "@/stores/lead-generators/useLeadGeneratorsStore";
+import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
 
+const leadsStore = useLeadsStore();
 const store = useLeadGeneratorsStore();
 const isDialogVisible: any = ref(false);
 const includes = ["createdBy"];
@@ -16,10 +18,12 @@ const onFormSubmitted = async (form: any) => {
   await store.fetchAll({ include: includes.join(",") });
 };
 
-onMounted(() => {
+onMounted(async () => {
   EventBus.$on("item-selected", () => {
     isDialogVisible.value = true;
   });
+
+  await leadsStore.getExtras();
 });
 
 onUnmounted(() => {

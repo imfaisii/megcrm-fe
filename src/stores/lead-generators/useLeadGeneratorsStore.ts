@@ -29,7 +29,7 @@ export const useLeadGeneratorsStore = defineStore('lead-generators', () => {
   const meta = ref(defaultPagination)
   const entries = ref([])
   const $toast: any = useToast()
-  const include: any = ['createdBy']
+  const include: any = ['createdBy', 'leadGeneratorManagers']
 
   const isSelected = computed(() => !!selected.value.id)
 

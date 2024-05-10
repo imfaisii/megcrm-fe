@@ -7,9 +7,14 @@ import { EventBus } from "@/utils/useEventBus";
 const headers = [
   { title: "Name", key: "name" },
   { title: "SMS Sender Title", key: "sender_id" },
-  { title: "Email Reference in SMS", key: "email" },
-  { title: "Phone Reference in SMS", key: "phone_no" },
+  { title: "Email Ref. SMS", key: "email" },
+  { title: "Phone Ref. SMS", key: "phone_no" },
   { title: "Aircall Number", key: "aircall_number" },
+  {
+    title: "Managers",
+    key: "lead_generator_managers",
+    sortable: false,
+  },
   { title: "Added by", key: "created_by.name", sortable: false },
   { title: "Actions", key: "actions", sortable: false },
 ];
@@ -21,12 +26,10 @@ const filters = ref({
   phone_no: "",
 });
 
-const includes = ["createdBy"];
-
 // composables
 const store: any = useLeadGeneratorsStore();
 const { onSortChange, onPaginationChange } = useDataTable(store, filters, () =>
-  store.fetchAll({ include: includes.join(",") })
+  store.fetchAll({ include: store.include.join(",") })
 );
 
 const handleView = (item: any) => {
@@ -98,6 +101,33 @@ const handleView = (item: any) => {
     <!-- @vue-expect-error -->
     <template #item.aircall_number="{ item }">
       <p class="mb-0 font-italic">{{ item?.raw?.aircall_number ?? "NULL" }}</p>
+    </template>
+
+    <!-- @vue-expect-error -->
+    <template #item.lead_generator_managers="{ item }">
+      <p
+        v-if="item?.raw?.lead_generator_managers?.length < 1"
+        class="font-italic text--lighten-4 mb-0"
+      >
+        No assignments.
+      </p>
+
+      <VRow v-else class="mt-2" no-gutters>
+        <VCol
+          v-for="user in item.raw?.lead_generator_managers"
+          cols="12"
+          lg="6"
+        >
+          <VChip
+            label
+            size="small"
+            class="text-capitalize mb-1"
+            color="success"
+          >
+            {{ user.name }}
+          </VChip>
+        </VCol>
+      </VRow>
     </template>
 
     <!-- Actions -->

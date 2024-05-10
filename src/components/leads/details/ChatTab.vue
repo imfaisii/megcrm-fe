@@ -126,7 +126,7 @@ onMounted(() => {
                 >
                   {{ message.comment }}
                 </p>
-                <span class="text-xs ms-1 text-disabled">
+                <span class="text-xs ms-1 mb-1 text-disabled">
                   {{ time.formatDate(message.created_at, "lll") }}
                 </span>
               </div>
