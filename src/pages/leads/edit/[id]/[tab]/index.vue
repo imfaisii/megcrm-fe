@@ -40,6 +40,11 @@ const tabs = [
     tab: "pre-checking",
   },
   {
+    title: "Chat",
+    icon: "mdi-forum-outline",
+    tab: "chat",
+  },
+  {
     title: "Book Installation",
     icon: "mdi-tools",
     tab: "book-installation",
@@ -55,7 +60,11 @@ const tabs = [
     tab: "submission",
   },
   { title: "Lead History", icon: "mdi-clock-outline", tab: "history" },
-  { title: "Customer Documents", icon: "mdi-file-multiple", tab: "customer-document" },
+  {
+    title: "Customer Documents",
+    icon: "mdi-file-multiple",
+    tab: "customer-document",
+  },
 
   {
     title: "Coming soon...",
@@ -404,7 +413,7 @@ onUnmounted(() => {
             }"
             :disabled="tab?.tab ? false : true"
           >
-            <div class="d-flex flex-column align-center">
+            <div class="d-flex flex-column align-center py-2">
               <VIcon start :size="24" :icon="tab.icon" />
               <span>{{ tab.title }}</span>
             </div>
@@ -431,6 +440,10 @@ onUnmounted(() => {
 
         <VWindowItem value="pre-checking">
           <PreCheckingTab />
+        </VWindowItem>
+
+        <VWindowItem value="chat">
+          <ChatTab :messages="store?.selectedLead?.comments ?? []" />
         </VWindowItem>
 
         <VWindowItem value="book-installation">
