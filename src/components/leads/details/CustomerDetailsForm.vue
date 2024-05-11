@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import {
-  contactMethods,
-  priorityTypes,
-  timesToContact,
-  titles,
+contactMethods,
+priorityTypes,
+timesToContact,
+titles,
 } from "@/constants/leads/customerDetails";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { usePermissionsStore } from "@/stores/permissions/usePermissionsStore";
 import {
-  emailValidator,
-  integerValidator,
-  requiredValidator,
+emailValidator,
+integerValidator,
+requiredValidator,
 } from "@validators";
 import moment from "moment";
 
@@ -444,9 +444,9 @@ onMounted(async () => {
           </VCol>
 
           <!-- Datamatch History -->
-          <VCol class="pa-0" cols="12" lg="12" v-if="DataMatchLogs">
-            <ActivityTimeline
-              :logs="DataMatchLogs ?? []"
+          <VCol class="pa-0" cols="12" lg="12" v-if="store.selectedLead?.data_match_history?.length > 0">
+            <DataMatchHistoryView
+              :logs="store.selectedLead.data_match_history"
               heading="DataMatch History"
               elevation="0"
             />

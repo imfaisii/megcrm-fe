@@ -80,6 +80,7 @@ export const useLeadsStore = defineStore('leads', () => {
   const sms_templates = ref([])
   const errors = ref({})
   const includes = [
+    "DataMatchHistory",
     "leadGenerator",
     "statuses",
     "leadCustomerAdditionalDetail",
