@@ -67,6 +67,7 @@ const handleSubmit = async () => {
                 type="email"
                 placeholder="johndoe@email.com"
                 :error-messages="auth?.errors?.email?.[0]"
+                density="compact"
               />
             </VCol>
 

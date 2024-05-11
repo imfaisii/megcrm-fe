@@ -57,6 +57,7 @@ const isConfirmPasswordVisible = ref(false);
                   isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'
                 "
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
+                density="compact"
               />
             </VCol>
 
@@ -75,6 +76,7 @@ const isConfirmPasswordVisible = ref(false);
                 @click:append-inner="
                   isConfirmPasswordVisible = !isConfirmPasswordVisible
                 "
+                density="compact"
               />
             </VCol>
 

@@ -2,7 +2,12 @@
 import CustomerDocument from "@/components/leads/CustomerDocument.vue";
 import { useLeadsStore } from "@/stores/leads/useLeadsStore";
 import { EventBus } from "@/utils/useEventBus";
-import { getProgressColor, logsHaveUpdatedProperty } from "@/utils/useHelper";
+import {
+  copy,
+  getProgressColor,
+  logsHaveUpdatedProperty,
+  strTruncated,
+} from "@/utils/useHelper";
 import { requiredValidator } from "@validators";
 
 const store = useLeadsStore();
@@ -40,6 +45,11 @@ const tabs = [
     tab: "pre-checking",
   },
   {
+    title: "Chat",
+    icon: "mdi-forum-outline",
+    tab: "chat",
+  },
+  {
     title: "Book Installation",
     icon: "mdi-tools",
     tab: "book-installation",
@@ -55,7 +65,11 @@ const tabs = [
     tab: "submission",
   },
   { title: "Lead History", icon: "mdi-clock-outline", tab: "history" },
-  { title: "Customer Documents", icon: "mdi-file-multiple", tab: "customer-document" },
+  {
+    title: "Customer Documents",
+    icon: "mdi-file-multiple",
+    tab: "customer-document",
+  },
 
   {
     title: "Coming soon...",
@@ -157,8 +171,14 @@ onUnmounted(() => {
                         size="x-large"
                         class="text-capitalize mb-2 ml-0"
                         color="secondary"
+                        @click="copy(store.selectedLead.plain_address)"
                       >
-                        {{ store.selectedLead.address }}
+                        {{
+                          `${strTruncated(
+                            store.selectedLead.plain_address,
+                            30
+                          )}`
+                        }}
                       </VChip>
                     </template>
                     <span>Customer Address</span>
@@ -171,7 +191,42 @@ onUnmounted(() => {
                         label
                         size="x-large"
                         class="text-capitalize mb-2 ml-0"
+                        color="secondary"
+                        @click="copy(store.selectedLead.post_code)"
+                      >
+                        {{ store.selectedLead.post_code }}
+                      </VChip>
+                    </template>
+                    <span>Post code</span>
+                  </VTooltip>
+
+                  <VTooltip>
+                    <template #activator="{ props }">
+                      <VChip
+                        v-bind="props"
+                        label
+                        size="x-large"
+                        class="text-capitalize mb-2 ml-0"
+                        color="secondary"
+                      >
+                        {{ `Creator: ${store.selectedLead.created_by.name}` }}
+                      </VChip>
+                    </template>
+                    <span>
+                      This lead was added by
+                      {{ store.selectedLead.created_by.name }}
+                    </span>
+                  </VTooltip>
+
+                  <VTooltip>
+                    <template #activator="{ props }">
+                      <VChip
+                        v-bind="props"
+                        label
+                        size="x-large"
+                        class="text-capitalize mb-2 ml-0"
                         color="info"
+                        @click="copy(store.selectedLead.reference_number)"
                       >
                         Reference: {{ store.selectedLead.reference_number }}
                       </VChip>
@@ -404,7 +459,7 @@ onUnmounted(() => {
             }"
             :disabled="tab?.tab ? false : true"
           >
-            <div class="d-flex flex-column align-center">
+            <div class="d-flex flex-column align-center py-2">
               <VIcon start :size="24" :icon="tab.icon" />
               <span>{{ tab.title }}</span>
             </div>
@@ -431,6 +486,10 @@ onUnmounted(() => {
 
         <VWindowItem value="pre-checking">
           <PreCheckingTab />
+        </VWindowItem>
+
+        <VWindowItem value="chat">
+          <ChatTab :messages="store?.selectedLead?.comments ?? []" />
         </VWindowItem>
 
         <VWindowItem value="book-installation">

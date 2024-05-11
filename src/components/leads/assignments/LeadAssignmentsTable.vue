@@ -51,6 +51,10 @@ const handleApiCall = async () => {
   });
 };
 
+const onRowClick = ($event: PointerEvent, item: any) => {
+  handleView(item.item.raw);
+};
+
 onMounted(async () => {
   await handleApiCall();
 
@@ -64,7 +68,12 @@ onUnmounted(() => EventBus.$off("refresh-table"));
   <!-- Filters -->
   <VRow class="pa-4">
     <VCol cols="12" lg="3">
-      <VTextField v-model="filters.name" label="Name" clearable />
+      <VTextField
+        v-model="filters.name"
+        label="Name"
+        clearable
+        density="compact"
+      />
     </VCol>
   </VRow>
 
@@ -74,11 +83,12 @@ onUnmounted(() => EventBus.$off("refresh-table"));
     :items="store.entries"
     :headers="headers"
     class="text-no-wrap"
-    show-select
+    @click:row="onRowClick"
     @update:on-pagination-change="onPaginationChange"
     @update:on-sort-change="onSortChange"
   >
     <!-- Roles -->
+    <!-- @vue-expect-error -->
     <template #item.roles="{ item }">
       <p
         v-if="item?.raw?.roles?.length < 1"
@@ -87,48 +97,51 @@ onUnmounted(() => EventBus.$off("refresh-table"));
         No roles.
       </p>
 
-      <VRow v-else class="mt-2" no-gutters>
-        <VCol v-for="role in item.raw?.roles" cols="12" lg="6">
-          <VChip
-            label
-            size="small"
-            class="text-capitalize mb-1"
-            color="warning"
-          >
-            {{ role.name }}
-          </VChip>
-        </VCol>
+      <VRow class="d-flex flex-wrap py-6">
+        <VChip
+          v-for="role in item.raw?.roles"
+          label
+          size="small"
+          class="text-capitalize mb-1 mr-1"
+          color="warning"
+        >
+          {{ role.name }}
+        </VChip>
       </VRow>
     </template>
 
     <!-- Lead Generator Assignments -->
+    <!-- @vue-expect-error -->
     <template #item.lead_generator_assignments="{ item }">
-      <p
-        v-if="item?.raw?.lead_generator_assignments?.length < 1"
-        class="font-italic text--lighten-4 mb-0"
-      >
-        No assignments.
-      </p>
-
-      <VRow v-else class="mt-2" no-gutters>
-        <VCol
-          v-for="leadGenerator in item.raw?.lead_generator_assignments"
-          cols="12"
-          lg="6"
+      <div class="d-flex align-center gap-4">
+        <VAvatar
+          v-if="item.raw.lead_generator_assignments.length > 1"
+          :size="30"
+          color="primary"
+          variant="tonal"
         >
-          <VChip
-            label
-            size="small"
-            class="text-capitalize mb-1"
-            color="success"
-          >
-            {{ leadGenerator.name }}
-          </VChip>
-        </VCol>
-      </VRow>
+          <VIcon :size="20" icon="tabler-user" />
+        </VAvatar>
+        <span
+          :class="
+            item.raw.lead_generator_assignments.length > 1
+              ? 'text-capitalize'
+              : 'font-italic'
+          "
+        >
+          {{
+            item.raw.lead_generator_assignments.length > 1
+              ? `${item.raw.lead_generator_assignments[0].name} ( +${
+                  item.raw.lead_generator_assignments.length - 1
+                } )`
+              : "No assignments"
+          }}
+        </span>
+      </div>
     </template>
 
     <!-- Actions -->
+    <!-- @vue-expect-error-->
     <template #item.actions="{ item }">
       <VTooltip location="bottom">
         <template #activator="{ props }">

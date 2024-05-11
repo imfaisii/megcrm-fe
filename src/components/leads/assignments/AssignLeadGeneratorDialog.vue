@@ -88,6 +88,7 @@ watch(
                 multiple
                 chips
                 :return-object="false"
+                density="compact"
               />
             </VCol>
           </VRow>

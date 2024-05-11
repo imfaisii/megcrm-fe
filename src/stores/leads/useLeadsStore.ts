@@ -72,6 +72,7 @@ export const useLeadsStore = defineStore('leads', () => {
   const leadStatuses: Ref<LeadStatus[]> = ref([])
   const leadTableStatuses: Ref<LeadStatus[]> = ref([])
   const leadJobTableStatuses: Ref<LeadStatus[]> = ref([])
+  const leadGeneratorManagers: Ref<{ name: string; id: number; }[]> = ref([])
   const installers: Ref<Installer[]> = ref([])
   const installation_types: Ref<InstallationType[]> = ref([])
   const isStatusChanged: Ref<Boolean> = ref(false)
@@ -94,7 +95,8 @@ export const useLeadsStore = defineStore('leads', () => {
     "leadAdditional",
     "secondReceipent",
     "submission",
-    "notifications"
+    "notifications",
+    "createdBy"
   ];
   const router = useRouter()
 
@@ -129,6 +131,7 @@ export const useLeadsStore = defineStore('leads', () => {
       installation_types.value = data?.installation_types ?? []
       banks.value = data?.banks ?? []
       csrs.value = data?.csrs ?? []
+      leadGeneratorManagers.value = data?.lead_generator_managers ?? [];
       sms_templates.value = data?.sms_templates?.map((t: any) => ({ ...t, body_copy: t.body, model: t.properties.map((p: any) => { return { p: null } }) })) ?? []
       isLoading.value = false
     }
@@ -180,7 +183,7 @@ export const useLeadsStore = defineStore('leads', () => {
       selectedLead.value = data.lead
       const date = new Date(selectedLead.value.dob);  // checking that its a coorect date or not 
       // Check if the created Date object is valid and if the dateString matches the expected format because we will not let it submit for datamatch if dob is not correct
-      selectedLead.value.dob = date instanceof Date && !isNaN(date) ? date : null;
+      selectedLead.value.dob = date instanceof Date && !isNaN(date as any) ? date : null;
 
       let installations: any = [];
 
@@ -424,6 +427,7 @@ export const useLeadsStore = defineStore('leads', () => {
   };
 
   return {
+    leadGeneratorManagers,
     sms_templates,
     csrs,
     banks,

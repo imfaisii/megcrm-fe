@@ -63,6 +63,7 @@ async function handleSubmit() {
                 type="email"
                 placeholder="johndoe@email.com"
                 :error-messages="auth?.errors?.email?.[0]"
+                density="compact"
               />
             </VCol>
 
@@ -78,6 +79,7 @@ async function handleSubmit() {
                 "
                 :error-messages="auth?.errors?.password?.[0]"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
+                density="compact"
               />
 
               <!-- remember me checkbox -->
