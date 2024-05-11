@@ -80,6 +80,7 @@ const handleSubmit = async () => {
                 placeholder="Raw Lead"
                 clearable
                 required
+                density="compact"
               />
             </VCol>
 
@@ -92,6 +93,7 @@ const handleSubmit = async () => {
                 placeholder="MEG"
                 clearable
                 required
+                density="compact"
               />
             </VCol>
 
@@ -103,7 +105,7 @@ const handleSubmit = async () => {
                 label="Email Address"
                 placeholder="info@leadgenerator.co.uk"
                 clearable
-                required
+                density="compact"
               />
             </VCol>
 
@@ -119,7 +121,7 @@ const handleSubmit = async () => {
                 label="Phone No"
                 placeholder="7943111111"
                 clearable
-                required
+                density="compact"
               />
             </VCol>
 
@@ -135,17 +137,16 @@ const handleSubmit = async () => {
                 label="Aircall No"
                 placeholder="7943111111"
                 clearable
-                required
+                density="compact"
               />
             </VCol>
 
             <VCol cols="12">
               <VAutocomplete
-                v-model="store.selected.lead_generator_assignments"
-                :items="leadStore.leadGenerators"
-                :rules="[requiredValidator]"
-                :error-messages="store?.errors?.lead_generator_assignments"
-                label="Lead Generator"
+                v-model="store.selected.lead_generator_managers"
+                :items="leadStore.leadGeneratorManagers"
+                :error-messages="store?.errors?.lead_generator_managers"
+                label="Managers"
                 item-title="name"
                 item-value="id"
                 clearable
@@ -153,6 +154,7 @@ const handleSubmit = async () => {
                 multiple
                 chips
                 :return-object="false"
+                density="compact"
               />
             </VCol>
           </VRow>

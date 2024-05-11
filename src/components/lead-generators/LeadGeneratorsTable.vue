@@ -2,6 +2,7 @@
 import useDataTable from "@/composables/useDatatable";
 import { useLeadGeneratorsStore } from "@/stores/lead-generators/useLeadGeneratorsStore";
 import { EventBus } from "@/utils/useEventBus";
+import { strTruncated } from "../../utils/useHelper";
 
 // Headers
 const headers = [
@@ -9,7 +10,7 @@ const headers = [
   { title: "SMS Sender Title", key: "sender_id" },
   { title: "Email Ref. SMS", key: "email" },
   { title: "Phone Ref. SMS", key: "phone_no" },
-  { title: "Aircall Number", key: "aircall_number" },
+  { title: "Aircall No", key: "aircall_number" },
   {
     title: "Managers",
     key: "lead_generator_managers",
@@ -36,6 +37,10 @@ const handleView = (item: any) => {
   store.selected = item;
 
   EventBus.$emit("item-selected");
+};
+
+const onRowClick = ($event: PointerEvent, item: any) => {
+  handleView(item.item.raw);
 };
 </script>
 
@@ -85,12 +90,32 @@ const handleView = (item: any) => {
     :items="store.entries"
     :headers="headers"
     class="text-no-wrap"
+    @click:row="onRowClick"
     @update:on-pagination-change="onPaginationChange"
     @update:on-sort-change="onSortChange"
   >
     <!-- @vue-expect-error -->
+    <template #item.name="{ item }">
+      <VTooltip postion="top">
+        <template #activator="{ props }">
+          <p v-bind="props" class="mb-0 font-italic">
+            {{ strTruncated(item.raw.name, 15) }}
+          </p>
+        </template>
+        <span>{{ item.raw.name }}</span>
+      </VTooltip>
+    </template>
+
+    <!-- @vue-expect-error -->
     <template #item.email="{ item }">
-      <p class="mb-0 font-italic">{{ item?.raw?.email ?? "NULL" }}</p>
+      <VTooltip postion="top" :disabled="item?.raw?.email === null">
+        <template #activator="{ props }">
+          <p v-bind="props" class="mb-0 font-italic">
+            {{ item?.raw?.email ? strTruncated(item.raw.email, 15) : "NULL" }}
+          </p>
+        </template>
+        <span>{{ item.raw.email }}</span>
+      </VTooltip>
     </template>
 
     <!-- @vue-expect-error -->
@@ -105,29 +130,31 @@ const handleView = (item: any) => {
 
     <!-- @vue-expect-error -->
     <template #item.lead_generator_managers="{ item }">
-      <p
-        v-if="item?.raw?.lead_generator_managers?.length < 1"
-        class="font-italic text--lighten-4 mb-0"
-      >
-        No assignments.
-      </p>
-
-      <VRow v-else class="mt-2" no-gutters>
-        <VCol
-          v-for="user in item.raw?.lead_generator_managers"
-          cols="12"
-          lg="6"
+      <div class="d-flex align-center gap-4">
+        <VAvatar
+          v-if="item.raw.lead_generator_managers.length > 1"
+          :size="30"
+          color="primary"
+          variant="tonal"
         >
-          <VChip
-            label
-            size="small"
-            class="text-capitalize mb-1"
-            color="success"
-          >
-            {{ user.name }}
-          </VChip>
-        </VCol>
-      </VRow>
+          <VIcon :size="20" icon="tabler-user" />
+        </VAvatar>
+        <span
+          :class="
+            item.raw.lead_generator_managers.length > 1
+              ? 'text-capitalize'
+              : 'font-italic'
+          "
+        >
+          {{
+            item.raw.lead_generator_managers.length > 1
+              ? `${item.raw.lead_generator_managers[0].name} ( +${
+                  item.raw.lead_generator_managers.length - 1
+                } )`
+              : "No managers"
+          }}
+        </span>
+      </div>
     </template>
 
     <!-- Actions -->

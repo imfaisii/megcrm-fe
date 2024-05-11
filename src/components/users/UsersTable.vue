@@ -70,6 +70,7 @@ const handleRedirect = (id: number) => {
     @update:on-sort-change="onSortChange"
   >
     <!-- Name -->
+    <!-- @vue-expect-error-->
     <template #item.name="{ item }">
       <div class="d-flex align-center">
         <div class="d-flex flex-column">
@@ -81,6 +82,7 @@ const handleRedirect = (id: number) => {
     </template>
 
     <!-- Email -->
+    <!-- @vue-expect-error-->
     <template #item.email="{ item }">
       <div class="d-flex align-center">
         <div class="d-flex flex-column">
@@ -90,6 +92,7 @@ const handleRedirect = (id: number) => {
     </template>
 
     <!-- Status -->
+    <!-- @vue-expect-error-->
     <template #item.status="{ item }">
       <VChip
         label
@@ -102,6 +105,7 @@ const handleRedirect = (id: number) => {
     </template>
 
     <!-- Role -->
+    <!-- @vue-expect-error-->
     <template #item.role="{ item }">
       <div class="d-flex align-center gap-4">
         <VAvatar
@@ -124,6 +128,7 @@ const handleRedirect = (id: number) => {
     </template>
 
     <!-- Actions -->
+    <!-- @vue-expect-error-->
     <template #item.actions="{ item }">
       <IconBtn @click="handleRedirect(item.raw.id)">
         <VProgressCircular
