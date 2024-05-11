@@ -94,7 +94,8 @@ export const useLeadsStore = defineStore('leads', () => {
     "leadAdditional",
     "secondReceipent",
     "submission",
-    "notifications"
+    "notifications",
+    "createdBy"
   ];
   const router = useRouter()
 
