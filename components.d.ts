@@ -49,7 +49,6 @@ declare module '@vue/runtime-core' {
     CompaniesTable: typeof import('./src/components/companies/CompaniesTable.vue')['default']
     CompanyDocument: typeof import('./src/components/leads/CompanyDocument.vue')['default']
     ConfirmDialog: typeof import('./src/components/ConfirmDialog.vue')['default']
-    copy: typeof import('./src/components/leads/details/ActivityTimeline copy.vue')['default']
     CreateForm: typeof import('./src/components/leads/CreateForm.vue')['default']
     CreateLeadStatusForm: typeof import('./src/components/leads/CreateLeadStatusForm.vue')['default']
     CustomCheckboxes: typeof import('./src/@core/components/app-form-elements/CustomCheckboxes.vue')['default']

@@ -100,7 +100,7 @@ const handleSubmit = async () => {
             <VCol cols="12">
               <VTextField
                 v-model="store.selected.email"
-                :rules="[emailValidator]"
+                :rules="[emailValidator, requiredValidator]"
                 :error-messages="store.errors?.email"
                 label="Email Address"
                 placeholder="info@leadgenerator.co.uk"
@@ -114,6 +114,7 @@ const handleSubmit = async () => {
                 v-model="store.selected.phone_no"
                 :rules="[
                   integerValidator,
+                  requiredValidator,
                   (v:any) => maxLengthValidator(v, 10),
                   (v:any) => lengthValidator(v, 10),
                 ]"
@@ -149,6 +150,7 @@ const handleSubmit = async () => {
                 label="Managers"
                 item-title="name"
                 item-value="id"
+                :rules="[requiredValidator]"
                 clearable
                 required
                 multiple
